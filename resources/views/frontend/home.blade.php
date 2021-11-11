@@ -10,9 +10,11 @@
       <div class="col-md-7">
         <h1 class='main-title'>{{translate('Mailbox Small Title')}}</h1>
         <div class="home-text">
+          <form method="POST" action="{{ route('spamtest') }}">
+          @csrf
           <h1>{{as_it_is('First, send your email to:')}}</h1>
           <div class="custom-email">
-            <input type="text" class="custom-email-input" id="trsh_mail" readonly>
+            <input type="text" class="custom-email-input" id="trsh_mail" name="trsh_mail" readonly>
             <button type="button" data-toggle="tooltip" data-placement="bottom" title="{{translate('Click To Copy!')}}"
               data-clipboard-target="#trsh_mail" class="custom-email-botton">
               <i class="fas fa-copy"></i>
@@ -34,9 +36,6 @@
           
           <div class="counter">
             <button type="submit" class="btn btn-2"><b>{{as_it_is('Then check your score')}}</b></button>
-            <!-- <span class=" mail_check_button">
-              <b>{{as_it_is('Then check your score')}}</b>
-            </span> -->
             <!-- 
             <span class=" count_ mail_count">
               <b>{{translate('Emails Created')}}</b>
@@ -48,7 +47,7 @@
             </span>
             -->
           </div>
-
+          </form>
         </div>
         <p>
           {{translate('Mailbox Description')}}

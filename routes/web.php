@@ -132,5 +132,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
 
     Route::get('/contact', 'ContactController@index')->name('contact');
 
+    Route::post('/spamtest', 'Mailstester\SpamTestController@index')->name("spamtest");
+
 });
 }

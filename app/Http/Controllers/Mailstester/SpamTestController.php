@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers\Mailstester;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cookie;
 use App\Http\Controllers\Controller;
+// use Illuminate\Http\Request;
+// use Illuminate\Support\Facades\Cookie;
 use App\Models\Settings;
-use App\Models\TrashMail;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Cache;
-use Vinkla\Hashids\Facades\Hashids;
-use Carbon\Carbon;
+// use App\Models\TrashMail;
+// use Illuminate\Support\Str;
+// use Illuminate\Support\Facades\Cache;
+// use Vinkla\Hashids\Facades\Hashids;
+// use Carbon\Carbon;
 use Artesaos\SEOTools\Facades\SEOMeta;
 use Artesaos\SEOTools\Facades\OpenGraph;
 
-
-
+use App\Models\Menu;
+use \Mcamara\LaravelLocalization\Facades\LaravelLocalization;
+use App\Models\Language;
 
 
 class SpamTestController extends Controller
@@ -39,6 +40,10 @@ class SpamTestController extends Controller
         OpenGraph::addImage(asset(Settings::selectSettings('og_image')));
         OpenGraph::setUrl($canonical);
         OpenGraph::addProperty('type', 'article');
-        return view('mailstester.index');
+
+        $links = Menu::all();
+        $locale = LaravelLocalization::getCurrentLocale();
+        $lang_name = Language::where('code', $locale)->first()->name;
+        return view('mailstester.index')->with('lang_locale', $locale)->with('lang_name', $lang_name);
     }
 }

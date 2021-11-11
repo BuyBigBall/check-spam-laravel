@@ -1,74 +1,306 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<!-- saved from url=(0042)https://www.mail-tester.com/test-2x9vpi14q -->
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-			
-    <title>Spam Test Result</title>
-    <meta name="keywords" content="mail,tester,test,results,check,email,spam,spamassassin">
-    <meta name="description" content="You sent us an email? Check here if it passed our tests">
-    <meta name="viewport" content="width=device-width">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+    <head>
+        {!! SEOMeta::generate() !!}
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <link rel="icon" type="image/png" href="{{asset($setdata['favicon'])}}"/>
+        {!! OpenGraph::generate() !!} {!! Twitter::generate() !!}
+        <link
+            rel="alternate"
+            hreflang="x-default"
+            href="{{ Str::replace('/'. $lang_locale, '', url()->current()) }}"/>
+        @foreach (\App\Models\Language::all() as $lang)
+        <link
+            rel="alternate"
+            hreflang="{{$lang->code}}"
+            href="{{ Str::replace('/'. $lang_locale .'/', '/'. $lang->code .'/', url()->current()) }}"/>
+        @endforeach {!! $setdata['custom_tags'] !!}
+        <!-- font awesome icons -->
+        <link href="{{ asset('assets/css/font-awesome.css') }}" rel="stylesheet">
+        <!-- bootstrap css -->
+        <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
 
-    
-    <meta name="robots" content="noindex,nofollow">			<meta http-equiv="refresh" content="14; url=test-2x9vpi14q&amp;reloaded=1">			<link rel="icon" type="image/png" href="https://www.mail-tester.com/img/favicon.png">
-    <link href="./Spam Test Result_files/css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="./Spam Test Result_files/app.css">
-    
-    <script type="text/javascript" src="./Spam Test Result_files/jquery-3.4.1.min.js.download"></script>
-    <script type="text/javascript" src="./Spam Test Result_files/app.js.download"></script>
-            </head>
+        <!-- owl carousel css -->
+        <link href="{{ asset('assets/css/owl.carousel.min.css') }}" rel="stylesheet">
 
-<body id="waiting-page">
+        <link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
 
-<div id="header" class="mh-25">
+        @if(\App\Models\Language::where('code', $lang_locale)->first()->rtl == 1)
+        <link rel="stylesheet" href="{{ asset('assets/css/rtl.css') }}">
+        @endif
 
-            <h1 class="title py-5 m-0 text-white">Checking out the inbox of</h1>
-    <div class="text-center"><span class="mailbox">test-2x9vpi14q@srv1.mail-tester.com</span></div>
-    
-<div class="container py-5">
-    <div class="subtitle text-center countdown my-3">0</div>
-    <div class="progress">
-        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 100%;">
-            <div class="separator-inner" id="animatedboat"></div>
+        <!-- Custom -->
+        @if (!empty($setdata['google_analytics_code']))
+        <!-- Google Analytics -->
+        <script>
+            (function (i, s, o, g, r, a, m) {
+                i['GoogleAnalyticsObject'] = r;
+                i[r] = i[r] || function () {
+                    (i[r].q = i[r].q || []).push(arguments)
+                },
+                i[r].l = 1 * new Date();
+                a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0];
+                a.async = 1;
+                a.src = g;
+                m
+                    .parentNode
+                    .insertBefore(a, m)
+            })(
+                window,
+                document,
+                'script',
+                'https://www.google-analytics.com/analytics.js',
+                'ga'
+            );
+
+            ga('create', '{{$setdata[' google_analytics_code ']}}', 'auto');
+            ga('send', 'pageview');
+        </script>
+        <!-- End Google Analytics -->
+        @endif @if (!empty($setdata['google_tag_manager']))
+        <!-- Google Tag Manager -->
+        <script>
+            (function (w, d, s, l, i) {
+                w[l] = w[l] || [];
+                w[l].push({'gtm.start': new Date().getTime(), event: 'gtm.js'});
+                var f = d.getElementsByTagName(s)[0],
+                    j = d.createElement(s),
+                    dl = l != 'dataLayer'
+                        ? '&l=' + l
+                        : '';
+                j.async = true;
+                j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+                f
+                    .parentNode
+                    .insertBefore(j, f);
+            })(
+                window,
+                document,
+                'script',
+                'dataLayer',
+                '{{$setdata[' google_tag_manager ']}}'
+            );
+        </script>
+        <!-- End Google Tag Manager -->
+        @endif
+
+        <!--SET DYNAMIC VARIABLE IN STYLE-->
+        <style>
+            :root {
+                --main-color: {{$setdata['main_color']}};
+                --color1: {{$setdata['secondary_color']}};
+            }
+        </style>
+
+        <!-- Custom Code -->
+        {!! $setdata['head_ad'] !!}
+
+        <link href="/assets/css/frontend_default.css" rel="stylesheet" type="text/css">
+        <link href="/assets/css/template.css" rel="stylesheet" type="text/css">
+        <link href="/assets/css/spamtest.css" rel="stylesheet" type="text/css" >
+
+    </head>
+
+    <body id="waiting-page">
+
+        @if (!empty($setdata['google_tag_manager']))
+        <!-- Google Tag Manager (noscript) -->
+        <noscript>
+            <iframe
+                src="https://www.googletagmanager.com/ns.html?id={{$setdata['google_tag_manager']}}"
+                height="0"
+                width="0"
+                style="display:none;visibility:hidden"></iframe>
+        </noscript>
+        <!-- End Google Tag Manager (noscript) -->
+        @endif
+
+        <!-- Preloader Start -->
+        <div class="preloader">
+            <span></span>
         </div>
-    </div>
-</div>
+        <!-- Preloader End -->
 
+        <div id="header_container" style="width:100%">
+            <div id="header_container2">
+                <div class="row-fluid contentsize">
+                    <div class="span7">
 
-    </div>
+                        <div class="custom">
+                            <div class="row-fluid">
+                                <div class="span12">
+                                    <a href="https://www.mail-tester.com/manager/"><img
+                                        style="float: left; max-width: 300px;"
+                                        src="/uploads/logo.png"
+                                        alt="mailtester"></a><br>
+                                    <h1>Manager</h1>
+                                </div>
+                            </div>
+                        </div>
 
+                    </div>
+                    <div class="span5">
+                        <div class="header_login">
+                            <form
+                                action="/"
+                                method="get"
+                                id="login-form"
+                                class="form-vertical">
+                                <div class="login-greeting">
+                                    Hi Samir Chakouri,
+                                </div>
+                                <div class="logout-button">
+                                    <input type="submit" class="btn btn-primary" value="Log out">
+                                    <!-- <input type="hidden" name="option" value="com_users">
+                                    <input type="hidden" name="task" value="user.logout">
+                                    <input type="hidden" name="return" value="aW5kZXgucGhwP0l0ZW1pZD0xNjk=">
+                                    <input type="hidden" name="45adedc08584ba24ea6f3e97d550bc4a" value="1"> -->
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div
+            id="menu_container"
+            style=" width:100%; z-index: 12;"
+            data="data"
+            -="-"
+            spy="affix"
+            offset="offset"
+            top="100"
+            class="affix-top">
+            <div class="row-fluid contentsize">
+                <div class="span12 affix-top">
+                    <ul class="nav menu">
+                        <li class="item-101">
+                            <a href="https://www.mail-tester.com/manager/start.html">Get Started</a>
+                        </li>
+                        <li class="item-169 default">
+                            <a href="https://www.mail-tester.com/manager/">Prices</a>
+                        </li>
+                        <li class="item-111 current active">
+                            <a href="https://www.mail-tester.com/manager/account.html">Account</a>
+                        </li>
+                        <li class="item-109">
+                            <a href="https://www.mail-tester.com/manager/latest-tests.html">Latest Tests</a>
+                        </li>
+                        <li class="item-113">
+                            <a href="https://www.mail-tester.com/manager/design.html">iFrame CSS</a>
+                        </li>
+                        <li class="item-108">
+                            <a href="https://www.mail-tester.com/manager/api-documentation.html">JSON API</a>
+                        </li>
+                        <li class="item-181">
+                            <a href="https://www.mail-tester.com/manager/micro-payment.html">Micro-payment</a>
+                        </li>
+                        <li class="item-170">
+                            <a href="https://www.mail-tester.com/manager/terms-of-service.html">Terms of service</a>
+                        </li>
+                        <li class="item-151">
+                            <a
+                                href="http://www.mail-tester.com/contact"
+                                target="_blank"
+                                rel="noopener noreferrer">Contact us</a>
+                        </li>
+                    </ul>
 
-<div id="footer" class="py-3">
-    <nav class="navbar navbar-light navbar-expand-sm navbar-center">
-        <ul class="navbar-nav mx-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="https://www.mail-tester.com/faq" target="_blank">FAQ</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="https://www.mail-tester.com/contact" target="_blank">Give Feedback</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="https://www.mail-tester.com/spf/" target="_blank">SPF Guides</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="https://www.mail-tester.com/spf-dkim-check" target="_blank">SPF &amp; DKIM check</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="https://www.mail-tester.com/manager" target="_blank">API</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="https://www.mail-tester.com/manager" target="_blank">Log in</a>
-            </li>
-        </ul>
-    </nav>
+                </div>
+            </div>
+        </div>
+        <div id="header" class="mh-25">
 
-    <div>
-        <a href="https://www.mail-tester.com/" target="_blank">
-            <img src="./Spam Test Result_files/mail-tester_logo.svg" alt="mail-tester" class="logo">
-        </a>
-    </div>
-</div>
-<div style="margin-left:5px" class="dropdown" id="lang_select">
-                    <span id="lang_selected" class="flag flag-gb"></span>
-                        <ul id="dropdown_content_lang"><li><a href="https://www.mail-tester.com/test-2x9vpi14q&amp;lang=bg"><span class="flag flag-bg"></span>Bulgarian</a></li><li><a href="https://www.mail-tester.com/test-2x9vpi14q&amp;lang=zh"><span class="flag flag-cn"></span>Chinese</a></li><li><a href="https://www.mail-tester.com/test-2x9vpi14q&amp;lang=hr"><span class="flag flag-hr"></span>Croatian</a></li><li><a href="https://www.mail-tester.com/test-2x9vpi14q&amp;lang=cz"><span class="flag flag-cz"></span>Czech</a></li><li><a href="https://www.mail-tester.com/test-2x9vpi14q&amp;lang=nl"><span class="flag flag-nl"></span>Dutch</a></li><li><a href="https://www.mail-tester.com/test-2x9vpi14q&amp;lang=en"><span class="flag flag-gb"></span>English</a></li><li><a href="https://www.mail-tester.com/test-2x9vpi14q&amp;lang=et"><span class="flag flag-ee"></span>Estonian</a></li><li><a href="https://www.mail-tester.com/test-2x9vpi14q&amp;lang=fr"><span class="flag flag-fr"></span>French</a></li><li><a href="https://www.mail-tester.com/test-2x9vpi14q&amp;lang=de"><span class="flag flag-de"></span>German</a></li><li><a href="https://www.mail-tester.com/test-2x9vpi14q&amp;lang=el"><span class="flag flag-gr"></span>Greek</a></li><li><a href="https://www.mail-tester.com/test-2x9vpi14q&amp;lang=he"><span class="flag flag-il"></span>Hebrew</a></li><li><a href="https://www.mail-tester.com/test-2x9vpi14q&amp;lang=hu"><span class="flag flag-hu"></span>Hungarian</a></li><li><a href="https://www.mail-tester.com/test-2x9vpi14q&amp;lang=it"><span class="flag flag-it"></span>Italian</a></li><li><a href="https://www.mail-tester.com/test-2x9vpi14q&amp;lang=nb"><span class="flag flag-no"></span>Norwegian</a></li><li><a href="https://www.mail-tester.com/test-2x9vpi14q&amp;lang=pl"><span class="flag flag-pl"></span>Polish</a></li><li><a href="https://www.mail-tester.com/test-2x9vpi14q&amp;lang=pt"><span class="flag flag-pt"></span>Portuguese</a></li><li><a href="https://www.mail-tester.com/test-2x9vpi14q&amp;lang=ro"><span class="flag flag-ro"></span>Romanian</a></li><li><a href="https://www.mail-tester.com/test-2x9vpi14q&amp;lang=ru"><span class="flag flag-ru"></span>Russian</a></li><li><a href="https://www.mail-tester.com/test-2x9vpi14q&amp;lang=es"><span class="flag flag-es"></span>Spanish</a></li><li><a href="https://www.mail-tester.com/test-2x9vpi14q&amp;lang=se"><span class="flag flag-se"></span>Swedish</a></li><li><a href="https://www.mail-tester.com/test-2x9vpi14q&amp;lang=tr"><span class="flag flag-tr"></span>Turkish</a></li></ul></div>		
+            <h1 class="title py-5 m-0 text-primary">Checking out the inbox of</h1>
+            <div class="text-center">
+                <span class="mailbox">test-2x9vpi14q@srv1.mail-tester.com</span></div>
 
+            <div class="container py-5">
+                <div class="subtitle text-center countdown my-3">0</div>
+                <div class="progress">
+                    <div
+                        class="progress-bar"
+                        role="progressbar"
+                        aria-valuenow="0"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                        style="width: 100%;">
+                        <div class="separator-inner" id="animatedboat"></div>
+                    </div>
+                </div>
+            </div>
 
-</body></html>
+        </div>
+
+        <div
+            id="footer"
+            class="py-3">
+
+            <div>
+                <a href="/" target="_blank">
+                    <img src="/uploads/logo.png" alt="mail-tester" class="logo">
+                </a>
+            </div>
+
+            <nav class="navbar navbar-light navbar-expand-sm navbar-center">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://www.mail-tester.com/faq" target="_blank">FAQ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://www.mail-tester.com/contact" target="_blank">Give Feedback</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://www.mail-tester.com/spf/" target="_blank">SPF Guides</a>
+                    </li>
+                    <li class="nav-item">
+                        <a
+                            class="nav-link"
+                            href="https://www.mail-tester.com/spf-dkim-check"
+                            target="_blank">SPF &amp; DKIM check</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://www.mail-tester.com/manager" target="_blank">API</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://www.mail-tester.com/manager" target="_blank">Log in</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        <!-- The end of footer -->
+
+        <!-- jquery js -->
+        <script src="{{ asset('assets/js/vendor/jquery.min.js') }}"></script>
+        <!-- popper js -->
+        <script src="{{ asset('assets/js/vendor/popper.min.js') }}"></script>
+        <!-- bootstrap js -->
+        <script src="{{ asset('assets/js/vendor/bootstrap.min.js') }}"></script>
+        <!-- OWl Carousel -->
+        <script src="{{ asset('assets/js/vendor/owl.carousel.min.js') }}"></script>
+        <!-- Clipboard -->
+        <script src="{{ asset('assets/js/vendor/clipboard.min.js') }}"></script>
+        <!-- Progress Bar -->
+        <script src="{{ asset('assets/js/vendor/progress.js') }}"></script>
+
+        <script src="{{ asset('assets/js/vendor/jquery.nicescroll.min.js') }}"></script>
+
+        <!--SET DYNAMIC VARIABLE IN SCRIPT-->
+        <script>
+            "use strict";
+            var fetch_time = "{{$setdata['fetch_time']}}",
+                url = "{{route('messages')}}",
+                color = "{{$setdata['secondary_color']}}",
+                click_to_copy = "{{translate('Click To Copy!')}}",
+                copied = "{{translate('Copied!')}}";
+        </script>
+        <!-- main js -->
+        <script src="{{ asset('assets/js/main.js') }}"></script>
+
+        <script type="text/javascript" src="/assets/js/mailstester.js"></script>
+
+    </body>
+</html>

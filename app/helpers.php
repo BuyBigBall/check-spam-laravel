@@ -8,6 +8,10 @@ use File as fle;
 
 
 
+//for extension as parameters
+function as_it_is($key, $coll = 'general' ,  $lang = null){
+    return $key;
+}
 
 
 //We use this to convert date to new format

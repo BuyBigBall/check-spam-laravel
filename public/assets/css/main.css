@@ -738,7 +738,13 @@ Blog
     z-index: 1;
     overflow-x: hidden;
 }
-
+h1.main-title {
+    font-size: 48px;
+    font-weight: 600;
+    color: #fff;
+    margin: 0 0 20px;
+    text-align: center;
+}
 .blog-text h1 {
     font-size: 30px;
     font-weight: 400;

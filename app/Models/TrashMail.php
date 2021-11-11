@@ -26,33 +26,49 @@ class TrashMail extends Model
 
     public static function connection()
     {
+        
         $flag = '/imap/' . Settings::selectSettings('imap_encryption') ;
-
         if(Settings::selectSettings('imap_certificate') == 0){
             $flag .= '/novalidate-cert';
         }else{
             $flag .= '/validate-cert';
         }
 
-        $server = new Server(Settings::selectSettings('imap_host'),Settings::selectSettings('imap_port'),$flag);
-        $connection = $server->authenticate(Settings::selectSettings('imap_user'), Settings::selectSettings('imap_pass'));
+        try
+        {
+            $server = new Server(Settings::selectSettings('imap_host'),Settings::selectSettings('imap_port'),$flag);
+            $connection = $server->authenticate(Settings::selectSettings('imap_user'), Settings::selectSettings('imap_pass'));
+        }
+        catch (Exception $e)
+        {
+            return null;
+        }
         return $connection;
     }
 
 
     public static function allMessages($email)
     {
+        $response = [
+            'mailbox' => $email,
+            'messages' => []
+        ];
+        
         try {
             $connection = TrashMail::connection();
+            if($connection==null)
+            {
+                $response['messages'][] = ['error'=>'Server settings Exception'];
+                return $response;
+            }
+            
             $mailbox = $connection->getMailbox('INBOX');
+            
             $search = new SearchExpression();
             $search->addCondition(new To($email));
             $messages = $mailbox->getMessages($search, \SORTDATE, true);
-
-            $response = [
-                'mailbox' => $email,
-                'messages' => []
-            ];
+            
+            
             foreach ($messages as $message) {
 
                 $id = Hashids::encode($message->getNumber());

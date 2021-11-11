@@ -8,6 +8,7 @@
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-md-7">
+        <h1 class='main-title'>{{as_it_is('Test the Spammyness of your Emails')}}</h1>
         <div class="home-text">
           <h1>{{translate('Mailbox Small Title')}}</h1>
           <div class="custom-email">

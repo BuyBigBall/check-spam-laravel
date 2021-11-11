@@ -76,10 +76,10 @@ class TrashMailController extends Controller
     // get all messages from 
     public function messages()
     {
+        
         if (Cookie::has('email')) {
             $email =  Cookie::get('email');
         } else {
-
             $date = Carbon::now();
             if(Settings::selectSettings("email_lifetime_type") == 1){
                 $newDateTime = Carbon::now()->addMinutes(Settings::selectSettings("email_lifetime"));
@@ -102,9 +102,9 @@ class TrashMailController extends Controller
             $trashmail->delete_in = $newDateTime;
             $trashmail->save();
         }
-
+        
         $response  = TrashMail::allMessages($email);
-
+        
         return $response;
     }
 

@@ -540,7 +540,19 @@ Home Section
     font-weight: 400;
 }
 
-.home .counter .mail_check_button {
+.hidden
+{
+    display: none;
+}
+.unvisible
+{
+    visibility: hidden;
+}
+.unvisible center img
+{
+    visibility: hidden !important;
+}
+/* .home .counter .mail_check_button {
     background: var(--color1);
     height: 60px;
     display: inline-block;
@@ -550,7 +562,7 @@ Home Section
     line-height: 34px;
     font-size: 25px;
     border-radius: 10px;
-    /* margin-bottom: 10px; */
+    margin-top: 10px;
     padding-top: 8px;
 }
 .home .counter .mail_check_button b {
@@ -559,6 +571,21 @@ Home Section
     line-height: 48px;
     font-size: 24px;
     font-weight: 500;
+} */
+.home .counter .btn-2 {
+    background-color: var(--color1);;
+    padding: 12px 100px;
+    border-radius: 30px;
+    border: none;
+    color: #fff;
+    text-transform: capitalize;
+    transition: all 0.5s ease;
+    box-shadow: var(--shadow-black-100);
+    font-weight: 500;
+}
+.home .counter .btn-2:hover {
+    background-color: var(--color2);
+    color: #fff;
 }
 
 /*------------------

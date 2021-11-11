@@ -8,9 +8,9 @@
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-md-7">
-        <h1 class='main-title'>{{as_it_is('Test the Spammyness of your Emails')}}</h1>
+        <h1 class='main-title'>{{translate('Mailbox Small Title')}}</h1>
         <div class="home-text">
-          <h1>{{translate('Mailbox Small Title')}}</h1>
+          <h1>{{as_it_is('First, send your email to:')}}</h1>
           <div class="custom-email">
             <input type="text" class="custom-email-input" id="trsh_mail" readonly>
             <button type="button" data-toggle="tooltip" data-placement="bottom" title="{{translate('Click To Copy!')}}"
@@ -33,9 +33,10 @@
           </div>
           
           <div class="counter">
-            <span class=" mail_check_button">
+            <button type="submit" class="btn btn-2"><b>{{as_it_is('Then check your score')}}</b></button>
+            <!-- <span class=" mail_check_button">
               <b>{{as_it_is('Then check your score')}}</b>
-            </span>
+            </span> -->
             <!-- 
             <span class=" count_ mail_count">
               <b>{{translate('Emails Created')}}</b>

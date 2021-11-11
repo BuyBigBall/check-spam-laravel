@@ -7,7 +7,7 @@
 <section class="view section-padding view_rtl">
   <div class="container">
     <div class="row">
-      <div class="col-md-2 col-sm-12">
+      <div class="col-md-2 col-sm-12 unvisible">
         {!!$setdata['left_ad']!!}
       </div>
       <div class="col-md-8 col-sm-12 mb-3">
@@ -60,9 +60,11 @@
             </div>
           </div>
         </div>
+        <span class="hidden">
         {!!$setdata['bottom_ad']!!}
+        </span>
       </div>
-      <div class="col-md-2  col-sm-12">
+      <div class="col-md-2  col-sm-12 unvisible">
         {!!$setdata['right_ad']!!}
       </div>
     </div>

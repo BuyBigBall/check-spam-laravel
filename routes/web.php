@@ -132,7 +132,13 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
 
     Route::get('/contact', 'ContactController@index')->name('contact');
 
-    Route::post('/spamtest', 'Mailstester\SpamTestController@index')->name("spamtest");
 
+
+    Route::post('/spamtest', 'Mailstester\SpamTestController@index')->name("spamtest");
+    Route::get('/login', 'Mailstester\LoginController@index')->name("login");
+    Route::post('/login', 'Mailstester\LoginController@loginchk')->name("loginchk");
+    Route::post('/profile', 'Mailstester\LoginController@profile_view')->name("profile_view");
+    Route::post('/profile-save', 'Mailstester\LoginController@profile_save')->name("profile_save");
+    
 });
 }

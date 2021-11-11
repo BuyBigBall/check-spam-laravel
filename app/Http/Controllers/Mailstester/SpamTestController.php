@@ -44,6 +44,6 @@ class SpamTestController extends Controller
         $links = Menu::all();
         $locale = LaravelLocalization::getCurrentLocale();
         $lang_name = Language::where('code', $locale)->first()->name;
-        return view('mailstester.index')->with('lang_locale', $locale)->with('lang_name', $lang_name);
+        return view('mailstester.spamtest')->with('lang_locale', $locale)->with('lang_name', $lang_name);
     }
 }

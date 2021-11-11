@@ -60,7 +60,9 @@
             ga('send', 'pageview');
         </script>
         <!-- End Google Analytics -->
-        @endif @if (!empty($setdata['google_tag_manager']))
+        @endif 
+        
+        @if (!empty($setdata['google_tag_manager']))
         <!-- Google Tag Manager -->
         <script>
             (function (w, d, s, l, i) {
@@ -100,7 +102,7 @@
 
         <link href="/assets/css/frontend_default.css" rel="stylesheet" type="text/css">
         <link href="/assets/css/template.css" rel="stylesheet" type="text/css">
-        <link href="/assets/css/spamtest.css" rel="stylesheet" type="text/css" >
+        <link href="/assets/css/spamtest.css" rel="stylesheet" type="text/css">
 
     </head>
 
@@ -144,22 +146,108 @@
                     </div>
                     <div class="span5">
                         <div class="header_login">
-                            <form
-                                action="/"
-                                method="get"
-                                id="login-form"
-                                class="form-vertical">
+
+                            @if (!empty($setdata['user_login']))
+                            <form action="/" method="get" id="login-form" class="form-vertical">
+                                @csrf
                                 <div class="login-greeting">
                                     Hi Samir Chakouri,
                                 </div>
                                 <div class="logout-button">
                                     <input type="submit" class="btn btn-primary" value="Log out">
-                                    <!-- <input type="hidden" name="option" value="com_users">
-                                    <input type="hidden" name="task" value="user.logout">
-                                    <input type="hidden" name="return" value="aW5kZXgucGhwP0l0ZW1pZD0xNjk=">
-                                    <input type="hidden" name="45adedc08584ba24ea6f3e97d550bc4a" value="1"> -->
+                                    <!-- <input type="hidden" name="option" value="com_users"> <input type="hidden"
+                                    name="task" value="user.logout"> <input type="hidden" name="return"
+                                    value="aW5kZXgucGhwP0l0ZW1pZD0xNjk="> <input type="hidden"
+                                    name="45adedc08584ba24ea6f3e97d550bc4a" value="1"> -->
                                 </div>
                             </form>
+                            @endif
+
+                            @if (empty($setdata['user_login']))
+                            <form
+                                action="login"
+                                method="post"
+                                id="login-form"
+                                class="form-inline">
+                                @csrf
+                                <div class="userdata">
+                                    <div id="form-login-username" class="control-group">
+                                        <div class="controls">
+                                            <div class="input-prepend">
+                                                <span class="add-on">
+                                                    <span class="icon-user hasTooltip" title="" data-original-title="Username"></span>
+                                                    <label for="modlgn-username" class="element-invisible">Username</label>
+                                                </span>
+                                                <input
+                                                    id="modlgn-username"
+                                                    type="text"
+                                                    name="username"
+                                                    class="input-small login-text"
+                                                    tabindex="0"
+                                                    size="18"
+                                                    placeholder="Username">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="form-login-password" class="control-group">
+                                        <div class="controls">
+                                            <div class="input-prepend">
+                                                <span class="add-on">
+                                                    <span class="icon-lock hasTooltip" title="" data-original-title="Password"></span>
+                                                    <label for="modlgn-passwd" class="element-invisible">Password
+                                                    </label>
+                                                </span>
+                                                <input
+                                                    id="modlgn-passwd"
+                                                    type="password"
+                                                    name="password"
+                                                    class="input-small login-text"
+                                                    tabindex="0"
+                                                    size="18"
+                                                    placeholder="Password">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div id="form-login-remember" class="control-group checkbox">
+                                        <label for="modlgn-remember" class="control-label">Remember Me</label>
+                                        <input
+                                            id="modlgn-remember"
+                                            type="checkbox"
+                                            name="remember"
+                                            class="inputbox"
+                                            value="yes">
+                                    </div>
+                                    <div id="form-login-submit" class="control-group">
+                                        <div class="controls">
+                                            <button
+                                                type="submit"
+                                                tabindex="0"
+                                                name="Submit"
+                                                class="btn btn-primary login-button">Log in</button>
+                                        </div>
+                                    </div>
+                                    <ul class="unstyled">
+                                        <li>
+                                            <a href="https://www.mail-tester.com/manager/login.html?view=registration">
+                                                Create an account
+                                                <span class="icon-arrow-right"></span></a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mail-tester.com/manager/login.html?view=remind">
+                                                Forgot your username?</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://www.mail-tester.com/manager/login.html?view=reset">
+                                                Forgot your password?</a>
+                                        </li>
+                                    </ul>
+                                    <input type="hidden" name="option" value="com_users">
+                                    <input type="hidden" name="task" value="user.login">
+                                    <input type="hidden" name="return" value="aW5kZXgucGhwP0l0ZW1pZD0xMTE=">
+                                    <input type="hidden" name="2387cd0cd1462cbda6de0436ed1ff1c1" value="1">
+                                </div>
+                            </form>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -212,32 +300,13 @@
                 </div>
             </div>
         </div>
-        <div id="header" class="mh-25">
+        
+        
+        @yield('content')
 
-            <h1 class="title py-5 m-0 text-primary">Checking out the inbox of</h1>
-            <div class="text-center">
-                <span class="mailbox">test-2x9vpi14q@srv1.mail-tester.com</span></div>
 
-            <div class="container py-5">
-                <div class="subtitle text-center countdown my-3">0</div>
-                <div class="progress">
-                    <div
-                        class="progress-bar"
-                        role="progressbar"
-                        aria-valuenow="0"
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                        style="width: 100%;">
-                        <div class="separator-inner" id="animatedboat"></div>
-                    </div>
-                </div>
-            </div>
 
-        </div>
-
-        <div
-            id="footer"
-            class="py-3">
+        <div id="footer" class="py-3">
 
             <div>
                 <a href="/" target="_blank">

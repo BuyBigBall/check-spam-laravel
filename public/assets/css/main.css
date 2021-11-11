@@ -435,7 +435,7 @@ Home Section
 -------------------*/
 .home {
     min-height: 50vh;
-    padding: 70px 0;
+    padding: 30px 0;    /*  70px 0 */
     background-color: var(--main-color);
     border-radius: 0 0 200px 0;
     position: relative;
@@ -538,6 +538,27 @@ Home Section
     line-height: 25px;
     font-size: 16px;
     font-weight: 400;
+}
+
+.home .counter .mail_check_button {
+    background: var(--color1);
+    height: 60px;
+    display: inline-block;
+    width: 89.5%;
+    margin: auto;
+    text-align: center;
+    line-height: 34px;
+    font-size: 25px;
+    border-radius: 10px;
+    /* margin-bottom: 10px; */
+    padding-top: 8px;
+}
+.home .counter .mail_check_button b {
+    display: block;
+    color: #fff;
+    line-height: 48px;
+    font-size: 24px;
+    font-weight: 500;
 }
 
 /*------------------

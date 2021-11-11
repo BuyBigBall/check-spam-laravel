@@ -5,3 +5,4 @@
     // UPDATE `settings` SET `value` = 'root' WHERE `id` = '6';      # imap_user
     // UPDATE `settings` SET `value` = 'password' WHERE `id` = '7';  # imap_pass
     
+    // UPDATE `menus` SET `title` = 'Login' , `url` = '/Login' WHERE `id` = '1';    #

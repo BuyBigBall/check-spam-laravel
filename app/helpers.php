@@ -8,11 +8,6 @@ use File as fle;
 
 
 
-//for extension as parameters
-function as_it_is($key, $coll = 'general' ,  $lang = null){
-    return $key;
-}
-
 
 //We use this to convert date to new format
 
@@ -20,6 +15,12 @@ function ToDate($date)
 {
     return $date->format('Y-m-d');
 };
+
+
+//for scalability as parameters is same to translate
+function as_it_is($key, $coll = 'general' ,  $lang = null){
+    return $key;
+}
 
 
 //We use this to translate text 

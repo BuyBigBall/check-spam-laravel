@@ -31,16 +31,23 @@
                 class="btn btn-1" ><i class="far fa-trash-alt"></i> {{translate('Delete')}}</a></div>
             </div>
           </div>
-        </div>
-        <div class="counter">
-          <span class=" count_ mail_count">
-            <b>{{translate('Emails Created')}}</b>
-            <em class="css_spirite">{{$setdata['emails_created'] + $setdata['total_emails_created']}}</em>
-          </span>
-          <span class=" count_ mail_count">
-            <b>{{translate('Messages Received')}}</b>
-            <em class="css_spirite">{{$setdata['messages_received'] + $setdata['total_messages_received']}}</em>
-          </span>
+          
+          <div class="counter">
+            <span class=" mail_check_button">
+              <b>{{as_it_is('Then check your score')}}</b>
+            </span>
+            <!-- 
+            <span class=" count_ mail_count">
+              <b>{{translate('Emails Created')}}</b>
+              <em class="css_spirite">{{$setdata['emails_created'] + $setdata['total_emails_created']}}</em>
+            </span>
+            <span class=" count_ mail_count">
+              <b>{{translate('Messages Received')}}</b>
+              <em class="css_spirite">{{$setdata['messages_received'] + $setdata['total_messages_received']}}</em>
+            </span>
+            -->
+          </div>
+
         </div>
         <p>
           {{translate('Mailbox Description')}}

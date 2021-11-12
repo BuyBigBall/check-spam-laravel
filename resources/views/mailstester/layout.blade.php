@@ -134,7 +134,7 @@
                         <div class="custom">
                             <div class="row-fluid">
                                 <div class="span12">
-                                    <a href="https://www.mail-tester.com/manager/"><img
+                                    <a href="/"><img
                                         style="float: left; max-width: 300px;"
                                         src="/uploads/logo.png"
                                         alt="mailtester"></a><br>
@@ -228,16 +228,16 @@
                                     </div>
                                     <ul class="unstyled">
                                         <li>
-                                            <a href="https://www.mail-tester.com/manager/login.html?view=registration">
+                                            <a href="/register">
                                                 Create an account
                                                 <span class="icon-arrow-right"></span></a>
                                         </li>
                                         <li>
-                                            <a href="https://www.mail-tester.com/manager/login.html?view=remind">
+                                            <a href="/forget/name">
                                                 Forgot your username?</a>
                                         </li>
                                         <li>
-                                            <a href="https://www.mail-tester.com/manager/login.html?view=reset">
+                                            <a href="/forget/pwd">
                                                 Forgot your password?</a>
                                         </li>
                                     </ul>
@@ -298,9 +298,11 @@
             </div>
         </div>
         
-        
-        @yield('content')
-
+        <section>
+            <div class='container'>
+                @yield('content')
+            </div>
+        </section>
 
 
         <div id="footer" class="py-3">

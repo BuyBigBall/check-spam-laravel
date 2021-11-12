@@ -1292,6 +1292,20 @@ Responsive
 
 @media (max-width: 991px) {
 
+    .hidden
+    {
+        display: none;
+    }
+    .unvisible
+    {
+        visibility: hidden;
+    }
+    .unvisible center img
+    {
+        visibility: hidden !important;
+    }
+
+
     .navbar-toggler {
         background-color: var(--color1);
         box-shadow: var(--shadow-black-300);
@@ -1347,6 +1361,23 @@ Responsive
 }
 
 @media (max-width: 767px) {
+
+    .hidden
+    {
+        display: none;
+    }
+    .unvisible
+    {
+        /* visibility: hidden; */
+        display: none;
+    }
+    .unvisible center img
+    {
+        /* visibility: hidden !important; */
+        display: none;
+    }
+    
+    
     .home-text {
         margin-bottom: 80px;
     }
@@ -1384,6 +1415,23 @@ Responsive
 }
 
 @media (max-width: 575px) {
+
+    .hidden
+    {
+        display: none;
+    }
+    .unvisible
+    {
+        /* visibility: hidden; */
+        display: none;
+    }
+    .unvisible center img
+    {
+        /* visibility: hidden !important; */
+        display: none;
+    }
+    
+    
     .home-text h1 {
         font-size: 30px;
     }
@@ -1403,6 +1451,23 @@ Responsive
 
 
 @media (max-width: 460px) {
+
+    .hidden
+    {
+        display: none;
+    }
+    .unvisible
+    {
+        /* visibility: hidden; */
+        display: none;
+    }
+    .unvisible center img
+    {
+        /* visibility: hidden !important; */
+        display: none;
+    }
+    
+    
     .home .counter .mail_count {
         width: 100%;
     }

@@ -8,7 +8,7 @@
  * Copyright 2011-2019 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
-:root {
+/* :root {
   --blue: #235480;
   --indigo: #6610f2;
   --purple: #6f42c1;
@@ -54,9 +54,9 @@ html {
 
 article, aside, figcaption, figure, footer, header, hgroup, main, nav, section {
   display: block;
-}
+} */
 
-body {
+/* body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-size: 1rem;
@@ -85,7 +85,7 @@ h1, h2, h3, h4, h5, h6 {
 p {
   margin-top: 0;
   margin-bottom: 1rem;
-}
+} */
 
 abbr[title],
 abbr[data-original-title] {
@@ -3958,7 +3958,6 @@ input[type=button].btn-block {
 .navbar-brand:hover, .navbar-brand:focus {
   text-decoration: none;
 }
-
 .navbar-nav {
   display: flex;
   flex-direction: column;
@@ -3966,6 +3965,11 @@ input[type=button].btn-block {
   margin-bottom: 0;
   list-style: none;
 }
+.navbar-nav.mx-auto
+{
+  flex-direction: row;
+}
+
 .navbar-nav .nav-link {
   padding-right: 0;
   padding-left: 0;
@@ -7674,6 +7678,26 @@ button.bg-dark:focus {
   padding-left: 3rem !important;
 }
 
+.pt-6,
+.py-6 {
+  padding-top: 5rem !important;
+}
+
+.pr-6,
+.px-6 {
+  padding-right: 5rem !important;
+}
+
+.pb-6,
+.py-6 {
+  padding-bottom: 5rem !important;
+}
+
+.pl-6,
+.px-6 {
+  padding-left: 5rem !important;
+}
+
 .m-n1 {
   margin: -0.25rem !important;
 }
@@ -11124,7 +11148,6 @@ h1.text-white, h2.text-white, h3.text-white {
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
-  min-height:64vh;
   /*background-image: url("/uploads/loading.svg");*/
 }
 #header.mh-33 {
@@ -11132,6 +11155,12 @@ h1.text-white, h2.text-white, h3.text-white {
 }
 #header.mh-25 {
   min-height: 25vw;
+}
+#header.mh-50 {
+  min-height: 50vw;
+}
+#header.mh-100 {
+  min-height: 100vw;
 }
 #header h1 {
   text-align: center;
@@ -11229,10 +11258,10 @@ iframe {
   background-position: right;
   height: 50px;
   width: 90px;
-  right: -30px;
+  right: -80px;
   overflow: visible !important;
   position: absolute;
-  top: -10px;
+  top: -30px;
 }
 
 /*********************************************************

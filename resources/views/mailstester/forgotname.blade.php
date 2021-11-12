@@ -3,15 +3,13 @@
 @section('content')
 <div id="content_container" style="width:100%">
     <div class="row-fluid contentsize">
-
         <div id="system-message-container"></div>
-
-        <div class="remind">
+        <div class="remind py-6">
             <form
                 id="user-registration"
                 action="https://www.mail-tester.com/manager/login.html?task=remind.remind"
                 method="post"
-                class="form-validate form-horizontal well">
+                class="form-validate form-horizontal well" >
                 <fieldset>
                     <p>Please enter the email address associated with your User account. Your
                         username will be emailed to the email address on file.</p>

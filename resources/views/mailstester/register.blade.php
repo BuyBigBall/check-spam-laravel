@@ -1081,7 +1081,7 @@ function backend_API_challenge() {
                             <div class="controls">
                                 <input
                                     type="submit"
-                                    class="btn button hikashop_cart_input_button btn btn-primary"
+                                    class="btn button hikashop_cart_input_button btn btn-primary p-3"
                                     name="register"
                                     value="Register"
                                     onclick="var field=document.getElementById('hikashop_product_quantity_field_1'); hikashopSubmitForm('hikashop_registration_form', 'register'); return false;"

@@ -186,7 +186,7 @@ textarea {
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
-body {
+/* body {
 	margin: 0;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 13px;
@@ -204,7 +204,7 @@ a:hover,
 a:focus {
 	color: #21b6fe;
 	text-decoration: underline;
-}
+} */
 .img-rounded {
 	-webkit-border-radius: 6px;
 	-moz-border-radius: 6px;
@@ -7703,9 +7703,9 @@ body#com_mtmanager_checkout_listing, body#com_mtmanager_checkout_address, body#c
 }
 .login input, .hikashop_user_registration_page input
 {
-	padding:12px 6px !important;
+	padding:14px 6px !important;
 }
 .hikashop_user_registration_page input.btn.button
 {
-	padding:0px 10px !important;
+	padding:6px 16px !important;
 }

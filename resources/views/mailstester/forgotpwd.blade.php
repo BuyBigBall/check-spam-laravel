@@ -3,10 +3,8 @@
 @section('content')
 <div id="content_container" style="width:100%">
     <div class="row-fluid contentsize">
-
         <div id="system-message-container"></div>
-
-        <div class="reset">
+        <div class="reset py-6">
             <form
                 id="user-registration"
                 action="https://www.mail-tester.com/manager/login.html?task=reset.request"

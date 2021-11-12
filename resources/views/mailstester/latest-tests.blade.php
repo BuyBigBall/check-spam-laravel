@@ -6,7 +6,7 @@
 
         <div id="system-message-container"></div>
 
-        <div>
+        <div class='latest-tests'>
             <h1>Perform a new test</h1>
             <form
                 method="get"
@@ -17,7 +17,7 @@
                     placeholder="chakouri-whateveryouwant@srv1.mail-tester.com"
                     type="text"
                     name="id"
-                    value="chakouri-YMYJ@srv1.mail-tester.com" />
+                    value="{{ $email }}" />
                 <button class="btn" style="margin-bottom:10px;" type="submit">Then access your result</button>
             </form>
         </div>

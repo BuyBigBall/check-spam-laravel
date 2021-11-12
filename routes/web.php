@@ -133,25 +133,28 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
     Route::get('/contact', 'ContactController@index')->name('contact');
     Route::get('/faq', 'Mailstester\SiteController@faq')->name("faq");
     Route::get('/spf', 'Mailstester\SiteController@spf')->name("spf");
-    Route::get('/spf/{type}', 'Mailstester\SiteController@spf')->name("spf");
-    Route::get('/spf-dkim-check', 'Mailstester\SiteController@dkim_check')->name("dkim_check");
+    Route::get('/spf-detail/{type}', 'Mailstester\SiteController@spf')->name("spf-detail");
+    Route::get('/spf-dkim-check', 'Mailstester\SiteController@dkim_check')->name("spf-dkim-check");
 
     Route::post('/spamtest', 'Mailstester\SpamTestController@index')->name("spamtest");
-    Route::get('/login', 'Mailstester\LoginController@index')->name("login");
-    Route::post('/login', 'Mailstester\LoginController@loginchk')->name("loginchk");
     Route::post('/profile', 'Mailstester\LoginController@profile_view')->name("profile_view");
     Route::post('/profile-save', 'Mailstester\LoginController@profile_save')->name("profile_save");
     Route::get('/register', 'Mailstester\LoginController@register')->name("register");
     Route::get('/forgot/{type}', 'Mailstester\LoginController@forgot')->name("forgot");
     Route::get('/prices', 'Mailstester\SiteController@index')->name("prices");
-    Route::get('/json-api', 'Mailstester\SiteController@json_api')->name("json_api");
-    Route::get('/get-started', 'Mailstester\SiteController@started')->name("started");
+    Route::get('/json-api', 'Mailstester\SiteController@json_api')->name("json-api");
+    Route::get('/get-started', 'Mailstester\SiteController@started')->name("get-started");
 
     Route::get('/account', 'Mailstester\SiteController@account')->name("account");
-    Route::get('/latest-tests', 'Mailstester\SiteController@latest_tests')->name("latest_tests");
+    Route::get('/latest-tests', 'Mailstester\SiteController@latest_tests')->name("latest-tests");
     Route::get('/design', 'Mailstester\SiteController@design')->name("design");
-    Route::get('/micro-payment', 'Mailstester\SiteController@micro_payment')->name("micro_payment");
-    Route::get('/terms-of-service', 'Mailstester\SiteController@terms_of_service')->name("terms_of_service");
+    Route::get('/micro-payment', 'Mailstester\SiteController@micro_payment')->name("micro-payment");
+    Route::get('/terms-of-service', 'Mailstester\SiteController@terms_of_service')->name("terms-of-service");
+
+    # --> never necessory call these, but for test using
+    // Route::get('/login', 'Mailstester\LoginController@index')->name("login");
+    // Route::post('/login', 'Mailstester\LoginController@loginchk')->name("loginchk");
+    # <------------------
 
 });
 }

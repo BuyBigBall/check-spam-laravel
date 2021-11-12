@@ -13,7 +13,7 @@ use App\Models\Menu;
 use Illuminate\Support\Facades\Cookie;
 use Config;
 use \Mcamara\LaravelLocalization\Facades\LaravelLocalization;
-
+use Illuminate\Support\Facades\Auth;
 
 
 use Illuminate\Support\ServiceProvider;
@@ -67,13 +67,50 @@ class AppServiceProvider extends ServiceProvider
                 });
 
                 view()->composer('layouts.user', function ($view) {
-                
+                    $guard = null;
+                    $userdata = [];
+                    if (Auth::guard($guard)->check()) {
+                        $role = Auth::user()->role; 
+                        $userdata['user_login'] = Auth::user();
+                    }
+
+
                     $links = Menu::all();
                     $locale = LaravelLocalization::getCurrentLocale();
                     $lang_name = Language::where('code', $locale)->first()->name;
                     $pages = Page::where("status", "=", 1)->get();
-                    $view->with('pages', $pages)->with('lang_locale', $locale)->with('lang_name', $lang_name)
-                    ->with('links', $links);
+                    $view->with('pages', $pages)
+                        ->with('lang_locale', $locale)
+                        ->with('lang_name', $lang_name)
+                        ->with('links', $links)
+                        ->with('userdata', $userdata);
+
+                });
+
+                view()->composer('mailstester.layout', function ($view) {
+                    
+                    $guard = null;
+                    $userdata = [];
+
+                    $uri = $this->app['request']->path();
+                    $curpage = explode('/', $uri);
+                    $curpage = $curpage[count($curpage)-1];
+                    $userdata['uri'] = $curpage;
+                    
+                    if (Auth::guard($guard)->check()) {
+                        $role = Auth::user()->role; 
+                        $userdata['user_login'] = Auth::user();
+                    }
+                    $links = Menu::all();
+                    $locale = LaravelLocalization::getCurrentLocale();
+                    $lang_name = Language::where('code', $locale)->first()->name;
+                    $pages = Page::where("status", "=", 1)->get();
+
+                    $view->with('pages', $pages)
+                        ->with('lang_locale', $locale)
+                        ->with('lang_name', $lang_name)
+                        ->with('links', $links)
+                        ->with('userdata', $userdata);
 
                 });
 
@@ -91,6 +128,29 @@ class AppServiceProvider extends ServiceProvider
                     $categories = Category::all();
                     $view->with('popular_posts', $posts)->with("categories", $categories);
                 });
+
+
+                {
+                    // $title = translate('Home Page Title', 'seo');
+                    // $description = translate('Home Page Description', 'seo');
+                    // $keyword = translate('Home Page keywords', 'seo');
+                    // $canonical = url()->current();
+                    // SEOMeta::setTitle($title);
+                    // SEOMeta::setDescription($description);
+                    // SEOMeta::setKeywords($keyword);
+                    // SEOMeta::setCanonical($canonical);
+                    // OpenGraph::setTitle($title);
+                    // OpenGraph::setDescription($description);
+                    // OpenGraph::setSiteName(Settings::selectSettings('name'));
+                    // OpenGraph::addImage(asset(Settings::selectSettings('og_image')));
+                    // OpenGraph::setUrl($canonical);
+                    // OpenGraph::addProperty('type', 'article');
+            
+                    // $locale = LaravelLocalization::getCurrentLocale();
+                    // $lang_name = Language::where('code', $locale)->first()->name;
+                    //view('mailstester.login')->with('lang_locale', $locale)->with('lang_name', $lang_name);
+            
+                }
             }
         } catch (\Exception $e) {
             return [];

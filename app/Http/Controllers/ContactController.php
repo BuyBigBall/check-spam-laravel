@@ -14,21 +14,6 @@ class ContactController extends Controller
     // Create Contact Form
     public function index(Request $request)
     {
-            $title = translate('Contact Page Title', 'seo');
-            $description = translate('Contact Page Description', 'seo');
-            $keyword = translate('Contact Page keywords', 'seo');
-            $canonical = url()->current();
-            SEOMeta::setTitle($title);
-            SEOMeta::setDescription($description);
-            SEOMeta::setKeywords($keyword);
-            SEOMeta::setCanonical($canonical);
-            OpenGraph::setTitle($title);
-            OpenGraph::setDescription($description);
-            OpenGraph::setSiteName(Settings::selectSettings('name'));
-            OpenGraph::addImage(asset(Settings::selectSettings('og_image')));
-            OpenGraph::setUrl($canonical);
-            OpenGraph::addProperty('type', 'article');
-
         return view('frontend.contact');
     }
 

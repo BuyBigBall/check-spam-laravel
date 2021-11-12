@@ -1,79 +1,136 @@
-@extends('layouts.app')
-@section('title', 'Login - ' . $setdata['name'])
-
+@extends('mailstester.layout')
 
 @section('content')
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 col-lg-6 offset-lg-3 col-xl-4 offset-xl-4">
-            <div class="login-brand">
-                <a href="{{url('/')}}">{{$setdata['name']}}</a>
-            </div>
-            <div class="card card-primary">
-                <div class="card-header">
-                    <h4>Login</h4>
+<div id="content_container" style="width:100%">
+    <div class="row-fluid contentsize py-5">
+        <div id="system-message-container">
+            <div id="system-message">
+                <!-- 
+                <div class="alert alert-warning"> 
+                    <a class="close" data-dismiss="alert">×</a> 
+                    <h4 class="alert-heading">Warning</h4> 
+                    <div> 
+                        <div class="alert-message">
+                            Username and password do not match or you do not have an account yet.
+                        </div> 
+                    </div> 
+                </div> 
+                <div class="alert alert-warning">
+                    <a class="close" data-dismiss="alert">×</a>
+                    <h4 class="alert-heading">Warning</h4>
+                    <div>
+                        <div class="alert-message">
+                            Login denied! Your account has either been blocked or
+                            you have not activated it yet.
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <form method="POST" action="{{ route('login') }}">
-                        @csrf
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror"
-                                name="email" tabindex="1" value="{{ env('DEMO_MODE') ? "admin@lobage.com" : old('email') }}" required autofocus>
-                            @error('email')
-                            <div class="invalid-feedback">
-                                <strong>{{ $message }}</strong>
-                            </div>
-                            @enderror
+                <div class="alert alert-message">
+                    <a class="close" data-dismiss="alert">×</a>
+                    <h4 class="alert-heading">Message</h4>
+                    <div>
+                        <div class="alert-message">
+                            Please login first
                         </div>
-                        <div class="form-group">
-                            <div class="d-block">
-                                <label for="password" class="control-label">Password</label>
-                                @if (Route::has('password.request'))
-                                <div class="float-right">
-                                    <a class="btn btn-link" href="{{ route('password.request') }}" class="text-small">
-                                        {{ __('Forgot Your Password?') }}
-                                    </a>
-                                </div>
-                                @endif
-                            </div>
-                            <input id="password" type="password"
-                                class="form-control @error('email') is-invalid @enderror" name="password" tabindex="2"
-                                required autocomplete="current-password" value="{{ env('DEMO_MODE') ? "lobage123" : '' }}">
-                            @error('password')
-                            <div class="invalid-feedback">
-                                <strong>{{ $message }}</strong>
-                            </div>
-                            @enderror
-                        </div>
-                        <div class="form-group">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" tabindex="3" name="remember"
-                                    id="remember" {{ old('remember') ? 'checked' : '' }}>
-                                <label class="custom-control-label" for="remember">Remember Me</label>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            {!! NoCaptcha::renderJs() !!}
-                            {!! NoCaptcha::display() !!}
-                            @if ($errors->has('g-recaptcha-response'))
-                                <span class="help-block">
-                                    <strong>{{ $errors->first('g-recaptcha-response') }}</strong>
-                                </span>
-                            @endif
-                        </div>
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary btn-lg btn-block" tabindex="4">
-                                Login
-                            </button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
-            </div>
-            <div class="simple-footer">
-                Copyright &copy; {{$setdata['name']}} {{date("Y")}}
+                -->
+
             </div>
         </div>
+
+        <div class="login">
+            <form action="{{ route('login') }}" method="post" class="form-validate form-horizontal well">
+                @csrf
+                <fieldset>
+                    <div class="control-group ">
+                        <div class="control-label">
+                            <label id="username-lbl" for="username" class="required">
+                                <!-- invalid -->
+                                Username<span class="star">&nbsp;*</span>
+                            </label>
+                        </div>
+                        <div class="controls">
+                            <input
+                                type="text"
+                                name="email"
+                                id="username"
+                                value=""
+                                class="validate-username required "
+                                size="25"
+                                required="required"
+                                aria-required="true"
+                                autofocus=""
+                                aria-invalid="true"/>
+                            <!-- invalid -->
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">
+                            <label id="password-lbl" for="password" class="required">
+                                Password<span class="star">&nbsp;*</span>
+                            </label>
+                        </div>
+                        <div class="controls">
+                            <input
+                                type="password"
+                                name="password"
+                                id="password"
+                                value=""
+                                class="validate-password required"
+                                size="25"
+                                maxlength="99"
+                                required="required"
+                                aria-required="true"/>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="control-label">
+                            <label for="remember">
+                                Remember me
+                            </label>
+                        </div>
+                        <div class="controls">
+                            <input
+                                id="remember"
+                                type="checkbox"
+                                name="remember"
+                                class="inputbox"
+                                value="yes"/>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div class="controls">
+                            <button type="submit" class="btn btn-primary">
+                                Log in
+                            </button>
+                        </div>
+                    </div>
+                    <input type="hidden" name="return" value="aW5kZXgucGhwP0l0ZW1pZD0xMTE="/>
+                    <input type="hidden" name="2387cd0cd1462cbda6de0436ed1ff1c1" value="1"/>
+                </fieldset>
+            </form>
+        </div>
+        <div>
+            <ul class="nav nav-tabs nav-stacked">
+                <li>
+                    <a href="/forgot/pwd">
+                        Forgot your password?
+                    </a>
+                </li>
+                <li>
+                    <a href="/forgot/usr">
+                        Forgot your username?
+                    </a>
+                </li>
+                <li>
+                    <a href="/register">
+                        Don't have an account?
+                    </a>
+                </li>
+            </ul>
+        </div>
+
     </div>
 </div>
 @endsection

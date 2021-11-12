@@ -7424,8 +7424,14 @@ h2{padding: 30px 0 15px;}
 
 
 /***content***/
-#content_container{background-color:#f5f5f5; padding:20px 0px 20px 0px; font-family:'Ubuntu',sans-serif; color:#61523A; font-size: 14px;
-		line-height: 1.4;}
+#content_container{
+	background-color:#f5f5f5; 
+	padding:20px 0px 20px 0px; 
+	font-family:'Ubuntu',sans-serif; 
+	color:#61523A; font-size: 14px;
+	/* line-height: 1.4; */
+	min-height : 60vh;
+}
 
 #content_container .toc li{list-style-image:url("../images/list.png"); padding-left:5px}
 #content_container .toc li a{color:#235480; font-weight:normal;}
@@ -7701,9 +7707,9 @@ body#com_mtmanager_checkout_listing, body#com_mtmanager_checkout_address, body#c
 {
 	padding:18px 6px !important;
 }
-.login input, .hikashop_user_registration_page input
+.login input, .latest-tests input[type=text], .hikashop_user_registration_page input[type=text]
 {
-	padding:14px 6px !important;
+	padding:16px 6px !important;
 }
 .hikashop_user_registration_page input.btn.button
 {

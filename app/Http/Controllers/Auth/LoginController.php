@@ -30,16 +30,18 @@ class LoginController extends Controller
      */
 
     public function redirectTo() {
+        //after logincheck will be redirected.
         $role = Auth::user()->role; 
         switch ($role) {
         case 'admin':
             return '/admin/dashboard';
             break;
         case 'user':
-            return '/';
+            return '/get-started';
             break; 
     
         default:
+            
             return '/'; 
         break;
         }

@@ -207,6 +207,16 @@ class TrashMail extends Model
             $id_hash = Hashids::decode($id);
 
             $connection = TrashMail::connection();
+            if($connection==null)
+            {
+                $response = [
+                    'mailbox' => $email,
+                    'messages' => []
+                ];                
+                $response['messages'][] = ['error'=>'Server settings Exception'];
+                return $response;
+            }
+                        
             $mailbox = $connection->getMailbox('INBOX');
             $message = $mailbox->getMessage($id_hash[0]);
 

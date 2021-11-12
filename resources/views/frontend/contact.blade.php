@@ -5,7 +5,7 @@
 @include('frontend.home')
 <!-- Contact Us Section Start -->
 <section class="view section-padding view_rtl">
-    <div class="container">
+    <div class="container" id='contactus'>
         <div class="row">
             <div class="col-md-2 col-sm-12 unvisible">
                 {!!$setdata['left_ad']!!}

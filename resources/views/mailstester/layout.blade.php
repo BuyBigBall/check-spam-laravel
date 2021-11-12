@@ -147,11 +147,11 @@
                     <div class="span5">
                         <div class="header_login">
 
-                            @if (!empty($setdata['user_login']))
-                            <form action="/" method="get" id="login-form" class="form-vertical">
+                            @if (!empty($userdata['user_login']))
+                            <form action="{{ route('logout') }}" method="post" id="login-form" class="form-vertical">
                                 @csrf
                                 <div class="login-greeting">
-                                    Hi Samir Chakouri,
+                                    {{ $userdata['user_login']['name'] }}
                                 </div>
                                 <div class="logout-button">
                                     <input type="submit" class="btn btn-primary" value="Log out">
@@ -163,9 +163,10 @@
                             </form>
                             @endif
 
-                            @if (empty($setdata['user_login']))
+                            @if (empty($userdata['user_login']))
+                            
                             <form
-                                action="login"
+                                action="{{ route('login') }}"
                                 method="post"
                                 id="login-form"
                                 class="form-inline">
@@ -265,32 +266,32 @@
             <div class="row-fluid contentsize">
                 <div class="span12 affix-top">
                     <ul class="nav menu">
-                        <li class="item-101">
-                            <a href="/get-started">Get Started</a>
+                        <li class="item-101 @if ($userdata['uri']=='get-started') {{ 'current active' }} @endif">
+                            <a href="{{ route('get-started') }}">Get Started</a>
                         </li>
-                        <li class="item-169 default">
-                            <a href="/prices">Prices</a>
+                        <li class="item-169 default @if ($userdata['uri']=='prices') {{ 'current active' }} @endif">
+                            <a href="{{ route('prices') }}">Prices</a>
                         </li>
-                        <li class="item-111 current active">
-                            <a href="/account">Account</a>
+                        <li class="item-111 @if ($userdata['uri']=='account') {{ 'current active' }} @endif">
+                            <a href="{{ route('account') }}">Account</a>
                         </li>
-                        <li class="item-109">
-                            <a href="/latest-tests">Latest Tests</a>
+                        <li class="item-109 @if ($userdata['uri']=='latest-tests') {{ 'current active' }} @endif">
+                            <a href="{{ route('latest-tests') }}">Latest Tests</a>
                         </li>
-                        <li class="item-113">
-                            <a href="/design">iFrame CSS</a>
+                        <li class="item-113 @if ($userdata['uri']=='design') {{ 'current active' }} @endif">
+                            <a href="{{ route('design') }}">iFrame CSS</a>
                         </li>
-                        <li class="item-108">
-                            <a href="/json-api">JSON API</a>
+                        <li class="item-108 @if ($userdata['uri']=='json-api') {{ 'current active' }} @endif">
+                            <a href="{{ route('json-api') }}">JSON API</a>
                         </li>
-                        <li class="item-181">
-                            <a href="/micro-payment">Micro-payment</a>
+                        <li class="item-181 @if ($userdata['uri']=='micro-payment') {{ 'current active' }} @endif">
+                            <a href="{{ route('micro-payment') }}">Micro-payment</a>
                         </li>
-                        <li class="item-170">
-                            <a href="/terms-of-service">Terms of service</a>
+                        <li class="item-170 @if ($userdata['uri']=='terms-of-service') {{ 'current active' }} @endif">
+                            <a href="{{ route('terms-of-service') }}">Terms of service</a>
                         </li>
-                        <li class="item-151">
-                            <a href="/contact" target="_blank" rel="noopener noreferrer">Contact us</a>
+                        <li class="item-151 @if ($userdata['uri']=='contact') {{ 'current active' }} @endif">
+                            <a href="{{ route('contact').'#contactus' }}" target="_blank" rel="noopener noreferrer">Contact us</a>
                         </li>
                     </ul>
 
@@ -316,22 +317,22 @@
             <nav class="navbar navbar-light navbar-expand-sm navbar-center">
               <ul class="navbar-nav mx-auto">
                   <li class="nav-item">
-                      <a class="nav-link" href="/faq" target="_blank">FAQ</a>
+                      <a class="nav-link" href="{{ route('faq') }}" target="_blank">FAQ</a>
                   </li>
                   <li class="nav-item">
-                      <a class="nav-link" href="/contact" target="_blank">Give Feedback</a>
+                      <a class="nav-link" href="{{ route('contact') }}" target="_blank">Give Feedback</a>
                   </li>
                   <li class="nav-item">
-                      <a class="nav-link" href="/spf/" target="_blank">SPF Guides</a>
+                      <a class="nav-link" href="{{ route('spf') }}" target="_blank">SPF Guides</a>
                   </li>
                   <li class="nav-item">
-                      <a class="nav-link" href="/spf-dkim-check" target="_blank">SPF &amp; DKIM check</a>
+                      <a class="nav-link" href="{{ route('spf-dkim-check') }}" target="_blank">SPF &amp; DKIM check</a>
                   </li>
                   <li class="nav-item">
-                      <a class="nav-link" href="/json-api" target="_blank">API</a>
+                      <a class="nav-link" href="{{ route('json-api') }}" target="_blank">API</a>
                   </li>
                   <li class="nav-item">
-                      <a class="nav-link" href="/login" target="_blank">Log in</a>
+                      <a class="nav-link" href="{{ route('prices') }}" target="_blank">Log in</a>
                   </li>
                 </ul>
           </nav>

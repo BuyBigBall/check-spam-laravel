@@ -36,7 +36,7 @@
                 <div>
                     <div class="moduletable">
 
-                        <table class="pricelist">
+                        <table class="pricelist" style="width:760px;">
                             <thead>
                                 <tr>
                                     <th>Number of tests</th>

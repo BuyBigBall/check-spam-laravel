@@ -133,232 +133,232 @@
         <div class="container py-4">
             <div class="row my-4" id="hosts">
                 <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/123-reg">123-reg</a>
+                    <a href="{{ route('spf-detail', '123-reg') }} " >123-reg</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/1and1">1&amp;1</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', '1and1') }} " >1&amp;1</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/20i">20i</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', '20i') }} " >20i</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/34sp">34SP.com</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', '34sp') }} " >34SP.com</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/a2hosting">A2 Hosting</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'a2hosting') }} " >A2 Hosting</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/acens">acens</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'acens') }} " >acens</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/aruba">Aruba</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'aruba') }} " >Aruba</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/arvix">Arvix</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'arvix') }} " >Arvix</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/avanhost">avanhost</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'avanhost') }} " >avanhost</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/bluehost">Bluehost</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'bluehost') }} " >Bluehost</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/cdmon">CDmon</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'cdmon') }} " >CDmon</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/citynetwork">city network</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'citynetwork') }} " >city network</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/cloudaccess-dot-net">CloudAccess.net</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'cloudaccess-dot-net') }} " >CloudAccess.net</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/cloudflare">CloudFlare</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'cloudflare') }} " >CloudFlare</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/cpanel">cPanel Accelerated 2</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'cpanel') }} " >cPanel Accelerated 2</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/cpanel76">cPanel 76.x</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'cpanel76') }} " >cPanel 76.x</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/crazydomains">Crazy Domains</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'crazydomains') }} " >Crazy Domains</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/dicoit">Dicoit</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'dicoit') }} " >Dicoit</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/dinahosting">Dinahosting</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'dinahosting') }} " >Dinahosting</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/directadmin">DirectAdmin</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'directadmin') }} " >DirectAdmin</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/digitalocean">DigitalOcean</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'digitalocean') }} " >DigitalOcean</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/domainmonster">DomainMonster</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'domainmonster') }} " >DomainMonster</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/domein-registreren">Domein-Registreren</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'domein-registreren') }} " >Domein-Registreren</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/dreamhost">DreamHost</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'dreamhost') }} " >DreamHost</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/dnsmadeeasy">DNS Made Easy</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'dnsmadeeasy') }} " >DNS Made Easy</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/easyspace">Easyspace</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'easyspace') }} " >Easyspace</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/enom">eNom</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'enom') }} " >eNom</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/fastcomet">FastComet</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'fastcomet') }} " >FastComet</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/fasthosts">FastHosts</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'fasthosts') }} " >FastHosts</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/gandi">Gandi</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'gandi') }} " >Gandi</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/godaddy">GoDaddy</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'godaddy') }} " >GoDaddy</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/hostgator">HostGator</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'hostgator') }} " >HostGator</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/hostinger">Hostinger</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'hostinger') }} " >Hostinger</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/hostmantis">HostMantis</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'hostmantis') }} " >HostMantis</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/hostmonster">HostMonster</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'hostmonster') }} " >HostMonster</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/hover">Hover</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'hover') }} " >Hover</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/ifastnet">iFastNet</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'ifastnet') }} " >iFastNet</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/infomaniak">Infomaniak</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'infomaniak') }} " >Infomaniak</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/inmotion-hosting">InMotion Hosting</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'inmotion-hosting') }} " >InMotion Hosting</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/ikoula">Ikoula</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'ikoula') }} " >Ikoula</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/internet-girona">Internet Girona</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'internet-girona') }} " >Internet Girona</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/ispconfig3">ISPConfig 3</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'ispconfig3') }} " >ISPConfig 3</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/justhost">JustHost</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'justhost') }} " >JustHost</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/linode">Linode</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'linode') }} " >Linode</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/lws">LWS</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'lws') }} " >LWS</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/maikelve">MaikelVE</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'maikelve') }} " >MaikelVE</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/melbourne-it">Melbourne IT</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'melbourne-it') }} " >Melbourne IT</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/metanet">METANET</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'metanet') }} " >METANET</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/name-dot-com">name.com</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'name-dot-com') }} " >name.com</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/namecheap">Namecheap</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'namecheap') }} " >Namecheap</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/nazwa">Nazwa.pl</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'nazwa') }} " >Nazwa.pl</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/neostrada">Neostrada</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'neostrada') }} " >Neostrada</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/netissime">Netissime</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'netissime') }} " >Netissime</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/network-solutions">Network Solutions</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'network-solutions') }} " >Network Solutions</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/nuxit">Nuxit</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'nuxit') }} " >Nuxit</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/omacomp">OMA Comp</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'omacomp') }} " >OMA Comp</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/one-dot-com">One.com</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'one-dot-com') }} " >One.com</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/ovh">OVH</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'ovh') }} " >OVH</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/parallels-plesk-panel">Parallels Plesk Panel</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'parallels-plesk-panel') }} " >Parallels Plesk Panel</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/planethoster">PlanetHoster</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'planethoster') }} " >PlanetHoster</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/plesk-onyx">Plesk Onyx</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'plesk-onyx') }} " >Plesk Onyx</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/proisp">PRO ISP</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'proisp') }} " >PRO ISP</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/register-dot-com">Register.com</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'register-dot-com') }} " >Register.com</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/simply-hosting">Simply Hosting</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'simply-hosting') }} " >Simply Hosting</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/site5">Site5</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'site5') }} " >Site5</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/siteground">SiteGround</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'siteground') }} " >SiteGround</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/softlayer">SoftLayer</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'softlayer') }} " >SoftLayer</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/srsplus">SRSPlus</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'srsplus') }} " >SRSPlus</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/tophost">TopHost.it</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'tophost') }} " >TopHost.it</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/unoeuro">UnoEuro</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'unoeuro') }} " >UnoEuro</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/vesta">Vesta</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'vesta') }} " >Vesta</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/vidahost">Vidahost</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'vidahost') }} " >Vidahost</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/vip-dot-nl">VIP.nl</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'vip-dot-nl') }} " >VIP.nl</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/whm">WHM (Web Host Manager)</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'whm') }} " >WHM (Web Host Manager)</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/whmcs">WHMCS (Web Host Manager Complete Solution)</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'whmcs') }} " >WHMCS (Web Host Manager Complete Solution)</a>
                 </div>
-                <div class="col-sm-6 col-md-4 col-lg-3">
-                    <a href="/spf/wix">Wix</a>
+                <div class="col-sm-6 col-md-4 col-lg-3" >
+                    <a href="{{ route('spf-detail', 'wix') }} " >Wix</a>
                 </div>
             </div>
 

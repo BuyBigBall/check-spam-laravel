@@ -23,6 +23,8 @@
 
   <link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
 
+  <link rel="stylesheet" href="{{ asset('assets/css/cookieconsent.min.css') }}">
+
   @if(\App\Models\Language::where('code', $lang_locale)->first()->rtl == 1)
   <link rel="stylesheet" href="{{ asset('assets/css/rtl.css') }}">
   @endif
@@ -65,7 +67,22 @@
   <!-- Custom Code -->
   {!! $setdata['head_ad'] !!}
 
-
+<script>
+      window.addEventListener("load", function(){
+        window.cookieconsent.initialise({
+          "palette": {
+            "popup": {
+              "background": "#000"
+            },
+            "button": {
+              "background": "#f1d600"
+            }
+          },
+          "content": {
+            "message": "We use cookies to personalise ads and to analyse our traffic.<br/>We also share information about your use of our site with our social media, advertising and analytics partners who may combine it with other information that you've provided to them or that they've collected from your use of their services.<br/><br/>We do not share tests performed on this platform with anyone."
+          }
+        })});
+    </script>
 </head>
 
 <body>
@@ -251,7 +268,7 @@
   <script src="{{ asset('assets/js/vendor/progress.js') }}"></script>
 
   <script src="{{ asset('assets/js/vendor/jquery.nicescroll.min.js') }}"></script>
-
+  
   
   <!--SET DYNAMIC VARIABLE IN SCRIPT-->
   <script>
@@ -264,6 +281,8 @@
   </script>
   <!-- main js -->
   <script src="{{ asset('assets/js/main.js') }}"></script>
+  <script src="{{ asset('assets/js/cookieconsent.min.js') }}"></script>
+
 </body>
 
 </html>

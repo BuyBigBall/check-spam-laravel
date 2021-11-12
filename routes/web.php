@@ -131,7 +131,9 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
     Route::get('/page/{slug}', 'PageController@show')->name("page");
 
     Route::get('/contact', 'ContactController@index')->name('contact');
-
+    Route::get('/faq', 'Mailstester\SiteController@faq')->name("faq");
+    Route::get('/spf', 'Mailstester\SiteController@spf')->name("spf");
+    Route::get('/spf/{type}', 'Mailstester\SiteController@spf')->name("spf");
 
 
     Route::post('/spamtest', 'Mailstester\SpamTestController@index')->name("spamtest");
@@ -144,8 +146,5 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
     Route::get('/prices', 'Mailstester\SiteController@index')->name("prices");
 
 
-    Route::get('/faq', 'Mailstester\SiteController@faq')->name("faq");
-
-    
 });
 }

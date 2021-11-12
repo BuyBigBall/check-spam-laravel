@@ -9924,8 +9924,12 @@ h1.text-white, h2.text-white, h3.text-white {
  ********************************************************/
 @font-face {
   font-family: "mt";
-  src: url("../font/mt.eot?29731982");
-  src: url("../font/mt.eot?29731982#iefix") format("embedded-opentype"), url("../font/mt.woff2?29731982") format("woff2"), url("../font/mt.woff?29731982") format("woff"), url("../font/mt.ttf?29731982") format("truetype"), url("../font/mt.svg?29731982#mt") format("svg");
+  src: url("../font/online-webfonts.eot?29731982");
+  src:  url("../font/online-webfonts.eot?29731982#iefix") format("embedded-opentype"), 
+        url("../font/online-webfonts.woff2?29731982") format("woff2"), 
+        url("../font/online-webfonts.woff?29731982") format("woff"), 
+        url("../font/online-webfonts.ttf?29731982") format("truetype"), 
+        url("../font/online-webfonts.svg?29731982#mt") format("svg");
   font-weight: normal;
   font-style: normal;
 }
@@ -10033,7 +10037,7 @@ h1.text-white, h2.text-white, h3.text-white {
 .flag {
   width: 16px;
   height: 11px;
-  background: url(../images/flags.png) no-repeat;
+  background: url(/assets/images/flags.png) no-repeat;
   display: block;
   margin-top: 5px;
   float: left;

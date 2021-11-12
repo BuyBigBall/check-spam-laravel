@@ -266,34 +266,31 @@
                 <div class="span12 affix-top">
                     <ul class="nav menu">
                         <li class="item-101">
-                            <a href="https://www.mail-tester.com/manager/start.html">Get Started</a>
+                            <a href="/get-started">Get Started</a>
                         </li>
                         <li class="item-169 default">
-                            <a href="https://www.mail-tester.com/manager/">Prices</a>
+                            <a href="/prices">Prices</a>
                         </li>
                         <li class="item-111 current active">
-                            <a href="https://www.mail-tester.com/manager/account.html">Account</a>
+                            <a href="/account">Account</a>
                         </li>
                         <li class="item-109">
-                            <a href="https://www.mail-tester.com/manager/latest-tests.html">Latest Tests</a>
+                            <a href="/latest-tests">Latest Tests</a>
                         </li>
                         <li class="item-113">
-                            <a href="https://www.mail-tester.com/manager/design.html">iFrame CSS</a>
+                            <a href="/design">iFrame CSS</a>
                         </li>
                         <li class="item-108">
-                            <a href="https://www.mail-tester.com/manager/api-documentation.html">JSON API</a>
+                            <a href="/json-api">JSON API</a>
                         </li>
                         <li class="item-181">
-                            <a href="https://www.mail-tester.com/manager/micro-payment.html">Micro-payment</a>
+                            <a href="/micro-payment">Micro-payment</a>
                         </li>
                         <li class="item-170">
-                            <a href="https://www.mail-tester.com/manager/terms-of-service.html">Terms of service</a>
+                            <a href="/terms-of-service">Terms of service</a>
                         </li>
                         <li class="item-151">
-                            <a
-                                href="http://www.mail-tester.com/contact"
-                                target="_blank"
-                                rel="noopener noreferrer">Contact us</a>
+                            <a href="/contact" target="_blank" rel="noopener noreferrer">Contact us</a>
                         </li>
                     </ul>
 
@@ -329,12 +326,12 @@
                       <a class="nav-link" href="/spf-dkim-check" target="_blank">SPF &amp; DKIM check</a>
                   </li>
                   <li class="nav-item">
-                      <a class="nav-link" href="/manager" target="_blank">API</a>
+                      <a class="nav-link" href="/json-api" target="_blank">API</a>
                   </li>
                   <li class="nav-item">
-                      <a class="nav-link" href="/manager" target="_blank">Log in</a>
+                      <a class="nav-link" href="/login" target="_blank">Log in</a>
                   </li>
-              </ul>
+                </ul>
           </nav>
         </div>
         <!-- The end of footer -->

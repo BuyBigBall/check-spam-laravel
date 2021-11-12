@@ -198,10 +198,10 @@
                       <a class="nav-link" href="/spf-dkim-check" target="_blank">SPF &amp; DKIM check</a>
                   </li>
                   <li class="nav-item">
-                      <a class="nav-link" href="/manager" target="_blank">API</a>
+                      <a class="nav-link" href="/json-api" target="_blank">API</a>
                   </li>
                   <li class="nav-item">
-                      <a class="nav-link" href="/manager" target="_blank">Log in</a>
+                      <a class="nav-link" href="/login" target="_blank">Log in</a>
                   </li>
               </ul>
           </nav>

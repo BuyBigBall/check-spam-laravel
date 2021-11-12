@@ -115,17 +115,17 @@
         <div>
             <ul class="nav nav-tabs nav-stacked">
                 <li>
-                    <a href="https://www.mail-tester.com/manager/login.html?view=reset">
+                    <a href="/forgot/pwd">
                         Forgot your password?
                     </a>
                 </li>
                 <li>
-                    <a href="https://www.mail-tester.com/manager/login.html?view=remind">
+                    <a href="/forgot/usr">
                         Forgot your username?
                     </a>
                 </li>
                 <li>
-                    <a href="https://www.mail-tester.com/manager/login.html?view=registration">
+                    <a href="/register">
                         Don't have an account?
                     </a>
                 </li>

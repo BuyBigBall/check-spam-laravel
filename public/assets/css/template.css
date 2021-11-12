@@ -2214,7 +2214,10 @@ button.close {
 	border-radius: 4px;
 	*margin-left: .3em;
 }
-
+#content_container
+{
+	margin-bottom: 40px;
+}
 #content_container .btn{
 	padding: 4px 12px;
 }
@@ -7698,7 +7701,11 @@ body#com_mtmanager_checkout_listing, body#com_mtmanager_checkout_address, body#c
 {
 	padding:18px 6px !important;
 }
-.login input
+.login input, .hikashop_user_registration_page input
 {
 	padding:12px 6px !important;
+}
+.hikashop_user_registration_page input.btn.button
+{
+	padding:0px 10px !important;
 }

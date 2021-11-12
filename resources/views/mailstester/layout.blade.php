@@ -315,30 +315,27 @@
             </div>
 
             <nav class="navbar navbar-light navbar-expand-sm navbar-center">
-                <ul class="navbar-nav mx-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="https://www.mail-tester.com/faq" target="_blank">FAQ</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="https://www.mail-tester.com/contact" target="_blank">Give Feedback</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="https://www.mail-tester.com/spf/" target="_blank">SPF Guides</a>
-                    </li>
-                    <li class="nav-item">
-                        <a
-                            class="nav-link"
-                            href="https://www.mail-tester.com/spf-dkim-check"
-                            target="_blank">SPF &amp; DKIM check</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="https://www.mail-tester.com/manager" target="_blank">API</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="https://www.mail-tester.com/manager" target="_blank">Log in</a>
-                    </li>
-                </ul>
-            </nav>
+              <ul class="navbar-nav mx-auto">
+                  <li class="nav-item">
+                      <a class="nav-link" href="/faq" target="_blank">FAQ</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="/contact" target="_blank">Give Feedback</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="/spf/" target="_blank">SPF Guides</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="/spf-dkim-check" target="_blank">SPF &amp; DKIM check</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="/manager" target="_blank">API</a>
+                  </li>
+                  <li class="nav-item">
+                      <a class="nav-link" href="/manager" target="_blank">Log in</a>
+                  </li>
+              </ul>
+          </nav>
         </div>
         <!-- The end of footer -->
 

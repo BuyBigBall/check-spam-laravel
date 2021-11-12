@@ -139,6 +139,13 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
     Route::post('/login', 'Mailstester\LoginController@loginchk')->name("loginchk");
     Route::post('/profile', 'Mailstester\LoginController@profile_view')->name("profile_view");
     Route::post('/profile-save', 'Mailstester\LoginController@profile_save')->name("profile_save");
+    Route::get('/register', 'Mailstester\LoginController@register')->name("register");
+    Route::get('/forgot/{type}', 'Mailstester\LoginController@forgot')->name("forgot");
+    Route::get('/prices', 'Mailstester\SiteController@index')->name("prices");
+
+
+    Route::get('/faq', 'Mailstester\SiteController@faq')->name("faq");
+
     
 });
 }

@@ -6,33 +6,20 @@
     <div id="system-message-container"></div>
 
     <div class="profile-edit" id=''>
-        <script type="text/javascript">
-            Joomla.twoFactorMethodChange = function (e) {
-                var selectedPane = 'com_users_twofactor_' + jQuery('#jform_twofactor_method').val();
-                jQuery.each(
-                    jQuery('#com_users_twofactor_forms_container>div'),
-                    function (i, el) {
-                        if (el.id != selectedPane) {
-                            jQuery('#' + el.id).hide(0);
-                        } else {
-                            jQuery('#' + el.id).show(0);
-                        }
-                    }
-                );
-            }
-        </script>
         <form
             id="member-profile"
             action="{{ route('save-account' )}}"
             method="post"
             class="form-validate form-horizontal well"
-            enctype="multipart/form-data">
+            enctype="multipart/form-data"
+            onsubmit="return validation();"
+            >
             @csrf
             <fieldset>
                 <legend>
-                    Edit Your Profile
+                    Edit Your Account Informations
                 </legend>
-                <input type="hidden" name="jform[id]" id="jform_id" value="15279"/>
+                <input type="hidden" name="id" id="jform_id" value="{{ $userdata['user_login']['id'] }}"/>
                 <div class="control-group">
                     <div class="control-label">
                         <label
@@ -40,7 +27,7 @@
                             for="jform_name"
                             class="hasPopover required"
                             title=""
-                            data-content="Enter your full name."
+                            data-content="If you want to change your username, please contact a site administrator."
                             data-original-title="Name">
                             Name<span class="star">&nbsp;*</span>
                         </label>
@@ -48,12 +35,14 @@
                     <div class="controls">
                         <input
                             type="text"
-                            name="jform[name]"
+                            name="name"
                             id="jform_name"
-                            value="Samir Chakouri"
+                            value="{{ $userdata['user_login']['name'] }}"
                             class="required"
                             size="30"
+                            title="If you want to change your username, please contact a site administrator."
                             required="required"
+                            readonly
                             aria-required="true"/>
                     </div>
                 </div>
@@ -64,7 +53,7 @@
                             for="jform_username"
                             class="hasPopover"
                             title=""
-                            data-content="If you want to change your username, please contact a site administrator."
+                            data-content="This is your full name. It can be update in the user address page."
                             data-original-title="Username">
                             Username</label>
                         <span class="optional">
@@ -74,11 +63,11 @@
                     <div class="controls">
                         <input
                             type="text"
-                            name="jform[username]"
+                            name="username"
                             id="jform_username"
-                            value="chakouri"
+                            value="{{ $userdata['user_login']['firstname'] . ' '.$userdata['user_login']['lastname'] }}"
                             size="30"
-                            readonly=""/>
+                            readonly />
                     </div>
                 </div>
                 <div class="control-group">
@@ -99,7 +88,7 @@
                         <input type="password" style="display:none"/>
                         <input
                             type="password"
-                            name="jform[password1]"
+                            name="password"
                             id="jform_password1"
                             value=""
                             autocomplete="off"
@@ -125,7 +114,7 @@
                     <div class="controls">
                         <input
                             type="password"
-                            name="jform[password2]"
+                            name="password2"
                             id="jform_password2"
                             value=""
                             autocomplete="off"
@@ -149,7 +138,7 @@
                     <div class="controls">
                         <input
                             type="email"
-                            name="jform[email1]"
+                            name="email"
                             class="validate-email required"
                             id="jform_email1"
                             value="{{ $userdata['user_login']['email'] }}"
@@ -174,7 +163,7 @@
                     <div class="controls">
                         <input
                             type="email"
-                            name="jform[email2]"
+                            name="email2"
                             class="validate-email required"
                             id="jform_email2"
                             value="{{ $userdata['user_login']['email'] }}"
@@ -196,7 +185,7 @@
                         Cancel
                     </a>
                     <input type="hidden" name="option" value="com_users"/>
-                    <input type="hidden" name="task" value="profile.save"/>
+                    <input type="hidden" name="task" value="account.save"/>
                 </div>
             </div>
             <input type="hidden" name="02da9f5c81fc9e643cc9b1546a6e1e60" value="1"/>
@@ -204,4 +193,39 @@
     </div>
 
 </div>
+
+<script>
+    function validation()
+    {
+        if($('#jform_password1').val()!=$('#jform_password2').val())
+        {
+            show_error_msg('The password could not confirm.');
+            $('#jform_password2').focus();
+            return false;
+        }
+        if($('#jform_email1').val()!=$('#jform_email2').val())
+        {
+            show_error_msg('The Email Address could not confirm.');
+            $('#jform_email2').focus();
+            return false;
+        }
+        return true;        
+    }
+
+</script>
+<script type="text/javascript">
+    // Joomla.twoFactorMethodChange = function (e) {
+    //     var selectedPane = 'com_users_twofactor_' + jQuery('#jform_twofactor_method').val();
+    //     jQuery.each(
+    //         jQuery('#com_users_twofactor_forms_container>div'),
+    //         function (i, el) {
+    //             if (el.id != selectedPane) {
+    //                 jQuery('#' + el.id).hide(0);
+    //             } else {
+    //                 jQuery('#' + el.id).show(0);
+    //             }
+    //         }
+    //     );
+    // }
+</script>
 @endsection

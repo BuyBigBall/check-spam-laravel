@@ -207,7 +207,7 @@ class SiteController extends Controller
 
 public function save_account(){ return null;}
 public function save_address(){ return null;}
-public function save_task(){ return null;}
+public function save_configure(){ return null;}
 
     public function checkout($price){ return $price;}
     public function address(){return null;}

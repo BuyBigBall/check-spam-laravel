@@ -7718,3 +7718,15 @@ body#com_mtmanager_checkout_listing, body#com_mtmanager_checkout_address, body#c
 {
 	padding:6px 16px !important;
 }
+
+#tester-configure input{
+	padding:12px 16px !important;
+}
+#tester-configure input[type=submit]{
+	padding:2px 16px !important;
+}
+
+.star, .hikashop_field_required
+{
+	color:red;
+}

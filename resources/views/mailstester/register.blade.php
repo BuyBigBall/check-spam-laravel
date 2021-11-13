@@ -7,7 +7,7 @@
         <div id="system-message-container"></div>
 
         <form
-            action="{{ route('save-register') }}"
+            action="{{ route('save-account') }}"
             method="post"
             id="hikashop_registration_form"
             enctype="multipart/form-data"

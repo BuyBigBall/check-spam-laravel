@@ -172,3 +172,14 @@ $(document).ready(function () {
   } catch (error) {}
 
 });
+
+function show_error_msg(msg)
+{
+    $('#system-message-container').css('color', 'red');
+    $('#system-message-container').html(msg);
+    setTimeout(() => {
+        $('#system-message-container').fadeOut(1000, () => {
+            $('#system-message-container').html('');
+        });            
+    }, 3000);
+}

@@ -140,9 +140,10 @@
         <h3>Configure your account</h3>
         <div class="answer">
             <form
+                id="tester-configure"
                 method="post"
                 autocomplete="off"
-                action="{{ route('save-task') }}">
+                action="{{ route('save-configure') }}">
                 <h4>Secure your account</h4>
                 <p>To make sure you are the only one able to access your results, you can add
                     one of the following security checks:</p>

@@ -1,6 +1,6 @@
 @extends('mailstester.layout')
 
-<link href="/assets/css/vex.css" rel="stylesheet" type="text/css">
+<!-- <link href="/assets/css/vex.css" rel="stylesheet" type="text/css"> -->
 
 @section('content')
 
@@ -69,7 +69,7 @@
                                         <img src="/assets/images/icons/delete.png" alt="Delete"/></a>
                                     <a
                                         rel="nofollow"
-                                        onclick="return window.hikashop.openBox(this);"
+                                        onclick="return showModal();"
                                         id="hikashop_edit_address_popup_44126"
                                         href="#"
                                         data-hk-popup="vex"
@@ -89,6 +89,14 @@
         <div class="clear_both"></div>
     </div>
 </div>
+<script>
+    function showModal()
+    {
+        $('#com_hikashop_address_form').modal('show');
+        //$('#practice_modal').modal('show');
+    }
+</script>
+@include('mailstester.address')
 
 @endsection
 

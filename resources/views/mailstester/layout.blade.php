@@ -303,6 +303,7 @@
         <script src="{{ asset('assets/js/main.js') }}"></script>
 
         <script type="text/javascript" src="/assets/js/mailstester.js"></script>
-
+        @yield('addressjs')
+        @yield('register-script')        
     </body>
 </html>

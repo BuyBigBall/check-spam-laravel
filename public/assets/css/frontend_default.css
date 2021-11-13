@@ -2331,7 +2331,7 @@ p.jRatingInfos span.maxRate {
 #hikashop_carts_listing div.toolbar a, #hikashop_affiliate_main div.toolbar a, #hikashop_address_listing div.toolbar a, #hikashop_order_listing div.toolbar a{border:none; text-decoration:none; padding:5px}
 #hikashop_carts_listing div.toolbar a:hover, #hikashop_affiliate_main div.toolbar a:hover, #hikashop_address_listing div.toolbar a:hover, #hikashop_order_listing div.toolbar a:hover{color:#2C8296}
 
-
+/* 
 #member-profile fieldset{border:1px solid #ddd; border-radius:3px; padding:10px; margin-bottom:10px}
 #member-profile legend{font-weight:bold; font-size:12px; color:#333; margin:0px 5px; padding:0px 5px}
 #member-profile input, #member-profile select{padding:4px; margin-bottom:5px}
@@ -2375,7 +2375,7 @@ p.jRatingInfos span.maxRate {
 	cursor: pointer;
 	display: inline-block;
 	outline: medium none;
-}
+} */
 
 @media (max-width:768px) {
 	.hikashop_cpanel_icon_div{

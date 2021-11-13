@@ -16,9 +16,9 @@
             </div>
             <div class="hikashopcpanel" id="hikashopcpanel">
                 <div
-                    onclick="document.location.href=\'{{ route('profile', 'edit') }}\'"
+                    onclick="document.location.href=\'{{ route('profile', 'account') }}\'"
                     class="icon hikashop_cpanel_icon_div icon hikashop_cpanel_icon_div_user2">
-                    <a href="{{ route('profile', 'edit') }}">
+                    <a href="{{ route('profile', 'account') }}">
                         <table class="hikashop_cpanel_icon_table">
                             <tbody>
                                 <tr>
@@ -41,9 +41,9 @@
                     </a>
                 </div>
                 <div
-                    onclick="document.location.href='{{ route('address') }}';"
+                    onclick="document.location.href='{{ route('profile', 'address') }}';"
                     class="icon hikashop_cpanel_icon_div icon hikashop_cpanel_icon_div_address">
-                    <a href="{{ route('address') }}">
+                    <a href="{{ route('profile', 'address') }}">
                         <table class="hikashop_cpanel_icon_table">
                             <tbody>
                                 <tr>

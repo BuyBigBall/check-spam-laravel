@@ -7707,9 +7707,12 @@ body#com_mtmanager_checkout_listing, body#com_mtmanager_checkout_address, body#c
 {
 	padding:18px 6px !important;
 }
-.login input, .latest-tests input[type=text], .hikashop_user_registration_page input[type=text]
+.login input, 
+.latest-tests input[type=text], 
+.hikashop_user_registration_page input,
+.profile-edit #member-profile input
 {
-	padding:16px 6px !important;
+	padding:14px 6px !important;
 }
 .hikashop_user_registration_page input.btn.button
 {

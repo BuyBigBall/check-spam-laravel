@@ -185,10 +185,31 @@ class SiteController extends Controller
                 ->with('userdata' ,$userdata);
 
     }
+    public function profile($type=null)
+    { 
+        $guard = null;
+        $userdata = [];
+        if (Auth::guard($guard)->check()) {
+            $role = Auth::user()->role; 
+            $userdata['user_login'] = Auth::user();
+        }
 
-    public function task_save(){ return null;}
+        if($type=='account')
+            $viewpage = ('mailstester.profile-account');
+        else if($type=='address')
+            $viewpage = ('mailstester.profile-address');
+        else
+            abort(404); //redirect(404);
+
+        return view($viewpage)->with('userdata' ,$userdata);        
+}
+
+
+public function save_account(){ return null;}
+public function save_address(){ return null;}
+public function save_task(){ return null;}
+
     public function checkout($price){ return $price;}
-    public function profile($type=null){ return $type;}
     public function address(){return null;}
     public function order(){return null;}
     public function cart_type_cart(){return null;}

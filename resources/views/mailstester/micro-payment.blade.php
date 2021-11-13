@@ -2,7 +2,7 @@
 
 @section('content')
 <div id="content_container" style="width:100%">
-    <div class="row-fluid contentsize">
+    <div id='micropaymentpage' class="row-fluid contentsize" >
 
         <div id="system-message-container"></div>
 

@@ -136,3 +136,20 @@ function getSupportedLocales()
     }
 
 
+    function get_option($key, $default=null)
+    {
+        if(isset(CONSTANT_OPTIONS[$key]))
+            return CONSTANT_OPTIONS[$key];
+        else
+            return $default;
+    }
+
+    define('CONSTANT_OPTIONS', 
+                [
+                    'user_register_active_email'=>'<a>active</a>',
+                    'user_register_wellcome_email'=>'welcome',
+                ]);
+    function sendMail($mail)
+    {
+        return true;
+    }

@@ -132,7 +132,9 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
     Route::post('/spamtest',        'Mailstester\SpamTestController@index')->name("spamtest");
     Route::post('/profile',         'Mailstester\LoginController@profile_view')->name("profile_view");
     Route::post('/profile-save',    'Mailstester\LoginController@profile_save')->name("profile_save");
-    Route::get('/register',         'Mailstester\LoginController@register')->name("register");
+    Route::get('/register',         'Mailstester\RegisterController@showRegistrationForm')->name("register");
+    Route::post('/save-register',   'Mailstester\RegisterController@save_register')->name("save-register");    
+
     Route::get('/forgot/{type}',    'Mailstester\LoginController@forgot')->name("forgot");
     Route::get('/prices',           'Mailstester\SiteController@index')->name("prices");
     Route::get('/json-api',         'Mailstester\SiteController@json_api')->name("json-api");
@@ -149,7 +151,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
     Route::group(['middleware' => ['auth']], function () {
         Route::get('/account',          'Mailstester\SiteController@account')->name("account");
         Route::get('/get-started',      'Mailstester\SiteController@started')->name("get-started");
-        Route::get('/task-save',        'Mailstester\SiteController@task_save')->name("task-save");
+        Route::get('/save-task',        'Mailstester\SiteController@save_task')->name("save-task");
         Route::get('/checkout/{price}', 'Mailstester\SiteController@checkout')->name("checkout");
         Route::get('/profile/{type}',   'Mailstester\SiteController@profile')->name("profile");
         Route::get('/address',          'Mailstester\SiteController@address')->name("address");
@@ -164,7 +166,9 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
         
         Route::get('/dbug-example',     'Mailstester\SiteController@dbug_example')->name("dbug-example");
         Route::get('/aaweb-pDrqwp',     'Mailstester\SiteController@aaweb_pdrqwp')->name("aaweb-pDrqwp");
-        
+        Route::post('/save-account',     'Mailstester\SiteController@save_account')->name("save-account");
+        Route::post('/save-address',     'Mailstester\SiteController@save_address')->name("save-address");
+                
     });
 });
 }

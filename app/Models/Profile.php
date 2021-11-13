@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class Profile extends Authenticatable
 {
     use HasFactory, Notifiable;
 
@@ -17,11 +17,12 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'role',
-        'mode',
+        'user_id',
+        'firstname',
+        'lastname',
+        'address',
+        'city',
+        'country'
     ];
 
     /**
@@ -30,9 +31,15 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'avater',
-        'password',
-        'remember_token',
+        'mail_addr',
+        'company',
+        'vatnum',
+        'postcode',
+        'telephone',
+        'state',
+        'created_at',
+        'updated_at'
+
     ];
 
     /**
@@ -41,6 +48,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'timestamp',
     ];
 }

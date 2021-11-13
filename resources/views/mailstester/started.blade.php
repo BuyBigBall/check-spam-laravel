@@ -68,7 +68,7 @@
             </p>
             <ul>
                 <li>
-                    <b>chakouri</b>
+                    <b>{{ $userdata['user_login']['name'] }}</b>
                     : This is your own username so all tests are assigned to your account properly.</li>
                 <li>
                     <b>clientID</b>
@@ -111,7 +111,7 @@
                     (for example
                     <i>mt.YOUR-DOMAIN.com IN MX 1 reception.{{ ($request=Request::capture())->gethttphost() }}.</i>)
                     <br/>So then you will be able to send emails to
-                    <span class="testingEmail">chakouri-clientID-currenttimestamp</span>@mt.YOUR-DOMAIN.com .
+                    <span class="testingEmail">{{ $userdata['user_login']['name'] }}-clientID-currenttimestamp</span>@mt.YOUR-DOMAIN.com .
                 </li>
                 <li>
                     <a target="_blank" href="{{ route('contact', '#contactus') }}">Contact us</a>
@@ -129,7 +129,7 @@
                     (for example
                     <i>result.YOUR-DOMAIN.com IN CNAME {{ ($request=Request::capture())->gethttphost() }}.</i>)
                     <br/>So then you will be able to access the result from
-                        https://result.YOUR-DOMAIN.com/<span class="testingEmail">chakouri-clientID-currenttimestamp</span>
+                        https://result.YOUR-DOMAIN.com/<span class="testingEmail">{{ $userdata['user_login']['name'] }}-clientID-currenttimestamp</span>
                 </li>
                 <li>
                     <a target="_blank" href="{{ route('contact', '#contactus') }}">Contact us</a>
@@ -142,7 +142,7 @@
             <form
                 method="post"
                 autocomplete="off"
-                action="{{ route('task-save') }}">
+                action="{{ route('save-task') }}">
                 <h4>Secure your account</h4>
                 <p>To make sure you are the only one able to access your results, you can add
                     one of the following security checks:</p>
@@ -156,7 +156,7 @@
                             name="data[users][pkey]"/><br/>
                         So your tests should be sent to
                         <b>
-                            <span class="testingEmail">chakouri-clientID-currenttimestamp</span>@{{ ($request=Request::capture())->gethttphost() }}</b>
+                            <span class="testingEmail">{{ $userdata['user_login']['name'] }}-clientID-currenttimestamp</span>@{{ ($request=Request::capture())->gethttphost() }}</b>
                     </li>
                     <li>Only accept tests sent from the following mail server IPs (separate your IPs
                         with a comma):<br/>

@@ -9,7 +9,7 @@
 
             <h1 class="title py-5 m-0 text-primary">Checking out the inbox of</h1>
             <div class="text-center">
-                <span class="mailbox" style="border:#ddd solid 1px;">test-2x9vpi14q@srv1.mail-tester.com</span>
+                <span class="mailbox" style="border:#ddd solid 1px;">{{ $email }}</span>
             </div>
 
             <div class="container py-5">

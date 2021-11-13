@@ -55,7 +55,7 @@
         </style>
 
         <!-- GLOBAL INFROMATIONS -->
-        <h2>Hello Samir Chakouri!</h2>
+        <h2>{{ $userdata['user_login']['name']}}</h2>
         <hr/>
         <h3>How to test your emails?</h3>
         <div class="answer">
@@ -63,7 +63,7 @@
                 <br/>
                 1/ Send them to
                 <b>
-                    <span class="testingEmail">chakouri-clientID-currenttimestamp</span>@srv1.mail-tester.com
+                    <span class="testingEmail">{{ $prefix = substr($email, 0, strrpos($email, '@')) }}</span>@srv1.{{ ($request=Request::capture())->gethttphost() }}
                 </b>
             </p>
             <ul>
@@ -83,13 +83,13 @@
 
             <p>2/ Then you can:</p>
             <ul>
-                <li>display the iframe https://www.mail-tester.com/<span class="testingEmail">chakouri-clientID-currenttimestamp</span>
+                <li>display the iframe {{ (Request::root())  }}<span class="testingEmail">/{{$userdata['user_login']['name']}}-clientID-currenttimestamp</span>
                     and customize it with
-                    <a href="https://www.mail-tester.com/manager/design.html">your own CSS code</a>
+                    <a href="{{ route('design') }}">your own CSS code</a>
                 </li>
                 <li>
                     or
-                    <a href="https://www.mail-tester.com/manager/api-documentation.html">use our JSON API</a>
+                    <a href="{{ route('json-api' )}}">use our JSON API</a>
                     to display the result the way you want in your app</li>
             </ul>
         </div>
@@ -107,14 +107,14 @@
                     Create a
                     <b>MX</b>
                     record (with priority 1) on your DNS from the sub-domain you want to :
-                    <b>reception.mail-tester.com.</b><br/>
+                    <b>reception.{{ ($request=Request::capture())->gethttphost() }}.</b><br/>
                     (for example
-                    <i>mt.YOUR-DOMAIN.com IN MX 1 reception.mail-tester.com.</i>)
+                    <i>mt.YOUR-DOMAIN.com IN MX 1 reception.{{ ($request=Request::capture())->gethttphost() }}.</i>)
                     <br/>So then you will be able to send emails to
                     <span class="testingEmail">chakouri-clientID-currenttimestamp</span>@mt.YOUR-DOMAIN.com .
                 </li>
                 <li>
-                    <a target="_blank" href="https://www.mail-tester.com/contact">Contact us</a>
+                    <a target="_blank" href="{{ route('contact') }}">Contact us</a>
                     so we can add your sub-domain to our mail server.
                 </li>
             </ul>
@@ -125,14 +125,14 @@
                     Create a
                     <b>CNAME</b>
                     record on your DNS from the sub-domain you want to :
-                    <b>mail-tester.com.</b><br/>
+                    <b>{{ ($request=Request::capture())->gethttphost() }}.</b><br/>
                     (for example
-                    <i>result.YOUR-DOMAIN.com IN CNAME mail-tester.com.</i>)
+                    <i>result.YOUR-DOMAIN.com IN CNAME {{ ($request=Request::capture())->gethttphost() }}.</i>)
                     <br/>So then you will be able to access the result from
                         https://result.YOUR-DOMAIN.com/<span class="testingEmail">chakouri-clientID-currenttimestamp</span>
                 </li>
                 <li>
-                    <a target="_blank" href="https://www.mail-tester.com/contact">Contact us</a>
+                    <a target="_blank" href="{{ route('contact') }}">Contact us</a>
                     so we can add your sub-domain to our SSL certificate.
                 </li>
             </ul>
@@ -142,7 +142,7 @@
             <form
                 method="post"
                 autocomplete="off"
-                action="https://www.mail-tester.com/manager/start/task-save.html">
+                action="{{ route('task-save') }}">
                 <h4>Secure your account</h4>
                 <p>To make sure you are the only one able to access your results, you can add
                     one of the following security checks:</p>
@@ -156,7 +156,7 @@
                             name="data[users][pkey]"/><br/>
                         So your tests should be sent to
                         <b>
-                            <span class="testingEmail">chakouri-clientID-currenttimestamp</span>@mail-tester.com</b>
+                            <span class="testingEmail">chakouri-clientID-currenttimestamp</span>@{{ ($request=Request::capture())->gethttphost() }}</b>
                     </li>
                     <li>Only accept tests sent from the following mail server IPs (separate your IPs
                         with a comma):<br/>

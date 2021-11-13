@@ -143,9 +143,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
     Route::get('/forgot/{type}', 'Mailstester\LoginController@forgot')->name("forgot");
     Route::get('/prices', 'Mailstester\SiteController@index')->name("prices");
     Route::get('/json-api', 'Mailstester\SiteController@json_api')->name("json-api");
-    Route::get('/get-started', 'Mailstester\SiteController@started')->name("get-started");
 
-    Route::get('/account', 'Mailstester\SiteController@account')->name("account");
     Route::get('/latest-tests', 'Mailstester\SiteController@latest_tests')->name("latest-tests");
     Route::get('/design', 'Mailstester\SiteController@design')->name("design");
     Route::get('/micro-payment', 'Mailstester\SiteController@micro_payment')->name("micro-payment");
@@ -155,6 +153,11 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
     // Route::get('/login', 'Mailstester\LoginController@index')->name("login");
     // Route::post('/login', 'Mailstester\LoginController@loginchk')->name("loginchk");
     # <------------------
-
+    Route::group(['middleware' => ['auth']], function () {
+        Route::get('/account', 'Mailstester\SiteController@account')->name("account");
+        Route::get('/get-started', 'Mailstester\SiteController@started')->name("get-started");
+        Route::get('/task-save', 'Mailstester\SiteController@started')->name("task-save");
+        
+    });
 });
 }

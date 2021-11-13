@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Mailstester;
 
 use App\Http\Controllers\Controller;
-// use Illuminate\Http\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use App\Models\Settings;
 // use App\Models\TrashMail;
@@ -17,7 +17,7 @@ use Artesaos\SEOTools\Facades\OpenGraph;
 use App\Models\Menu;
 use \Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use App\Models\Language;
-
+use Illuminate\Support\Facades\Auth;
 
 class SiteController extends Controller
 {
@@ -25,77 +25,48 @@ class SiteController extends Controller
     // show prices page 
     public function index()
     {
-        // $title = translate('Home Page Title', 'seo');
-        // $description = translate('Home Page Description', 'seo');
-        // $keyword = translate('Home Page keywords', 'seo');
-        // $canonical = url()->current();
-        // SEOMeta::setTitle($title);
-        // SEOMeta::setDescription($description);
-        // SEOMeta::setKeywords($keyword);
-        // SEOMeta::setCanonical($canonical);
-        // OpenGraph::setTitle($title);
-        // OpenGraph::setDescription($description);
-        // OpenGraph::setSiteName(Settings::selectSettings('name'));
-        // OpenGraph::addImage(asset(Settings::selectSettings('og_image')));
-        // OpenGraph::setUrl($canonical);
-        // OpenGraph::addProperty('type', 'article');
-
-        // $links = Menu::all();
-        // $locale = LaravelLocalization::getCurrentLocale();
-        // $lang_name = Language::where('code', $locale)->first()->name;
-        return view('mailstester.prices');//->with('lang_locale', $locale)->with('lang_name', $lang_name);
+        $guard = null;
+        $userdata = [];
+        if (Auth::guard($guard)->check()) {
+            $role = Auth::user()->role; 
+            $userdata['user_login'] = Auth::user();
+        }
+        return view('mailstester.prices')->with('userdata' ,$userdata);
+        
     }
 
 
     // show prices page 
     public function json_api()
     {
-        
-        // $title = translate('Home Page Title', 'seo');
-        // $description = translate('Home Page Description', 'seo');
-        // $keyword = translate('Home Page keywords', 'seo');
-        // $canonical = url()->current();
-        // SEOMeta::setTitle($title);
-        // SEOMeta::setDescription($description);
-        // SEOMeta::setKeywords($keyword);
-        // SEOMeta::setCanonical($canonical);
-        // OpenGraph::setTitle($title);
-        // OpenGraph::setDescription($description);
-        // OpenGraph::setSiteName(Settings::selectSettings('name'));
-        // OpenGraph::addImage(asset(Settings::selectSettings('og_image')));
-        // OpenGraph::setUrl($canonical);
-        // OpenGraph::addProperty('type', 'article');
+        $guard = null;
+        $userdata = [];
+        if (Auth::guard($guard)->check()) {
+            $role = Auth::user()->role; 
+            $userdata['user_login'] = Auth::user();
+        }
+        return view('mailstester.json-api')->with('userdata' ,$userdata);
 
-        // $links = Menu::all();
-        // $locale = LaravelLocalization::getCurrentLocale();
-        // $lang_name = Language::where('code', $locale)->first()->name;
-        return view('mailstester.json-api');//->with('lang_locale', $locale)->with('lang_name', $lang_name);
     }
 
     
     // show get started page 
     public function started()
     {
-        
-        // $title = translate('Home Page Title', 'seo');
-        // $description = translate('Home Page Description', 'seo');
-        // $keyword = translate('Home Page keywords', 'seo');
-        // $canonical = url()->current();
-        // SEOMeta::setTitle($title);
-        // SEOMeta::setDescription($description);
-        // SEOMeta::setKeywords($keyword);
-        // SEOMeta::setCanonical($canonical);
-        // OpenGraph::setTitle($title);
-        // OpenGraph::setDescription($description);
-        // OpenGraph::setSiteName(Settings::selectSettings('name'));
-        // OpenGraph::addImage(asset(Settings::selectSettings('og_image')));
-        // OpenGraph::setUrl($canonical);
-        // OpenGraph::addProperty('type', 'article');
+        $email = null;
+        if (Cookie::has('email')) 
+            $email =  Cookie::get('email');
 
-        // $links = Menu::all();
-        // $locale = LaravelLocalization::getCurrentLocale();
-        // $lang_name = Language::where('code', $locale)->first()->name;
-        return view('mailstester.started');//->with('lang_locale', $locale)->with('lang_name', $lang_name);
+        $guard = null;
+        $userdata = [];
+        if (Auth::guard($guard)->check()) {
+            $role = Auth::user()->role; 
+            $userdata['user_login'] = Auth::user();
+        }
+        return view('mailstester.started')
+            ->with('email', $email)
+            ->with('userdata' ,$userdata);
+
     }
     
     
@@ -103,25 +74,14 @@ class SiteController extends Controller
     public function account()
     {
         
-        // $title = translate('Home Page Title', 'seo');
-        // $description = translate('Home Page Description', 'seo');
-        // $keyword = translate('Home Page keywords', 'seo');
-        // $canonical = url()->current();
-        // SEOMeta::setTitle($title);
-        // SEOMeta::setDescription($description);
-        // SEOMeta::setKeywords($keyword);
-        // SEOMeta::setCanonical($canonical);
-        // OpenGraph::setTitle($title);
-        // OpenGraph::setDescription($description);
-        // OpenGraph::setSiteName(Settings::selectSettings('name'));
-        // OpenGraph::addImage(asset(Settings::selectSettings('og_image')));
-        // OpenGraph::setUrl($canonical);
-        // OpenGraph::addProperty('type', 'article');
-
-        // $links = Menu::all();
-        // $locale = LaravelLocalization::getCurrentLocale();
-        // $lang_name = Language::where('code', $locale)->first()->name;
-        return view('mailstester.account');//->with('lang_locale', $locale)->with('lang_name', $lang_name);
+        $guard = null;
+        $userdata = [];
+        if (Auth::guard($guard)->check()) {
+            $role = Auth::user()->role; 
+            $userdata['user_login'] = Auth::user();
+        }
+        return view('mailstester.account')->with('userdata' ,$userdata);
+        //->with('lang_locale', $locale)->with('lang_name', $lang_name);
     }
     
     // show latest-tests page 
@@ -130,179 +90,99 @@ class SiteController extends Controller
         $email = null;
         if (Cookie::has('email')) 
             $email =  Cookie::get('email');
-        // $title = translate('Home Page Title', 'seo');
-        // $description = translate('Home Page Description', 'seo');
-        // $keyword = translate('Home Page keywords', 'seo');
-        // $canonical = url()->current();
-        // SEOMeta::setTitle($title);
-        // SEOMeta::setDescription($description);
-        // SEOMeta::setKeywords($keyword);
-        // SEOMeta::setCanonical($canonical);
-        // OpenGraph::setTitle($title);
-        // OpenGraph::setDescription($description);
-        // OpenGraph::setSiteName(Settings::selectSettings('name'));
-        // OpenGraph::addImage(asset(Settings::selectSettings('og_image')));
-        // OpenGraph::setUrl($canonical);
-        // OpenGraph::addProperty('type', 'article');
-
-        // $links = Menu::all();
-        // $locale = LaravelLocalization::getCurrentLocale();
-        // $lang_name = Language::where('code', $locale)->first()->name;
-        return view('mailstester.latest-tests')->with('email', $email);//->with('lang_locale', $locale)->with('lang_name', $lang_name);
+        
+        $guard = null;
+        $userdata = [];
+        if (Auth::guard($guard)->check()) {
+            $role = Auth::user()->role; 
+            $userdata['user_login'] = Auth::user();
+        }
+        return view('mailstester.latest-tests')
+                ->with('email', $email)
+                ->with('userdata' ,$userdata);
     }
 
     
     // show terms-of-service page 
     public function terms_of_service()
     {
-        
-        // $title = translate('Home Page Title', 'seo');
-        // $description = translate('Home Page Description', 'seo');
-        // $keyword = translate('Home Page keywords', 'seo');
-        // $canonical = url()->current();
-        // SEOMeta::setTitle($title);
-        // SEOMeta::setDescription($description);
-        // SEOMeta::setKeywords($keyword);
-        // SEOMeta::setCanonical($canonical);
-        // OpenGraph::setTitle($title);
-        // OpenGraph::setDescription($description);
-        // OpenGraph::setSiteName(Settings::selectSettings('name'));
-        // OpenGraph::addImage(asset(Settings::selectSettings('og_image')));
-        // OpenGraph::setUrl($canonical);
-        // OpenGraph::addProperty('type', 'article');
-
-        // $links = Menu::all();
-        // $locale = LaravelLocalization::getCurrentLocale();
-        // $lang_name = Language::where('code', $locale)->first()->name;
-        return view('mailstester.terms-of-service');//->with('lang_locale', $locale)->with('lang_name', $lang_name);
+        $guard = null;
+        $userdata = [];
+        if (Auth::guard($guard)->check()) {
+            $role = Auth::user()->role; 
+            $userdata['user_login'] = Auth::user();
+        }
+        return view('mailstester.terms-of-service')
+                ->with('userdata' ,$userdata);
     }
     
     
     // show Iframe css page 
     public function design()
     {
-        
-        // $title = translate('Home Page Title', 'seo');
-        // $description = translate('Home Page Description', 'seo');
-        // $keyword = translate('Home Page keywords', 'seo');
-        // $canonical = url()->current();
-        // SEOMeta::setTitle($title);
-        // SEOMeta::setDescription($description);
-        // SEOMeta::setKeywords($keyword);
-        // SEOMeta::setCanonical($canonical);
-        // OpenGraph::setTitle($title);
-        // OpenGraph::setDescription($description);
-        // OpenGraph::setSiteName(Settings::selectSettings('name'));
-        // OpenGraph::addImage(asset(Settings::selectSettings('og_image')));
-        // OpenGraph::setUrl($canonical);
-        // OpenGraph::addProperty('type', 'article');
-
-        // $links = Menu::all();
-        // $locale = LaravelLocalization::getCurrentLocale();
-        // $lang_name = Language::where('code', $locale)->first()->name;
-        return view('mailstester.design');//->with('lang_locale', $locale)->with('lang_name', $lang_name);
+        $guard = null;
+        $userdata = [];
+        if (Auth::guard($guard)->check()) {
+            $role = Auth::user()->role; 
+            $userdata['user_login'] = Auth::user();
+        }
+        return view('mailstester.design')
+                ->with('userdata' ,$userdata);
     }
     
     
     // show micro-payment page 
     public function micro_payment()
     {
-        
-        // $title = translate('Home Page Title', 'seo');
-        // $description = translate('Home Page Description', 'seo');
-        // $keyword = translate('Home Page keywords', 'seo');
-        // $canonical = url()->current();
-        // SEOMeta::setTitle($title);
-        // SEOMeta::setDescription($description);
-        // SEOMeta::setKeywords($keyword);
-        // SEOMeta::setCanonical($canonical);
-        // OpenGraph::setTitle($title);
-        // OpenGraph::setDescription($description);
-        // OpenGraph::setSiteName(Settings::selectSettings('name'));
-        // OpenGraph::addImage(asset(Settings::selectSettings('og_image')));
-        // OpenGraph::setUrl($canonical);
-        // OpenGraph::addProperty('type', 'article');
-
-        // $links = Menu::all();
-        // $locale = LaravelLocalization::getCurrentLocale();
-        // $lang_name = Language::where('code', $locale)->first()->name;
-        return view('mailstester.micro-payment');//->with('lang_locale', $locale)->with('lang_name', $lang_name);
+        $guard = null;
+        $userdata = [];
+        if (Auth::guard($guard)->check()) {
+            $role = Auth::user()->role; 
+            $userdata['user_login'] = Auth::user();
+        }
+        return view('mailstester.micro-payment')
+                ->with('userdata' ,$userdata);
     }
     // show FAQ page 
     public function faq()
     {
-        
-        // $title = translate('Home Page Title', 'seo');
-        // $description = translate('Home Page Description', 'seo');
-        // $keyword = translate('Home Page keywords', 'seo');
-        // $canonical = url()->current();
-        // SEOMeta::setTitle($title);
-        // SEOMeta::setDescription($description);
-        // SEOMeta::setKeywords($keyword);
-        // SEOMeta::setCanonical($canonical);
-        // OpenGraph::setTitle($title);
-        // OpenGraph::setDescription($description);
-        // OpenGraph::setSiteName(Settings::selectSettings('name'));
-        // OpenGraph::addImage(asset(Settings::selectSettings('og_image')));
-        // OpenGraph::setUrl($canonical);
-        // OpenGraph::addProperty('type', 'article');
-
-        // $links = Menu::all();
-        // $locale = LaravelLocalization::getCurrentLocale();
-        // $lang_name = Language::where('code', $locale)->first()->name;
-        return view('frontend.faq');//->with('lang_locale', $locale)->with('lang_name', $lang_name);
+        $guard = null;
+        $userdata = [];
+        if (Auth::guard($guard)->check()) {
+            $role = Auth::user()->role; 
+            $userdata['user_login'] = Auth::user();
+        }
+        return view('mailstester.faq')
+                ->with('userdata' ,$userdata);
     }
 
     // show SPF guide page 
     public function spf($type=null)
     {
-        //print($type); die;
-        // $title = translate('Home Page Title', 'seo');
-        // $description = translate('Home Page Description', 'seo');
-        // $keyword = translate('Home Page keywords', 'seo');
-        // $canonical = url()->current();
-        // SEOMeta::setTitle($title);
-        // SEOMeta::setDescription($description);
-        // SEOMeta::setKeywords($keyword);
-        // SEOMeta::setCanonical($canonical);
-        // OpenGraph::setTitle($title);
-        // OpenGraph::setDescription($description);
-        // OpenGraph::setSiteName(Settings::selectSettings('name'));
-        // OpenGraph::addImage(asset(Settings::selectSettings('og_image')));
-        // OpenGraph::setUrl($canonical);
-        // OpenGraph::addProperty('type', 'article');
-
-        // $links = Menu::all();
-        // $locale = LaravelLocalization::getCurrentLocale();
-        // $lang_name = Language::where('code', $locale)->first()->name;
+        
+        $guard = null;
+        $userdata = [];
+        if (Auth::guard($guard)->check()) {
+            $role = Auth::user()->role; 
+            $userdata['user_login'] = Auth::user();
+        }
         if($type!=null)
-            return view('frontend.spf-'.$type);//->with('lang_locale', $locale)->with('lang_name', $lang_name);
+            return view('frontend.spf-'.$type)->with('userdata' ,$userdata);
         else
-            return view('frontend.spf');//->with('lang_locale', $locale)->with('lang_name', $lang_name);
+            return view('frontend.spf')->with('userdata' ,$userdata);
     }
 
     // show SPF-DKIM-CHECK page 
     public function dkim_check($type=null)
     {
-        //print($type); die;
-        // $title = translate('Home Page Title', 'seo');
-        // $description = translate('Home Page Description', 'seo');
-        // $keyword = translate('Home Page keywords', 'seo');
-        // $canonical = url()->current();
-        // SEOMeta::setTitle($title);
-        // SEOMeta::setDescription($description);
-        // SEOMeta::setKeywords($keyword);
-        // SEOMeta::setCanonical($canonical);
-        // OpenGraph::setTitle($title);
-        // OpenGraph::setDescription($description);
-        // OpenGraph::setSiteName(Settings::selectSettings('name'));
-        // OpenGraph::addImage(asset(Settings::selectSettings('og_image')));
-        // OpenGraph::setUrl($canonical);
-        // OpenGraph::addProperty('type', 'article');
+        $guard = null;
+        $userdata = [];
+        if (Auth::guard($guard)->check()) {
+            $role = Auth::user()->role; 
+            $userdata['user_login'] = Auth::user();
+        }
+        return view('mailstester.dkim-check')
+                ->with('userdata' ,$userdata);
 
-        // $links = Menu::all();
-        // $locale = LaravelLocalization::getCurrentLocale();
-        // $lang_name = Language::where('code', $locale)->first()->name;
-        return view('frontend.dkim-check');//->with('lang_locale', $locale)->with('lang_name', $lang_name);
     }
 }

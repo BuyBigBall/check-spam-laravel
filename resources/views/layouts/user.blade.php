@@ -183,28 +183,8 @@
 
           </div>
 
-          <nav class="navbar navbar-light navbar-expand-sm navbar-center">
-              <ul class="navbar-nav mx-auto">
-                  <li class="nav-item">
-                      <a class="nav-link" href="/faq" target="_blank">FAQ</a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link" href="/contact" target="_blank">Give Feedback</a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link" href="/spf/" target="_blank">SPF Guides</a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link" href="/spf-dkim-check" target="_blank">SPF &amp; DKIM check</a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link" href="/json-api" target="_blank">API</a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link" href="/login" target="_blank">Log in</a>
-                  </li>
-              </ul>
-          </nav>
+          @include('layouts.footermenu');
+          
         </div>
       </div>
       <div class="row">

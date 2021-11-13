@@ -16,9 +16,9 @@
             </div>
             <div class="hikashopcpanel" id="hikashopcpanel">
                 <div
-                    onclick="document.location.href='/manager/login/profile.html?layout=edit';"
+                    onclick="document.location.href=\'{{ route('profile', 'edit') }}\'"
                     class="icon hikashop_cpanel_icon_div icon hikashop_cpanel_icon_div_user2">
-                    <a href="https://www.mail-tester.com/manager/login/profile.html?layout=edit">
+                    <a href="{{ route('profile', 'edit') }}">
                         <table class="hikashop_cpanel_icon_table">
                             <tbody>
                                 <tr>
@@ -41,9 +41,9 @@
                     </a>
                 </div>
                 <div
-                    onclick="document.location.href='/manager/account/address.html';"
+                    onclick="document.location.href='{{ route('address') }}';"
                     class="icon hikashop_cpanel_icon_div icon hikashop_cpanel_icon_div_address">
-                    <a href="https://www.mail-tester.com/manager/account/address.html">
+                    <a href="{{ route('address') }}">
                         <table class="hikashop_cpanel_icon_table">
                             <tbody>
                                 <tr>
@@ -64,9 +64,9 @@
                     </a>
                 </div>
                 <div
-                    onclick="document.location.href='/manager/account/order.html';"
+                    onclick="document.location.href='{{ route('order') }}';"
                     class="icon hikashop_cpanel_icon_div icon hikashop_cpanel_icon_div_order">
-                    <a href="https://www.mail-tester.com/manager/account/order.html">
+                    <a href="{{ route('order') }}">
                         <table class="hikashop_cpanel_icon_table">
                             <tbody>
                                 <tr>
@@ -87,10 +87,10 @@
                     </a>
                 </div>
                 <div
-                    onclick="document.location.href='/manager/account/cart/showcart/cart_type-cart.html';"
+                    onclick="document.location.href='{{ route('cart-type-cart') }}';"
                     class="icon hikashop_cpanel_icon_div icon hikashop_cpanel_icon_div_cart">
                     <a
-                        href="https://www.mail-tester.com/manager/account/cart/showcart/cart_type-cart.html">
+                        href="{{ route('cart-type-cart') }}">
                         <table class="hikashop_cpanel_icon_table">
                             <tbody>
                                 <tr>
@@ -111,9 +111,9 @@
                     </a>
                 </div>
                 <div
-                    onclick="document.location.href='/manager/account/affiliate.html';"
+                    onclick="document.location.href='{{ route('affiliate') }}'"
                     class="icon hikashop_cpanel_icon_div icon hikashop_cpanel_icon_div_affiliate">
-                    <a href="https://www.mail-tester.com/manager/account/affiliate.html">
+                    <a href="{{ route('affiliate') }}">
                         <table class="hikashop_cpanel_icon_table">
                             <tbody>
                                 <tr>
@@ -138,9 +138,6 @@
             </div>
         </div>
         <div class="clear_both"></div>
-        <!-- HikaShop Component powered by http://www.hikashop.com -->
-        <!-- version Business : 2.6.2 [1604182302] -->
-
     </div>
 </div>
 @endsection

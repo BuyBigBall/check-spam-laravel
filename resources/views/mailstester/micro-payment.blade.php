@@ -28,7 +28,7 @@
                     users.</p>
                 <h3>How does it work?</h3>
                 <p>Just like a regular test, make sure you send an email to
-                    <em>yourusername</em>-whateveryouwant[at]mail-tester.com and then display the iframe : /<em>yourusername</em>-whateveryouwant</p>
+                    <em>yourusername</em>-whateveryouwant[at]{{ Request::root() }} and then display the iframe : /<em>yourusername</em>-whateveryouwant</p>
                 <p>If the micro-payment mode
                     <a href="/get-started#micropaymentarea">is enabled on your account</a>, a
                     payment page will be displayed and the user will be able to purchase the test.</p>
@@ -56,7 +56,7 @@
                     European Union country) containing several tests, you can pick up 2 or 3 packs
                     and display them on the payment page assigned to your account.</p>
                 <p>Want to apply other prices?
-                    <a href="/contact">Get in touch with us!</a>
+                    <a href="{{ route('contact', '#contactus') }}">Get in touch with us!</a>
                 </p>
                 <h3>When will you get paid?</h3>
                 <p>Every 1st of the month, you will receive a payment of your commission to your

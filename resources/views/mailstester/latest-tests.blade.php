@@ -11,10 +11,10 @@
             <form
                 method="get"
                 target="_blank"
-                action="/check.php">
+                action="{{ route('check') }}">
                 Send your message to :
                 <input
-                    placeholder="chakouri-whateveryouwant@srv1.mail-tester.com"
+                    placeholder="chakouri-whateveryouwant@srv1.{{ ($request=Request::capture())->gethttphost() }}"
                     type="text"
                     name="id"
                     value="{{ $email }}" />

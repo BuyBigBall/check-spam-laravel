@@ -53,17 +53,17 @@
                     <li>
                         <a
                             target="_blank"
-                            href="/newdesign/waiting-page.php?site=chakouri">Waiting</a>
+                            href="{{ route('design/wait', $userdata['user_login']['name']) }}">Waiting</a>
                     </li>
                     <li>
                         <a
                             target="_blank"
-                            href="/newdesign/score.php?site=chakouri">Score</a>
+                            href="{{ route('design/score', $userdata['user_login']['name']) }}">Score</a>
                     </li>
                     <li>
                         <a
                             target="_blank"
-                            href="/newdesign/not-received.php?site=chakouri">Not received</a>
+                            href="{{ route('design/not-received', $userdata['user_login']['name']) }}">Not received</a>
                     </li>
                 </ul>
 

@@ -185,4 +185,16 @@ class SiteController extends Controller
                 ->with('userdata' ,$userdata);
 
     }
+
+    public function task_save(){ return null;}
+    public function checkout($price){ return $price;}
+    public function profile($type=null){ return $type;}
+    public function address(){return null;}
+    public function order(){return null;}
+    public function cart_type_cart(){return null;}
+    public function affiliate(){return null;}
+    public function check(){return null;}
+    public function design_wait($site){return $site;}
+    public function design_score($site){return $site;}
+    public function design_not_received($site){return $site;}
 }

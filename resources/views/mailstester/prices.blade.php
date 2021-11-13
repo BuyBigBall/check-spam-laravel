@@ -11,12 +11,12 @@
                     <li>
                         <strong>Integrate mail-tester results in your own application</strong>
                         either by using an iframe or
-                        <a href="https://www.mail-tester.com/manager/api-documentation.html">our JSON API</a>
+                        <a href="{{ route('json-api') }}">our JSON API</a>
                     </li>
                     <li>
                         <strong>Earn money by integrating mail-tester results</strong>
                         in your own application with our
-                        <a href="https://www.mail-tester.com/manager/micro-payment.html">micro-payment mode</a>
+                        <a href="{{ route('micro-payment') }}">micro-payment mode</a>
                     </li>
                     <li>Customize the CSS of the result page</li>
                     <li>
@@ -54,7 +54,7 @@
                                     <td>
                                         <a
                                             class="btn btn-primary"
-                                            href="https://www.mail-tester.com/manager/register.html">Register</a>
+                                            href="{{ route('register') }}">Register</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -64,7 +64,7 @@
                                     <td>
                                         <a
                                             class="btn btn-primary"
-                                            href="https://www.mail-tester.com/manager/component/hikashop/product/updatecart/quantity-1/checkout-1/cid-1.html">Add 500 tests</a>
+                                            href="{{ route('checkout', 500) }}">Add 500 tests</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -74,7 +74,7 @@
                                     <td>
                                         <a
                                             class="btn btn-primary"
-                                            href="https://www.mail-tester.com/manager/component/hikashop/product/updatecart/quantity-1/checkout-1/cid-2.html">Add 1 000 tests</a>
+                                            href="{{ route('checkout', 1000) }}">Add 1 000 tests</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -84,7 +84,7 @@
                                     <td>
                                         <a
                                             class="btn btn-primary"
-                                            href="https://www.mail-tester.com/manager/component/hikashop/product/updatecart/quantity-1/checkout-1/cid-3.html">Add 5 000 tests</a>
+                                            href="{{ route('checkout', 5000) }}">Add 5 000 tests</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -94,7 +94,7 @@
                                     <td>
                                         <a
                                             class="btn btn-primary"
-                                            href="https://www.mail-tester.com/manager/component/hikashop/product/updatecart/quantity-1/checkout-1/cid-4.html">Add 20 000 tests</a>
+                                            href="{{ route('checkout', 20000) }}">Add 20 000 tests</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -104,7 +104,7 @@
                                     <td>
                                         <a
                                             class="btn btn-primary"
-                                            href="https://www.mail-tester.com/manager/component/hikashop/product/updatecart/quantity-1/checkout-1/cid-5.html">Add 100 000 tests</a>
+                                            href="{{ route('checkout', 100000) }}">Add 100 000 tests</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -114,7 +114,7 @@
                                     <td>
                                         <a
                                             class="btn btn-primary"
-                                            href="https://www.mail-tester.com/manager/component/hikashop/product/updatecart/quantity-1/checkout-1/cid-6.html">Add 1 000 000 tests</a>
+                                            href="{{ route('checkout', 1000000) }}">Add 1 000 000 tests</a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -125,7 +125,7 @@
                 </div>
                 <p>If you occasionally perform manual tests, no need to create an account, you
                     can still use
-                    <a title="Mail-tester" href="https://www.mail-tester.com/">our web interface</a>!
+                    <a title="Mail-tester" href="{{ (Request::root())  }}">our web interface</a>!
                 </p>
             </div>
 

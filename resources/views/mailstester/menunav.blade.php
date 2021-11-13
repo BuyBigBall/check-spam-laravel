@@ -41,7 +41,7 @@
                     <a href="{{ route('terms-of-service') }}">Terms of service</a>
                 </li>
                 <li class="item-151 @if ($userdata['uri']=='contact') {{ 'current active' }} @endif">
-                    <a href="{{ route('contact').'#contactus' }}" target="_blank" rel="noopener noreferrer">Contact us</a>
+                    <a href="{{ route('contact', '#contactus') }}" target="_blank" rel="noopener noreferrer">Contact us</a>
                 </li>
             </ul>
 

@@ -114,7 +114,7 @@
                     <span class="testingEmail">chakouri-clientID-currenttimestamp</span>@mt.YOUR-DOMAIN.com .
                 </li>
                 <li>
-                    <a target="_blank" href="{{ route('contact') }}">Contact us</a>
+                    <a target="_blank" href="{{ route('contact', '#contactus') }}">Contact us</a>
                     so we can add your sub-domain to our mail server.
                 </li>
             </ul>
@@ -132,7 +132,7 @@
                         https://result.YOUR-DOMAIN.com/<span class="testingEmail">chakouri-clientID-currenttimestamp</span>
                 </li>
                 <li>
-                    <a target="_blank" href="{{ route('contact') }}">Contact us</a>
+                    <a target="_blank" href="{{ route('contact', '#contactus') }}">Contact us</a>
                     so we can add your sub-domain to our SSL certificate.
                 </li>
             </ul>

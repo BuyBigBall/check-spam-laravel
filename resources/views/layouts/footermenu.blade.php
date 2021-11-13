@@ -4,7 +4,7 @@
             <a class="nav-link" href="{{ route('faq') }}" target="_blank">FAQ</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('contact') }}" target="_blank">Give Feedback</a>
+            <a class="nav-link" href="{{ route('contact', '#contactus' ) }}" target="_blank">Give Feedback</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="{{ route('spf') }}" target="_blank">SPF Guides</a>

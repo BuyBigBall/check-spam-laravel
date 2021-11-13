@@ -116,37 +116,30 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
     }
 
     Route::get('/', 'TrashMailController@index')->name("home");
-
     Route::get('/index', 'TrashMailController@index')->name("index");
-
     Route::get('/messages', 'TrashMailController@messages')->name("messages");
-
     Route::get('/change', 'TrashMailController@change')->name("change");
-
-
     Route::get('/view/{id}', 'TrashMailController@show')->name("view");
-
     Route::get('/message/{id}', 'TrashMailController@message')->name("message");
-
     Route::get('/page/{slug}', 'PageController@show')->name("page");
 
-    Route::get('/contact', 'ContactController@index')->name('contact');
-    Route::get('/faq', 'Mailstester\SiteController@faq')->name("faq");
-    Route::get('/spf', 'Mailstester\SiteController@spf')->name("spf");
-    Route::get('/spf-detail/{type}', 'Mailstester\SiteController@spf')->name("spf-detail");
-    Route::get('/spf-dkim-check', 'Mailstester\SiteController@dkim_check')->name("spf-dkim-check");
+    Route::get('/contact',              'ContactController@index')->name('contact');
+    Route::get('/faq',                  'Mailstester\SiteController@faq')->name("faq");
+    Route::get('/spf',                  'Mailstester\SiteController@spf')->name("spf");
+    Route::get('/spf-detail/{type}',    'Mailstester\SiteController@spf')->name("spf-detail");
+    Route::get('/spf-dkim-check',       'Mailstester\SiteController@dkim_check')->name("spf-dkim-check");
 
-    Route::post('/spamtest', 'Mailstester\SpamTestController@index')->name("spamtest");
-    Route::post('/profile', 'Mailstester\LoginController@profile_view')->name("profile_view");
-    Route::post('/profile-save', 'Mailstester\LoginController@profile_save')->name("profile_save");
-    Route::get('/register', 'Mailstester\LoginController@register')->name("register");
-    Route::get('/forgot/{type}', 'Mailstester\LoginController@forgot')->name("forgot");
-    Route::get('/prices', 'Mailstester\SiteController@index')->name("prices");
-    Route::get('/json-api', 'Mailstester\SiteController@json_api')->name("json-api");
+    Route::post('/spamtest',        'Mailstester\SpamTestController@index')->name("spamtest");
+    Route::post('/profile',         'Mailstester\LoginController@profile_view')->name("profile_view");
+    Route::post('/profile-save',    'Mailstester\LoginController@profile_save')->name("profile_save");
+    Route::get('/register',         'Mailstester\LoginController@register')->name("register");
+    Route::get('/forgot/{type}',    'Mailstester\LoginController@forgot')->name("forgot");
+    Route::get('/prices',           'Mailstester\SiteController@index')->name("prices");
+    Route::get('/json-api',         'Mailstester\SiteController@json_api')->name("json-api");
 
-    Route::get('/latest-tests', 'Mailstester\SiteController@latest_tests')->name("latest-tests");
-    Route::get('/design', 'Mailstester\SiteController@design')->name("design");
-    Route::get('/micro-payment', 'Mailstester\SiteController@micro_payment')->name("micro-payment");
+    Route::get('/latest-tests',     'Mailstester\SiteController@latest_tests')->name("latest-tests");
+    Route::get('/design',           'Mailstester\SiteController@design')->name("design");
+    Route::get('/micro-payment',    'Mailstester\SiteController@micro_payment')->name("micro-payment");
     Route::get('/terms-of-service', 'Mailstester\SiteController@terms_of_service')->name("terms-of-service");
 
     # --> never necessory call these, but for test using
@@ -154,9 +147,23 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
     // Route::post('/login', 'Mailstester\LoginController@loginchk')->name("loginchk");
     # <------------------
     Route::group(['middleware' => ['auth']], function () {
-        Route::get('/account', 'Mailstester\SiteController@account')->name("account");
-        Route::get('/get-started', 'Mailstester\SiteController@started')->name("get-started");
-        Route::get('/task-save', 'Mailstester\SiteController@started')->name("task-save");
+        Route::get('/account',          'Mailstester\SiteController@account')->name("account");
+        Route::get('/get-started',      'Mailstester\SiteController@started')->name("get-started");
+        Route::get('/task-save',        'Mailstester\SiteController@task_save')->name("task-save");
+        Route::get('/checkout/{price}', 'Mailstester\SiteController@checkout')->name("checkout");
+        Route::get('/profile/{type}',   'Mailstester\SiteController@profile')->name("profile");
+        Route::get('/address',          'Mailstester\SiteController@address')->name("address");
+        Route::get('/order',            'Mailstester\SiteController@order')->name("order");
+        Route::get('/cart-type-cart',   'Mailstester\SiteController@cart_type_cart')->name("cart-type-cart");
+        Route::get('/affiliate',        'Mailstester\SiteController@affiliate')->name("affiliate");
+        Route::get('/check',            'Mailstester\SiteController@check')->name("check");
+
+        Route::get('/design/wait/{site}',   'Mailstester\SiteController@design_wait')->name("design/wait");
+        Route::get('/design/score/{site}',   'Mailstester\SiteController@design_score')->name("design/score");
+        Route::get('/design/not-received/{site}',   'Mailstester\SiteController@design_not_received')->name("design/not-received");
+        
+        Route::get('/dbug-example',     'Mailstester\SiteController@dbug_example')->name("dbug-example");
+        Route::get('/aaweb-pDrqwp',     'Mailstester\SiteController@aaweb_pdrqwp')->name("aaweb-pDrqwp");
         
     });
 });

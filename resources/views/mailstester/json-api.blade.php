@@ -27,11 +27,11 @@
                 <h2 id="how-to" class="question">How to use the Mail-Tester JSON API?</h2>
                 <div class="answer">
                     <p>First send an email to
-                        <em>yourusername</em>-whateveryouwant[at]mail-tester.com (<em>yourusername</em>
+                        <em>yourusername</em>-whateveryouwant[at]{{ ($request=Request::capture())->gethttphost() }} (<em>yourusername</em>
                         should be replaced by your own username!)</p>
                     <p>Then to use our API, call Mail-tester with this url:</p>
                     <p style="text-align: center;">
-                        <strong>https://www.mail-tester.com/yourusername-</strong>
+                        <strong>{{ Request::root() }}/yourusername-</strong>
                         <strong>whateveryouwant&amp;format=json</strong>
                     </p>
                     <p>You can obviously replace "whateveryouwant" by everything you want... Please
@@ -43,15 +43,16 @@
                         <strong>jQuery's function getJson</strong>
                         but you can use whatever you prefer:</p>
                     <pre style="margin: auto; max-width: 644px;">
-                        $.getJSON("https://www.mail-tester.com/aaweb-pDrqwp&amp;format=json", function(data){
-                            if(data.status==false){
-                                document.write(data.title);
-                                return;
-                            }
-                            $.each(data, function(key, value){
-                                document.write(key+": "+value+"&lt;br/&gt;"); 
-                                });
-                            });
+<!-- this code must be no indent -->
+$.getJSON("{{ Request::root() }}/aaweb-pDrqwp&amp;format=json", function(data){
+    if(data.status==false){
+        document.write(data.title);
+        return;
+    }
+    $.each(data, function(key, value){
+        document.write(key+": "+value+"&lt;br/&gt;"); 
+        });
+    });
                     </pre>
                     <p>If you don't want to waste time performing tests you don't need, you can add
                         <strong>&amp;test=key</strong>
@@ -78,7 +79,7 @@
                         <strong>&amp;format=dbug</strong>, you will indeed be able to visualize
                         everything we return concerning your newsletter through a flexible interface.
                         Want an example?
-                        <a href="https://www.mail-tester.com/dbug-example">Check this out!</a>
+                        <a href="{{ Request::root() }}/dbug-example">Check this out!</a>
                     </p>
                     <p>With this visualization, you can also click on the name of the variables (for
                         example spamAssassin), to hide or display this part of the object. You can thus
@@ -99,7 +100,7 @@
                         more.</p>
                     <p>Since we have implemented dBug in our API, the best way to have a good vision
                         of what the API returns is to look at an example processed with dBug.
-                        <a href="https://www.mail-tester.com/dbug-example">So here is the result for one of our fabulous mail.</a>
+                        <a href="{{ Request::root() }}/dbug-example">So here is the result for one of our fabulous mail.</a>
                     </p>
                     <p>If the variables' name are not clear enough for you, you can still take a
                         look at our short sum-up about it.</p>

@@ -173,7 +173,7 @@
             @if ($setdata['enable_blog'])
             <a href="{{route('blog')}}">{{ translate('Blog')}}</a>
             @endif
-            <a href="{{route('contact')}}">{{ translate('Contact Us')}}</a>
+            <a href="{{route('contact', '#contactus')}}">{{ translate('Contact Us')}}</a>
 
             @foreach ($links as $link)
               @if($link->postion)

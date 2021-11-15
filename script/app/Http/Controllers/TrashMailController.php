@@ -12,9 +12,7 @@ use Vinkla\Hashids\Facades\Hashids;
 use Carbon\Carbon;
 use Artesaos\SEOTools\Facades\SEOMeta;
 use Artesaos\SEOTools\Facades\OpenGraph;
-
-
-
+use App\Http\Controllers\Mailstester\SpamTestController;
 
 
 class TrashMailController extends Controller
@@ -37,6 +35,10 @@ class TrashMailController extends Controller
         OpenGraph::addImage(asset(Settings::selectSettings('og_image')));
         OpenGraph::setUrl($canonical);
         OpenGraph::addProperty('type', 'article');
+
+
+        // $mailTester = new SpamTestController("");
+        // $mailTester->createMailAddress();
         return view('frontend.index');
     }
 

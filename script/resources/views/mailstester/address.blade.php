@@ -1,34 +1,28 @@
-<div class="modal fade" id="practice_modal">
+<style>
+#practice_modal {
+    height: 480px;
+    top: 20px;
+    padding-right: 0px !important;
+    opacity: 1;
+}
+</style>
+
+<div class="modal fade" id="practice_modal" style='opacity:1'>
     <div class="modal-dialog">
-        <form id="companydata">
-            <div class="modal-content">
-            <input type="hidden" id="color_id" name="color_id" value="">
-            <div class="modal-body">
-                <input type="text" name="name" id="name" value="" class="form-control">
-            </div>
-            <input type="submit" value="Submit" id="submit" class="btn btn-sm btn-outline-danger py-0" style="font-size: 0.8em;">
-        </div>
-        </form>
-    </div>
-</div>
-
-
-<div class="contentpane modal" id="com_hikashop_address_form"  role="dialog" style='height:auto;'>
-    <div class="modal-dialog" role="document" style='margin:1px;'>
-        <div class="modal-header">
-            <h1 id="hikashop_address_form_header_iframe"
+        <div class="modal-header" style='border:none;'>
+            <h3 id="hikashop_address_form_header_iframe"
                 style='margin-bottom:0px; border:none;'>
                 Address information</h1>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <!-- <span aria-hidden="true">&times;</span> -->
             </button>
         </div>
-        <div class="modal-body">    
+        <div class="modal-content">
             <div id="system-message-container"></div>
-            <div id="hikashop_address_form_span_iframe">
+            <div id="hikashop_address_form_span_iframe" style="padding:20px;">
                 <form
                     action="{{ route('save-address') }}"
                     method="post"
+                    id="hikashop_address_form"
                     name="hikashop_address_form"
                     enctype="multipart/form-data">
                     @csrf
@@ -43,7 +37,6 @@
                                 <td><input
                                     class="inputbox"
                                     id="address_firstname"
-                                    onchange="hikashopToggleFields(this.value,'firstname','address',0);"
                                     type="text"
                                     name="firstname"
                                     value="Samir"/>
@@ -59,7 +52,6 @@
                                 <td><input
                                     class="inputbox"
                                     id="address_lastname"
-                                    onchange="hikashopToggleFields(this.value,'lastname','address',0);"
                                     type="text"
                                     name="lastname"
                                     value="Chakouri"/>
@@ -75,7 +67,6 @@
                                 <td><input
                                     class="inputbox"
                                     id="address_company"
-                                    onchange="hikashopToggleFields(this.value,'company','address',0);"
                                     type="text"
                                     name="company"
                                     value=""/></td>
@@ -88,7 +79,6 @@
                                     class="inputbox"
                                     id="address_vat"
                                     placeholder="For European Companies only"
-                                    onchange="hikashopToggleFields(this.value,'vatnum','address',0);"
                                     type="text"
                                     name="vatnum"
                                     value=""/></td>
@@ -102,7 +92,6 @@
                                 <td><input
                                     class="inputbox"
                                     id="address_street"
-                                    onchange="hikashopToggleFields(this.value,'address','address',0);"
                                     type="text"
                                     name="address"
                                     value="Calle julio colomer 29"/>
@@ -118,7 +107,6 @@
                                 <td><input
                                     class="inputbox"
                                     id="address_post_code"
-                                    onchange="hikashopToggleFields(this.value,'postcode','address',0);"
                                     type="text"
                                     name="postcode"
                                     value="46910"/></td>
@@ -132,7 +120,6 @@
                                 <td><input
                                     class="inputbox"
                                     id="address_city"
-                                    onchange="hikashopToggleFields(this.value,'city','address',0);"
                                     type="text"
                                     name="city"
                                     value="Alfafar"/>
@@ -148,12 +135,11 @@
                                 <td><input
                                     class="inputbox"
                                     id="address_telephone"
-                                    onchange="hikashopToggleFields(this.value,'telephone','address',0);"
                                     type="text"
                                     name="telephone"
                                     value=""/></td>
                             </tr>
-                            <tr
+                            <tr style='display:none;'
                                 class="hikashop_address_address_country_line"
                                 id="hikashop_address_address_country">
                                 <td class="key">
@@ -164,11 +150,10 @@
                                         id="address_country"
                                         name="country"
                                         size="1"
-                                        onchange="changeCountry(this);hikashopToggleFields(this.value,'country','address',0);"
                                         class="hikashop_field_dropdown"></select>
                                 </td>
                             </tr>
-                            <tr
+                            <tr style='display:none;'
                                 class="hikashop_address_address_state_line"
                                 id="hikashop_address_address_state">
                                 <td class="key">
@@ -205,19 +190,11 @@
                         name="ok"
                         value="OK"
                         onclick="var field=document.getElementById('hikashop_product_quantity_field_1');if(hikashopCheckChangeForm('address','hikashop_address_form')) document.forms['hikashop_address_form'].submit(); return false;"/>
+                     <button class="btn button close"  data-dismiss="modal" aria-label="Close">
+                         Cancel
+                    </button>
                 </form>
-            </div>
-            <div class="clear_both"></div>
+            </div>    
         </div>
     </div>
 </div>
-
-<script>
-function hikashopToggleFields(new_value, namekey, field_type, id, prefix) {
-	// if(!window.hikashop)
-	// 	return false;
-	// if(!window.hikashop.fields_data && window.hikashopFieldsJs)
-	// 	window.hikashop.fields_data = window.hikashopFieldsJs;
-	// return window.hikashop.toggleField(new_value, namekey, field_type, id, prefix);
-}
-    </script>

@@ -136,6 +136,9 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
 
     Route::get('/forgot/{type}',    'Mailstester\LoginController@forgot')->name("forgot");
     Route::get('/prices',           'Mailstester\SiteController@index')->name("prices");
+    Route::post('/buy_mail_test', 'Mailstester\SiteController@buy_mail_test')->name('buy_mail_test');
+    Route::get('/payment_status', 'Mailstester\SiteController@payment_status')->name('payment_status');
+
     Route::get('/json-api',         'Mailstester\SiteController@json_api')->name("json-api");
 
     Route::get('/latest-tests',     'Mailstester\SiteController@latest_tests')->name("latest-tests");
@@ -167,7 +170,8 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
         Route::get('/aaweb-pDrqwp',     'Mailstester\SiteController@aaweb_pdrqwp')->name("aaweb-pDrqwp");
         Route::post('/save-account',     'Mailstester\SiteController@save_account')->name("save-account");
         Route::post('/save-address',     'Mailstester\SiteController@save_address')->name("save-address");
-                
+        Route::get('/getmemInfo/{userid}',     'Mailstester\SiteController@ajax_getmemInfo')->name("getmemInfo");
+        
     });
 });
 }

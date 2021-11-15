@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use App\Models\Settings;
-// use App\Models\TrashMail;
+use App\Models\Profile;
 // use Illuminate\Support\Str;
 // use Illuminate\Support\Facades\Cache;
 // use Vinkla\Hashids\Facades\Hashids;
@@ -18,6 +18,9 @@ use App\Models\Menu;
 use \Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use App\Models\Language;
 use Illuminate\Support\Facades\Auth;
+use Srmklive\PayPal\Services\PayPal as PayPalClient;
+use Stripe\Checkout\Session as StripeSession;
+use Stripe\Stripe;
 
 class SiteController extends Controller
 {
@@ -33,6 +36,124 @@ class SiteController extends Controller
         }
         return view('mailstester.prices')->with('userdata' ,$userdata);
         
+    }
+
+    public function buy_mail_test(Request $request){
+        $guard = null;
+        $userdata = [];
+        if (Auth::guard($guard)->check()) {
+            $userdata = Auth::user();
+        }else{
+            return redirect(route('prices'));
+        }
+
+        $payment_method = $request->buyMode;
+        $price = $request->price;
+        $qty = $request->qty;
+
+        if($payment_method == 'paypal'){ 
+            // paypal ---------------------------------------
+            $provider = new PayPalClient([]);
+            $provider->getAccessToken();
+
+            $result = $provider->createOrder([
+                "intent"=> "CAPTURE",
+                "purchase_units"=> [
+                    0 => [
+                        "amount"=> [
+                            "currency_code"=> "EUR",
+                            "value"=> strval(round($price,2))
+                        ]
+                    ]
+                ],
+                "application_context" => [
+                    "cancel_url" => route('prices'),
+                    "return_url" => route('payment_status')
+                ] 
+            ]);
+            session()->put('Order_method_'.$userdata['id'],$payment_method);
+            session()->put('Order_id_'.$userdata['id'],$result['id']);
+            session()->put('Order_qty_'.$userdata['id'],$qty);
+            foreach($result['links'] as $l){
+                if($l['rel'] == 'approve'){
+                    return redirect($l['href']);
+                }            
+            }
+            session()->flash('error', translate('Some error occur, sorry for inconvenient.'));
+            return redirect(route('prices'));
+        }else{ 
+            // stripe -----------------------------------------
+            Stripe::setApiKey(env('STRIPE_SECRET'));
+
+            $Checkout = StripeSession::create([
+                'payment_method_types' => ['card'],
+                'line_items' => [[
+                    'price_data' => [
+                        'currency' => 'EUR',
+                        'unit_amount' => $price*100,
+                        'product_data' => [
+                            'name' => 'mail test',
+                        ],
+                    ],
+                    'quantity' => 1,
+                ]],
+                'mode' => 'payment',
+                'success_url' => route('payment_status') . '?session_id={CHECKOUT_SESSION_ID}',
+                'cancel_url' => route('prices'),
+            ]);
+
+            session()->put('Order_method_'.$userdata['id'],$payment_method);
+            session()->put('Order_qty_'.$userdata['id'],$qty);
+            
+            if(isset($Checkout->id)){
+                session()->put('Order_id_'.$userdata['id'],$Checkout->id);
+                $Html = '<script src="https://js.stripe.com/v3/"></script>';
+                $Html.= '<script type="text/javascript">let stripe = Stripe("'.env('STRIPE_KEY').'");';
+                $Html.= 'stripe.redirectToCheckout({ sessionId: "'.$Checkout->id.'" }); </script>';
+                echo $Html;
+            }else{
+                return redirect(route('prices'));
+            }
+        }
+    }
+
+    public function payment_status(Request $request){
+        $guard = null;
+        $userdata = [];
+        if (Auth::guard($guard)->check()) {
+            $userdata = Auth::user();
+        }else{
+            return redirect(route('prices'));
+        }
+        $payment_method = session()->get('Order_method_'.$userdata['id']);
+
+        if($payment_method == 'paypal'){ 
+            // paypal status ---------------------------------
+            $orderID = session()->get('Order_id_'.$userdata['id']);
+            $qty = session()->get('Order_qty_'.$userdata['id']);
+            $provider = new PayPalClient([]);
+            $provider->getAccessToken();
+            $response = $provider->capturePaymentOrder($orderID);
+            if($response['status'] == 'COMPLETED'){
+                return redirect(route('checkout', $qty));
+            }else{
+                session()->flash('error', translate('Payment failed.'));
+                return redirect(route('prices'));
+            } 
+        }else{
+            // stripe status ---------------------------------
+            $orderID = session()->get('Order_id_'.$userdata['id']);
+            $qty = session()->get('Order_qty_'.$userdata['id']);
+            if(isset($orderID) && isset($request->session_id)){
+                Stripe::setApiKey(env('STRIPE_SECRET'));
+                $session = StripeSession::retrieve($request->session_id);
+                if($session && $session->payment_status == 'paid'){
+                    return redirect(route('checkout', $qty));
+                }
+            }
+            session()->flash('error', translate('Payment failed.'));
+            return redirect(route('prices'));
+        }         
     }
 
 
@@ -204,7 +325,19 @@ class SiteController extends Controller
         return view($viewpage)->with('userdata' ,$userdata);        
 }
 
+public function ajax_getmemInfo($userid){
+    $guard = null;
+    $userdata = [];
+    if (Auth::guard($guard)->check()) {
+        $role = Auth::user()->role; 
+        $userdata = Auth::user();
+    }
 
+    $user_profile = [];
+    if(($user_profile = Profile::selectUserProfile($userid)))
+        $userdata = $userdata  + $user_profile;
+    print(json_encode($userdata));die;
+}
 public function save_account(){ return null;}
 public function save_address(){ return null;}
 public function save_configure(){ return null;}

@@ -92,8 +92,42 @@
 <script>
     function showModal()
     {
-        $('#com_hikashop_address_form').modal('show');
-        //$('#practice_modal').modal('show');
+        var url = "{{ route('getmemInfo', $userdata['user_login']['id'])}}";
+        $.ajax({
+        url: url,
+        dataType: "text",
+        cache: false,
+        contentType: false,
+        processData: false,
+        type: "get",
+        success: function (data) {
+            $('#address_firstname').val('');
+            $('#address_lastname').val('');
+            $('#address_company').val('');
+            $('#address_vat').val('');
+            $('#address_street').val('');
+            $('#address_post_code').val('');
+            $('#address_city').val('');
+            $('#address_telephone').val('');
+            $('#address_country').val('');
+            $('#data_address_address_state').val('');
+
+            var ujson = JSON.parse(data);
+            if(ujson.firstname && typeof ujson.firstname!="undefined")        $('#address_firstname').val(ujson.firstname);
+            if(ujson.lastname && typeof ujson.lastname!="undefined")          $('#address_lastname').val(ujson.lastname);
+            if(ujson.company && typeof ujson.company!="undefined")            $('#address_company').val(ujson.company);
+            if(ujson.vatnum && typeof ujson.vatnum!="undefined")              $('#address_vat').val(ujson.vatnum);
+            if(ujson.address && typeof ujson.address!="undefined")            $('#address_street').val(ujson.address);
+            if(ujson.postcode && typeof ujson.postcode!="undefined")          $('#address_post_code').val(ujson.postcode);
+            if(ujson.city && typeof ujson.city!="undefined")                  $('#address_city').val(ujson.city);
+            if(ujson.telephone && typeof ujson.telephone!="undefined")        $('#address_telephone').val(ujson.telephone);
+            //   if(ujson.country && typeof ujson.firstname!="undefined")       $('#address_country').val(ujson.country);
+            //   if(ujson.state && typeof ujson.firstname!="undefined")         $('#data_address_address_state').val(ujson.state);
+            $('#practice_modal').modal('show');
+        
+        },
+      });
+        
     }
 </script>
 @include('mailstester.address')

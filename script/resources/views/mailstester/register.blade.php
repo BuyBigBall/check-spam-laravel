@@ -117,15 +117,17 @@
                                     required="required"/>
                                 <span style='color:red'>*</span>
                             </div>
+                            @if( !empty($RECAPTCHA_SITE_KEY) )
                             <div class="recaptcha">
                                 <label></label>
                                 <div
                                     id="g-recaptcha"
                                     class="g-recaptcha"
-                                    data-sitekey="6LdTlhsTAAAAAMRX7AdyzxpY8I8f0BcleOpi2OtA"
+                                    data-sitekey="{{ $RECAPTCHA_SITE_KEY }}"
                                     data-theme="light"></div>
                                 <input type="hidden" onclick="checkRecaptcha();" value="submit"></input>
                             </div>
+                            @endif
                         </div>
 
                         <div class="control-group hikashop_registration_required_info_line">
@@ -157,6 +159,7 @@
 
 @section('register-script')
 
+@if( !empty($RECAPTCHA_SITE_KEY) )
 <script src='https://www.google.com/recaptcha/api.js' async defer></script>
 <script> 
 function checkRecaptcha() {
@@ -177,12 +180,13 @@ function backend_API_challenge() {
     $.ajax({
         type: "POST",
         url: 'https://www.google.com/recaptcha/api/siteverify',
-        data: {"secret" : "6LdRSisdAAAAAD-Kuo3O-HEwBYb_XwdmGdL1HBlM", "response" : response, "remoteip":"localhost"},
+        data: {"secret" : {{ $RECAPTCHA_SECRET_KEY }}, "response" : response, "remoteip":"localhost"},
         contentType: 'application/x-www-form-urlencoded',
         success: function(data) { console.log(data); }
     });
 }
 </script>
+@endif
 
 <script>
     $(document).on('ready', function () {

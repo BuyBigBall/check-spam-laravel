@@ -51,4 +51,16 @@ class Profile extends Authenticatable
         'created_at' => 'datetime',
         'updated_at' => 'timestamp',
     ];
+
+    
+    // get setting by key
+    public static function selectUserProfile($userid)
+    {
+        $profile = Profile::where('user_id', $userid)->first();
+        if ($profile) {
+            return $profile->value;
+        }
+        return false;
+    }
+
 }

@@ -62,9 +62,7 @@
                                     <td>50 €</td>
                                     <td>0.100 €</td>
                                     <td>
-                                        <a
-                                            class="btn btn-primary"
-                                            href="{{ route('checkout', 500) }}">Add 500 tests</a>
+                                        <a class="btn btn-primary" onclick="showBuyModal('50','500')">Add 500 tests</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -72,9 +70,7 @@
                                     <td>80 €</td>
                                     <td>0.080 €</td>
                                     <td>
-                                        <a
-                                            class="btn btn-primary"
-                                            href="{{ route('checkout', 1000) }}">Add 1 000 tests</a>
+                                        <a class="btn btn-primary" onclick="showBuyModal('80','1000')">Add 1 000 tests</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -82,9 +78,7 @@
                                     <td>250 €</td>
                                     <td>0.050 €</td>
                                     <td>
-                                        <a
-                                            class="btn btn-primary"
-                                            href="{{ route('checkout', 5000) }}">Add 5 000 tests</a>
+                                        <a class="btn btn-primary" onclick="showBuyModal('250','5000')">Add 5 000 tests</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -92,9 +86,7 @@
                                     <td>700 €</td>
                                     <td>0.035 €</td>
                                     <td>
-                                        <a
-                                            class="btn btn-primary"
-                                            href="{{ route('checkout', 20000) }}">Add 20 000 tests</a>
+                                        <a class="btn btn-primary" onclick="showBuyModal('700','20000')">Add 20 000 tests</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -102,9 +94,7 @@
                                     <td>2 500 €</td>
                                     <td>0.025 €</td>
                                     <td>
-                                        <a
-                                            class="btn btn-primary"
-                                            href="{{ route('checkout', 100000) }}">Add 100 000 tests</a>
+                                        <a class="btn btn-primary" onclick="showBuyModal('2500','100000')">Add 100 000 tests</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -112,9 +102,7 @@
                                     <td>20 000 €</td>
                                     <td>0.020 €</td>
                                     <td>
-                                        <a
-                                            class="btn btn-primary"
-                                            href="{{ route('checkout', 1000000) }}">Add 1 000 000 tests</a>
+                                        <a class="btn btn-primary" onclick="showBuyModal('20000','1000000')">Add 1 000 000 tests</a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -133,4 +121,54 @@
 
     </div>
 </div>
+
+<!-- Modal -->
+<style>
+.input-stripe {
+    margin-left: 50px !important;
+}  
+.buy-mode {
+    margin-top: 0px !important;
+}  
+#buyModal {
+    height: 280px;
+    top: 20px;
+    padding-right: 0px !important;
+    opacity: 1;
+}
+</style>
+<div class="modal fade" id="buyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <form class="form-horizontal" method="POST" id="payment-form" role="form" action="{!! URL::route('buy_mail_test') !!}" >
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Select payment method</h4>
+                </div>
+                <div class="modal-body">
+                    @csrf
+                    <input type="hidden" id="mail_price" name="price" value="0">
+                    <input type="hidden" id="mail_qty" name="qty" value="0">
+                    <input type="radio" class="buy-mode" checked id="mode-1" value="paypal" name="buyMode">
+                    &nbsp;
+                    <label class="radio-label" for="mode-1">Paypal</label>
+
+                    <input type="radio" class="buy-mode input-stripe" id="mode-2" value="stripe" name="buyMode">
+                    &nbsp;
+                    <label class="radio-label" for="mode-2">Stripe</label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Pay</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+function showBuyModal(price,qty){
+    $('#mail_price').val(price);
+    $('#mail_qty').val(qty);
+    $('#buyModal').modal('show');
+}
+</script>
 @endsection

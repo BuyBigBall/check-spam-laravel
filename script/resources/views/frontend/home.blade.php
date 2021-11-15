@@ -23,7 +23,7 @@
           <div class="home-btn">
             <div class="row align-items-center">
               <div class="col text-center"><a href="{{route('home')}}" class="btn btn-1"><i class="fas fa-redo-alt"></i> {{translate('Refresh')}}</a></div>
-              <div class="col text-center"><a href="{{route('change')}}" class="btn btn-1"><i class="fas fa-pencil-alt"></i> {{translate('Change')}}</a></div>
+              <div class="col text-center"><a href="{{route('change','#changeaccount')}}" class="btn btn-1"><i class="fas fa-pencil-alt"></i> {{translate('Change')}}</a></div>
               <div class="col text-center"><a 
                 @if(Cookie::has('count') && Cookie::get('count') >= 5)
                   data-toggle="modal" data-target="#check_bot"

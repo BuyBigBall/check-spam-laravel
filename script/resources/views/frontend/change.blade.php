@@ -4,7 +4,7 @@
 
 @include('frontend.home')
 <!-- Change Section Start -->
-<section class="view section-padding view_rtl">
+<section class="view section-padding view_rtl" id="changeaccount">
   <div class="container">
     <div class="row">
       <div class="col-md-2 col-sm-12 unvisible">

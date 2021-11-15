@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Mailstester;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
+use App\Models\Settings;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -55,7 +56,21 @@ class RegisterController extends Controller
             $userdata['user_login'] = Auth::user();
             return redirect( route('account') );
         }
-        return view('mailstester.register')->with('userdata', $userdata);
+
+        if (    Str::length(Settings::selectSettings("RECAPTCHA_SECRET_KEY")) > 0 &&
+                Str::length(Settings::selectSettings("RECAPTCHA_SITE_KEY")) > 0 
+            ) {
+            $RECAPTCHA_SITE_KEY = Settings::selectSettings("RECAPTCHA_SITE_KEY");
+            $RECAPTCHA_SECRET_KEY = Settings::selectSettings("RECAPTCHA_SECRET_KEY");
+        } else {
+            $RECAPTCHA_SITE_KEY = '';
+            $RECAPTCHA_SECRET_KEY = '';
+        }
+
+        return view('mailstester.register')
+                ->with('RECAPTCHA_SITE_KEY', $RECAPTCHA_SITE_KEY)
+                ->with('RECAPTCHA_SECRET_KEY', $RECAPTCHA_SECRET_KEY)
+                ->with('userdata', $userdata);
         
     }
 

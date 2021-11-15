@@ -7,7 +7,7 @@
         <img alt="image" src="{{asset(auth()->user()->avater)}}" class="rounded-circle mr-1">
         <div class="d-sm-none d-lg-inline-block">{{__('Hi')}}, {{auth()->user()->name}} </div></a>
         <div class="dropdown-menu dropdown-menu-right">
-          <a href="{{route('profile')}}" class="dropdown-item has-icon">
+          <a href="{{route('profile', 'account')}}" class="dropdown-item has-icon">
             <i class="far fa-user"></i> {{__('Profile')}}
           </a>
           <div class="dropdown-divider"></div>

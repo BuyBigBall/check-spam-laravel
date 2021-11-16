@@ -18,6 +18,8 @@ use Artesaos\SEOTools\Facades\OpenGraph;
 use App\Models\Menu;
 use \Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use App\Models\Language;
+use DomDocument;
+use SimpleXMLElement;
 use Exception;
  
 class SpamTestController extends Controller
@@ -93,123 +95,6 @@ class SpamTestController extends Controller
         return $xmldoc;
     }
 
-
-    /**
-     * Returns DOM object representing request for information about all available domains
-     * @return DOMDocument
-     */
-    
-    public function createMailNodeRequest($username, $site_id, $mail_address, $mail_password=null)
-    {
-        /*
-        <?xml version="1.0" encoding="UTF-8"?>
-        <packet>
-        <mail>
-        <create>
-        <filter>
-            <site-id>1</site-id>
-            <mailname>
-                <name>techdept11</name>
-                <mailbox>
-                        <enabled>true</enabled>
-                        <quota>1024000</quota>
-                </mailbox>
-                <forwarding>
-                        <enabled>true</enabled>
-                        <address>paul555@testdomain.tst</address>
-                </forwarding>
-                <alias>michael555</alias>
-                <autoresponder>
-                        <enabled>true</enabled>
-                        <subject>Your request is accepted</subject>
-                        <content_type>text/html</content_type>
-                        <charset>UTF-8</charset>
-                        <text>Your request will be processed in the nearest 10 days. Thank you.</text>
-                        <attachment>
-                            <tmp-name>/tmp/attachment-file.txt</tmp-name>
-                            <file-name>rules.txt</file-name>
-                        </attachment>
-                    <forward>techdept@technolux.co.uk</forward>
-                </autoresponder>
-                <password>
-                        <value>test123</value>
-                        <type>plain</type>
-                </password>
-                <antivir>inout</antivir>
-            </mailname>
-            <mailname>
-                <name>admin11</name>
-                <password>
-                    <value>test</value>
-                </password>
-                <antivir>inout</antivir>
-            </mailname>
-        </filter>
-        </create>
-        </mail>
-        </packet>   
-        */
-
-
-        
-        $xmldoc = new DomDocument('1.0', 'UTF-8');
-        $xmldoc->formatOutput = true;
-    
-        // <packet>
-        $packet = $xmldoc->createElement('packet');//        $packet->setAttribute('version', '1.4.1.2');
-        $xmldoc->appendChild($packet);
-    
-        // <packet/dommailain>
-        $mail = $xmldoc->createElement('mail');
-        $packet->appendChild($domain);
-    
-        // <packet/mail/create>
-        $create = $xmldoc->createElement('create');
-        $mail->appendChild($create);
-
-        // <packet/mail/create/filter>
-        $filter = $xmldoc->createElement('filter');
-        $create->appendChild($filter);
-    
-        // <packet/domain/get/filter/siteid>
-        $siteid = $xmldoc->createElement('site-id');
-        $siteid->nodeValue = $site_id;
-        $filter->appendChild($siteid);
-
-        $mailname = $xmldoc->createElement('mailname');
-        $filter->appendChild($mailname);
-
-        ########### ---> mailname elements
-        $mailname_name = $xmldoc->createElement('name');
-        $mailname_name->nodeValue=$mail_address;
-        $mailname->appendChild($mailname_name);
-
-        $mailname_password = $xmldoc->createElement('password');
-        $mailname->appendChild($mailname_password);
-
-            ## ---> mail password
-            if($mail_password==null)
-            {
-                $mail_password = substr(md5($mail_address.date('YndHis')), 0, 8);
-            }
-            $mailname_password_value = $xmldoc->createElement('value');
-            $mailname_password_value->nodeValue = $mail_password;
-            $mailname_password->appendChild($mailname_password_value);
-            ##<--
-
-        $mailname_antivir = $xmldoc->createElement('antivir');
-        $mailname_antivir->nodeValue = 'inout';
-        $mailname->appendChild($mailname_antivir);
-    
-        $mailname_alias = $xmldoc->createElement('alias');
-        $mailname_alias->nodeValue = $username;
-        $mailname->appendChild($mailname_alias);
-        ########### ---< mailname elements
-    
-        return $xmldoc;
-    }
-
-
     
     /**
      * Prepares CURL to perform Plesk API request
@@ -272,29 +157,64 @@ class SpamTestController extends Controller
      */
     function checkResponse(SimpleXMLElement $response)
     {
-        // for domail List API
+        //SimpleXMLElement Object ( [@attributes] => Array ( [version] => 1.6.9.1 ) [mail] => SimpleXMLElement Object ( [create] => SimpleXMLElement Object ( [result] => SimpleXMLElement Object ( [status] => ok [mailname] => SimpleXMLElement Object ( [id] => 22 [name] => mail_account ) ) ) ) )
+        $resultNode = $response->mail->create->result;
+        // for domain List API
         // $resultNode = $response->domain->get->result;
         // // check if request was successful
-        // if ('error' == (string)$resultNode->status)
-        //         throw new ApiRequestException("Plesk API returned error: " . (string)$resultNode->result->errtext);
+
+        //print_r($resultNode); die;
+         if ('error' == (string)$resultNode->status)
+                 throw new ApiRequestException("Plesk API returned error: " . (string)$resultNode->result->errtext);
     }
     
+    function createXML($site_id, $mail_account_name, $mail_password)
+    {
+        $xmlString = '<?xml version="1.0" encoding="UTF-8"?>
+                        <packet>
+                        <mail>
+                        <create>
+                        <filter>
+                            <site-id>'.$site_id.'</site-id>
+                            <mailname>
+                                <name>'.$mail_account_name.'</name>
+								<cp-access>true</cp-access>
+                                <mailbox>
+                                        <enabled>true</enabled>
+                                        <quota>-1</quota>
+                                </mailbox>
+                                <password>
+                                        <value>'.$mail_password.'</value>
+                                        <type>plain</type>
+                                </password>
+                                <antivir>inout</antivir>
+                            </mailname>
+                        </filter>
+                        </create>
+                        </mail>
+                        </packet>';
+		return $xmlString;
+    }
     //
     // int main()
     //
-    public function createMailAddress($username, $site_id, $mail_address)
+    public function createMailAddress($mail_account_name)
     {
-        $host = '87.106.124.240';
-        $login = 'mail-analyzer';
-        $password = '3b_lfwNDDd55ijzn';
-        $domain = 'mail-analyzer.com';
+        $host       = env('PLESK_HOST');
+        $panel_port = env('PLESK_PORT');
+        $site_id    = env('PLESK_SITEID');
+        $login      = env('PLESK_USER');
+        $password   = env('PLESK_PWD');
+        $domain     = env('PLESK_DOMAIN');
 
-        $curl = $this->curlInit($host, $login, $password);
-    
+        $randPassword= $this->randomPassword();
+		//print($randPassword); // die;
+		$randPassword = env('TEMPORARY_MAIL_PASSWORD');
+		
+        $curl = $this->curlInit($host, $login, $password, $panel_port);
         try {
-        
-            //$response = $this->sendRequest($curl, $this->domainsInfoRequest()->saveXML());
-            $response = $this->sendRequest($curl, $this->createMailNodeRequest($username, $site_id, $mail_address)->saveXML());
+            $xmlObject = $this->createXML($site_id, $mail_account_name, $randPassword );
+            $response = $this->sendRequest($curl, $xmlObject);
             $responseXml = $this->parseResponse($response);
             $this->checkResponse($responseXml);
         
@@ -302,13 +222,23 @@ class SpamTestController extends Controller
             echo $e;
             die();
         }
-        
-        print_r($responseXml); die;
-        // Explore the result
-        // foreach ($responseXml->xpath('/packet/domain/get/result') as $resultNode) {
-        //     echo "Domain id: " . (string)$resultNode->id . " ";
-        //     echo (string)$resultNode->data->gen_info->name . " (" . (string)$resultNode->data->gen_info->dns_ip_address . ")\n";
-        // }
+        //print_r($responseXml); die;
+    }
+	function randomPassword() {
+        $special = '!@#$%^&*_';
+        $alphabet = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+        $pass = array(); //remember to declare $pass as an array
+        $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+        for ($i = 0; $i < 8; $i++) {
+            $n = rand(0, $alphaLength);
+            $pass[] = $alphabet[$n];
+        }
+        $n = rand(0, strlen($special)-1);
+        $pass[] = $special[$n];
+		$n = rand(0, strlen($special)-1);
+		$pass[] = $special[$n];
+        shuffle($pass);
+        return implode($pass); //turn the array into a string
     }
 }
 

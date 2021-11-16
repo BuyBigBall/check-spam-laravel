@@ -151,9 +151,10 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
     // Route::post('/login', 'Mailstester\LoginController@loginchk')->name("loginchk");
     # <------------------
     Route::group(['middleware' => ['auth']], function () {
+		//Route::get('/{account}', 		'TrashMailController@index')->name("/");
         Route::get('/account',          'Mailstester\SiteController@account')->name("account");
         Route::get('/get-started',      'Mailstester\SiteController@started')->name("get-started");
-        Route::get('/save-configure',        'Mailstester\SiteController@save_configure')->name("save-configure");
+        Route::post('/save-configure',        'Mailstester\SiteController@save_configure')->name("save-configure");
         Route::get('/checkout/{price}', 'Mailstester\SiteController@checkout')->name("checkout");
         Route::get('/profile/{type}',   'Mailstester\SiteController@profile')->name("profile");
         Route::get('/address',          'Mailstester\SiteController@address')->name("address");

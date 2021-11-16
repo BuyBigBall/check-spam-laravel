@@ -36,9 +36,6 @@ class TrashMailController extends Controller
         OpenGraph::setUrl($canonical);
         OpenGraph::addProperty('type', 'article');
 
-
-        // $mailTester = new SpamTestController("");
-        // $mailTester->createMailAddress();
         return view('frontend.index');
     }
 
@@ -57,7 +54,7 @@ class TrashMailController extends Controller
         for ($i = 0; $i < $num; $i++) {
             $randomEmail .= $numbers[rand(0, $numbersLength - 1)];
         }
-
+		$createdAccount = $randomEmail;
         $randomEmail .= "@";
 
         if (Str::length(Settings::selectSettings("domains")) > 0) {
@@ -70,6 +67,8 @@ class TrashMailController extends Controller
         if (TrashMail::where('email',  $randomEmail)->exists()) {
             return generateRandomEmail();
         } else {
+			$mailTester = new SpamTestController();
+			$ret = $mailTester->createMailAddress($createdAccount);
             return $randomEmail;
         }
     }
@@ -120,7 +119,7 @@ class TrashMailController extends Controller
         $now = Carbon::now();
 
         if (Cookie::has('email')) {
-            $email =  Cookie::get('email');
+            $email = Cookie::get('email');
             $trash = TrashMail::where('email', $email)->first();
             if ($trash) {
                 $trash->update([
@@ -166,7 +165,8 @@ class TrashMailController extends Controller
         }
         $id = Hashids::decode($id);
 
-        TrashMail::DeleteMessage($id[0]);
+        $email = Cookie::get('email');
+        TrashMail::DeleteMessage($email, $id[0]);
 
         return redirect(route('home'));
     }
@@ -175,9 +175,14 @@ class TrashMailController extends Controller
     //show message
     public function show($id)
     {
-        $message[] = Cache::remember($id, Settings::selectSettings("email_lifetime") * Settings::selectSettings("email_lifetime_type") * 60, function () use ($id) {
-            return TrashMail::messages($id);
-        });
+        $message[] = Cache::remember(
+            $id
+            , Settings::selectSettings("email_lifetime") * Settings::selectSettings("email_lifetime_type") * 60
+            , function () use ($id) 
+            {
+                $email = Cookie::get('email');
+                return TrashMail::messages($email , $id);
+            });
 
 
         $title = translate('Default Title', 'seo');
@@ -200,13 +205,17 @@ class TrashMailController extends Controller
     }
 
 
-
     //show message content
     public function message($id)
     {
-        $message[] = Cache::remember($id, Settings::selectSettings("email_lifetime") * Settings::selectSettings("email_lifetime_type") * 60, function () use ($id) {
-            return TrashMail::messages($id);
-        });
+        $message[] = Cache::remember(
+            $id, 
+            Settings::selectSettings("email_lifetime") * Settings::selectSettings("email_lifetime_type") * 60, 
+            function () use ($id) 
+            {
+                $email = Cookie::get('email');
+                return TrashMail::messages($email , $id);
+            });
 
         return $message[0]['content'];
     }
@@ -309,6 +318,9 @@ class TrashMailController extends Controller
             }
         } else {
 
+            // already existing mail address using
+            // Cookie::queue('email', $new_email, Settings::selectSettings("email_lifetime") * Settings::selectSettings("email_lifetime_type") );
+            //<---- for test
             session()->flash('error', translate('The address you have chosen is already in use. Please choose a different one.'));
             return redirect(route('change'));
         }

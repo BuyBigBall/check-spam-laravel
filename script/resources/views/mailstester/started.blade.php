@@ -144,6 +144,7 @@
                 method="post"
                 autocomplete="off"
                 action="{{ route('save-configure') }}">
+                @csrf
                 <h4>Secure your account</h4>
                 <p>To make sure you are the only one able to access your results, you can add
                     one of the following security checks:</p>
@@ -153,8 +154,8 @@
                             id="pkey"
                             type="text"
                             style="width:100px;"
-                            value=""
-                            name="data[users][pkey]"/><br/>
+                            value="{{ $conf['pkey'] }}"
+                            name="pkey"/><br/>
                         So your tests should be sent to
                         <b>
                             <span class="testingEmail">{{ $userdata['user_login']['name'] }}-clientID-currenttimestamp</span>@{{ ($request=Request::capture())->gethttphost() }}</b>
@@ -164,8 +165,8 @@
                         <input
                             type="text"
                             style="width:100%"
-                            value=""
-                            name="data[users][serverip]"
+                            value="{{ $conf['serverip'] }}"
+                            name="serverip"
                             placeholder="Leave this field empty to accept all mail server IPs"/>
                     </li>
                     <li>Load the result page (for a new test) only when loaded from one of the
@@ -173,16 +174,16 @@
                         <input
                             type="text"
                             style="width:100%"
-                            value=""
-                            name="data[users][clientip]"
+                            value="{{ $conf['clientip'] }}"
+                            name="clientip"
                             placeholder="Leave this field empty to accept all client IPs"/>
                     </li>
                     <li>Only accept tests containing the following X-MT-Token header:<br/>
                         <input
                             type="text"
                             style="width:100%"
-                            value=""
-                            name="data[users][mttoken]"
+                            value="{{ $conf['mttoken'] }}"
+                            name="mttoken"
                             placeholder="Leave this field empty to accept all X-MT-Token headers"/>
                     </li>
                 </ul>
@@ -197,11 +198,11 @@
                     Micro-payment mode :
                     <select
                         id="micropayment"
-                        name="data[users][micropayment]"
+                        name="micropayment"
                         size="1"
                         style="width:auto;">
-                        <option value="0" selected="selected">Disabled - your users can see their result for free</option>
-                        <option value="1">Enabled - your users will have to pay a small fee to see their result</option>
+                        <option value="0" @if( $conf['micropayment']==0 ) selected @endif >Disabled - your users can see their result for free</option>
+                        <option value="1" @if( $conf['micropayment']==1 ) selected @endif >Enabled - your users will have to pay a small fee to see their result</option>
                     </select>
                 </p>
                 <div id="micropaymentpacks" style="display:none">
@@ -275,12 +276,6 @@
                 <input type="submit" value="Save" class="btn"/>
                 <input type="hidden" name="task" value="save"/>
                 <input type="hidden" name="option" value="com_mtmanager"/>
-                <input
-                    type="hidden"
-                    id="productsids"
-                    name="data[users][productsids]"
-                    value="8,12,13,"/>
-                <input type="hidden" name="45adedc08584ba24ea6f3e97d550bc4a" value="1"/>
             </form>
         </div>
         <h3>Some statistics...</h3>

@@ -24,7 +24,7 @@ class TrashMail extends Model
 
     protected $fillable = ['delete_in', 'email'];
 
-    public static function connection()
+    public static function connection($email = null)
     {
         
         $flag = '/imap/' . Settings::selectSettings('imap_encryption') ;
@@ -37,7 +37,10 @@ class TrashMail extends Model
         try
         {
             $server = new Server(Settings::selectSettings('imap_host'),Settings::selectSettings('imap_port'),$flag);
-            $connection = $server->authenticate(Settings::selectSettings('imap_user'), Settings::selectSettings('imap_pass'));
+            if($email==null)
+                $connection = $server->authenticate(Settings::selectSettings('imap_user'), Settings::selectSettings('imap_pass'));
+            else
+                $connection = $server->authenticate($email, env('TEMPORARY_MAIL_PASSWORD'));
         }
         catch (Exception $e)
         {
@@ -55,7 +58,7 @@ class TrashMail extends Model
         ];
         
         try {
-            $connection = TrashMail::connection();
+            $connection = TrashMail::connection($email);
             if($connection==null)
             {
                 $response['messages'][] = ['error'=>'Server settings Exception'];
@@ -149,7 +152,7 @@ class TrashMail extends Model
     public static function DeleteEmail($email)
     {
         try {
-            $connection = TrashMail::connection();
+            $connection = TrashMail::connection($email);
             $mailbox = $connection->getMailbox('INBOX');
             $search = new SearchExpression();
             $search->addCondition(new To($email));
@@ -187,10 +190,10 @@ class TrashMail extends Model
     }
 
 
-    public static function DeleteMessage($id)
+    public static function DeleteMessage($email, $id)
     {
         try {
-            $connection = TrashMail::connection();
+            $connection = TrashMail::connection($email);
             $mailbox = $connection->getMailbox('INBOX');
             $mailbox->getMessage($id)->delete();
             $connection->expunge();
@@ -200,13 +203,13 @@ class TrashMail extends Model
     }
 
 
-    public static function messages($id)
+    public static function messages($email, $id)
     {
         try {
 
             $id_hash = Hashids::decode($id);
 
-            $connection = TrashMail::connection();
+            $connection = TrashMail::connection($email);
             if($connection==null)
             {
                 $response = [

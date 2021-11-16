@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 use App\Models\Settings;
 use App\Models\Profile;
+use App\Models\Configure;
 // use Illuminate\Support\Str;
 // use Illuminate\Support\Facades\Cache;
 // use Vinkla\Hashids\Facades\Hashids;
@@ -180,13 +181,37 @@ class SiteController extends Controller
 
         $guard = null;
         $userdata = [];
+        $conf = [
+            'user_id' => 0,
+            'pkey' => '',
+            'serverip' => '',
+            'clientip' => '',
+            'mttoken' => '',
+            'micropayment' => 0
+        ];
         if (Auth::guard($guard)->check()) {
             $role = Auth::user()->role; 
             $userdata['user_login'] = Auth::user();
+            $conf_val = Configure::selectConfigures($userdata['user_login']['id']);
+            if(!empty($conf_val) && !empty($conf_val->user_id))
+            $conf = [
+                'user_id' => $conf_val->user_id,
+                'pkey' => $conf_val->private_key,
+                'serverip' => $conf_val->server_ips,
+                'clientip' => $conf_val->client_ips,
+                'mttoken' => $conf_val->x_mt_tocken,
+                'micropayment' => $conf_val->micro_payment
+            ];
         }
+        else
+        {
+            redirect(route('login'));
+        }
+        //print_r($conf);die;
         return view('mailstester.started')
-            ->with('email', $email)
-            ->with('userdata' ,$userdata);
+                ->with('email', $email)
+                ->with('conf', $conf)
+                ->with('userdata' ,$userdata);
 
     }
     
@@ -273,7 +298,7 @@ class SiteController extends Controller
             $role = Auth::user()->role; 
             $userdata['user_login'] = Auth::user();
         }
-        return view('mailstester.faq')
+        return view('frontend.faq')
                 ->with('userdata' ,$userdata);
     }
 
@@ -302,7 +327,7 @@ class SiteController extends Controller
             $role = Auth::user()->role; 
             $userdata['user_login'] = Auth::user();
         }
-        return view('mailstester.dkim-check')
+        return view('frontend.dkim-check')
                 ->with('userdata' ,$userdata);
 
     }
@@ -338,9 +363,42 @@ public function ajax_getmemInfo($userid){
         $userdata = $userdata  + $user_profile;
     print(json_encode($userdata));die;
 }
+
+public function save_configure(Request $request){ 
+    $guard = null;
+    $userdata = [];
+    if (Auth::guard($guard)->check()) {
+        $role = Auth::user()->role; 
+        $userdata = Auth::user();
+        //print_r($userdata); die;
+        if( ($configure = Configure::selectConfigures($userdata['id'])) )
+        {
+            $configure->private_key     = $request->pkey;
+            $configure->server_ips      = $request->serverip;
+            $configure->client_ips      = $request->clientip;
+            $configure->x_mt_tocken     = $request->mttoken;
+            $configure->micro_payment   = $request->micropayment;
+            $configure->update();
+        }
+        else
+        {
+            $configure = new Configure();
+            $configure->user_id = $userdata['id'];
+            $configure->private_key     = $request->pkey;
+            $configure->server_ips      = $request->serverip;
+            $configure->client_ips      = $request->clientip;
+            $configure->x_mt_tocken     = $request->mttoken;
+            $configure->micro_payment   = $request->micropayment;
+            $configure->save();
+        }
+        
+    }
+
+    return redirect(route('get-started'));
+}
 public function save_account(){ return null;}
 public function save_address(){ return null;}
-public function save_configure(){ return null;}
+
 
     public function checkout($price){ return $price;}
     public function address(){return null;}

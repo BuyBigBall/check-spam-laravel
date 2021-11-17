@@ -1,13 +1,27 @@
 @extends('mailstester.layout')
 
 @section('content')
+<style>
+.sdata-error {
+    width: 100%; 
+    margin-top: 0.25rem;
+    color: #CB5D65; 
+    margin-bottom: 20px;
+}
+.sdata-success {
+    width: 100%; 
+    margin-top: 0.25rem;
+    color: #48b11d; 
+    margin-bottom: 20px;
+}
+</style>
 <div id="content_container" style="width:100%">
     <div class="row-fluid contentsize">
 
         <div id="system-message-container"></div>
 
         <form
-            action="{{ route('save-account') }}"
+            action="{{ route('save-register') }}"
             method="post"
             id="hikashop_registration_form"
             enctype="multipart/form-data"
@@ -16,7 +30,19 @@
             <div class="hikashop_user_registration_page">
                 <fieldset class="input">
                     <h2>Registration</h2>
-                    
+
+                    @if(session()->has('error'))
+                    <div class="sdata-error">
+                        <strong>{{ session()->get('error') }}</strong>
+                    </div>
+                    @endif
+
+                    @if(session()->has('success'))
+                    <div class="sdata-success">
+                        <strong>{{ session()->get('success') }}</strong>
+                    </div>
+                    @endif
+
                     <fieldset class="form-horizontal">
                     <div
                             class="control-group hikashop_registration_name_line"
@@ -93,6 +119,7 @@
                                     value=""
                                     class="required validate-password"
                                     size="30"
+                                    minlength="6"
                                     aria-required="true"
                                     required="required"/>
                                 <span style='color:red'>*</span>
@@ -108,11 +135,12 @@
                                 <input
                                     autocomplete="off"
                                     type="password"
-                                    name="password2"
+                                    name="password_confirmation"
                                     id="register_password2"
                                     value=""
                                     class="required validate-password"
                                     size="30"
+                                    minlength="6"
                                     aria-required="true"
                                     required="required"/>
                                 <span style='color:red'>*</span>

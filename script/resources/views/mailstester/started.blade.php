@@ -63,7 +63,7 @@
                 <br/>
                 1/ Send them to
                 <b>
-                    <span class="testingEmail">{{ $prefix = substr($email, 0, strrpos($email, '@')) }}</span>@srv1.{{ ($request=Request::capture())->gethttphost() }}
+                    <span class="testingEmail">{{ $prefix = substr($email, 0, strrpos($email, '@')) }}</span>{{'@'. ($request=Request::capture())->gethttphost() }}
                 </b>
             </p>
             <ul>

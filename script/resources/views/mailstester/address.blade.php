@@ -1,9 +1,17 @@
 <style>
 #practice_modal {
-    height: 480px;
+    height: 600px;
     top: 20px;
     padding-right: 0px !important;
     opacity: 1;
+}
+.pac-container {
+    /* put Google geocomplete list on top of Bootstrap modal */
+    z-index: 9999;
+}
+.address-input {
+    width: 350px;
+    height: 30px !important;
 }
 </style>
 
@@ -18,14 +26,16 @@
         </div>
         <div class="modal-content">
             <div id="system-message-container"></div>
-            <div id="hikashop_address_form_span_iframe" style="padding:20px;">
+            <div id="hikashop_address_form_span_iframe" class="geo-details" style="padding:20px;">
                 <form
                     action="{{ route('save-address') }}"
                     method="post"
                     id="hikashop_address_form"
                     name="hikashop_address_form"
+                    onsubmit="return validation();"
                     enctype="multipart/form-data">
                     @csrf
+                    <input type="hidden" id="profile_id" name="profile_id" value="0">
                     <table>
                         <tbody>
                             <tr
@@ -33,14 +43,16 @@
                                 id="hikashop_address_address_firstname">
                                 <td class="key">
                                     <label for="address_firstname">First name</label>
+                                    <span class="hikashop_field_required">*</span>
                                 </td>
                                 <td><input
-                                    class="inputbox"
+                                    class="inputbox address-input required"
                                     id="address_firstname"
                                     type="text"
                                     name="firstname"
+                                    required="required"
                                     value="Samir"/>
-                                    <span class="hikashop_field_required">*</span>
+                                    
                                 </td>
                             </tr>
                             <tr
@@ -48,14 +60,15 @@
                                 id="hikashop_address_address_lastname">
                                 <td class="key">
                                     <label for="address_lastname">Last name</label>
+                                    <span class="hikashop_field_required">*</span>
                                 </td>
                                 <td><input
-                                    class="inputbox"
+                                    class="inputbox address-input required"
                                     id="address_lastname"
                                     type="text"
                                     name="lastname"
+                                    required="required"
                                     value="Chakouri"/>
-                                    <span class="hikashop_field_required">*</span>
                                 </td>
                             </tr>
                             <tr
@@ -65,7 +78,7 @@
                                     <label for="address_company">Company</label>
                                 </td>
                                 <td><input
-                                    class="inputbox"
+                                    class="inputbox address-input"
                                     id="address_company"
                                     type="text"
                                     name="company"
@@ -76,7 +89,7 @@
                                     <label for="address_vat">VAT number</label>
                                 </td>
                                 <td><input
-                                    class="inputbox"
+                                    class="inputbox address-input"
                                     id="address_vat"
                                     placeholder="For European Companies only"
                                     type="text"
@@ -88,14 +101,15 @@
                                 id="hikashop_address_address_street">
                                 <td class="key">
                                     <label for="address_street">Address</label>
+                                    <span class="hikashop_field_required">*</span>
                                 </td>
                                 <td><input
-                                    class="inputbox"
+                                    class="inputbox address-input required"
                                     id="address_street"
                                     type="text"
                                     name="address"
+                                    required="required"
                                     value="Calle julio colomer 29"/>
-                                    <span class="hikashop_field_required">*</span>
                                 </td>
                             </tr>
                             <tr
@@ -105,25 +119,28 @@
                                     <label for="address_post_code">Post code</label>
                                 </td>
                                 <td><input
-                                    class="inputbox"
+                                    class="inputbox address-input"
+                                    data-geo="postal_code"
                                     id="address_post_code"
                                     type="text"
                                     name="postcode"
-                                    value="46910"/></td>
+                                    value=""/></td>
                             </tr>
                             <tr
                                 class="hikashop_address_address_city_line"
                                 id="hikashop_address_address_city">
                                 <td class="key">
                                     <label for="address_city">City</label>
+                                    <span class="hikashop_field_required">*</span>
                                 </td>
                                 <td><input
-                                    class="inputbox"
+                                    class="inputbox address-input required"
+                                    data-geo="administrative_area_level_2"
                                     id="address_city"
                                     type="text"
                                     name="city"
+                                    required="required"
                                     value="Alfafar"/>
-                                    <span class="hikashop_field_required">*</span>
                                 </td>
                             </tr>
                             <tr
@@ -133,57 +150,47 @@
                                     <label for="address_telephone">Telephone</label>
                                 </td>
                                 <td><input
-                                    class="inputbox"
+                                    class="inputbox address-input"
                                     id="address_telephone"
                                     type="text"
                                     name="telephone"
                                     value=""/></td>
                             </tr>
-                            <tr style='display:none;'
+                            <tr 
                                 class="hikashop_address_address_country_line"
                                 id="hikashop_address_address_country">
                                 <td class="key">
                                     <label for="address_country">Country</label>
                                 </td>
                                 <td>
-                                    <select
+                                    <input
+                                        class="inputbox address-input"
+                                        data-geo="country"
                                         id="address_country"
+                                        type="text"
                                         name="country"
-                                        size="1"
-                                        class="hikashop_field_dropdown"></select>
+                                        value=""/>
                                 </td>
                             </tr>
-                            <tr style='display:none;'
+                            <tr
                                 class="hikashop_address_address_state_line"
                                 id="hikashop_address_address_state">
                                 <td class="key">
                                     <label for="address_state">State</label>
                                 </td>
                                 <td>
-                                    <span id="data_address_address_state_container">
-                                        <select
-                                            id="data_address_address_state"
-                                            name="state"
-                                            size="1"
-                                            class="hikashop_field_dropdown"></select>
-                                    </span>
+                                    <input
+                                        class="inputbox address-input"
+                                        data-geo="administrative_area_level_1_short"
+                                        id="address_state"
+                                        type="text"
+                                        name="state"
+                                        value=""/>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-                    <input type="hidden" name="Itemid" value="111"/>
-                    <input type="hidden" name="ctrl" value="address"/>
-                    <input type="hidden" name="tmpl" value="component"/>
-                    <input type="hidden" name="task" value="save"/>
-                    <input type="hidden" name="type" value=""/>
-                    <input type="hidden" name="action" value="edit"/>
-                    <input type="hidden" name="makenew" value="0"/>
-                    <input type="hidden" name="redirect" value=""/>
-                    <input type="hidden" name="step" value="-1"/>
-                    <input type="hidden" name="data[address][address_user_id]" value="40095"/>
-                    <input type="hidden" name="data[address][address_id]" value="44126"/>
-                    <input type="hidden" name="address_id" value="44126"/>
-                    <input type="hidden" name="02da9f5c81fc9e643cc9b1546a6e1e60" value="1"/>
+                    
                     <input
                         type="submit"
                         class="btn button hikashop_cart_input_button"
@@ -198,3 +205,13 @@
         </div>
     </div>
 </div>
+<script>
+function validation() {
+    // if($('#address_firstname').val()=='') {
+    //     alert('Enter first name.');
+    //     $('#address_firstname').focus();
+    //     return false;
+    // }    
+    return true;        
+}
+</script>

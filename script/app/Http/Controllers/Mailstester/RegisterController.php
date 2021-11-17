@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
 class RegisterController extends Controller
 {
@@ -82,31 +83,33 @@ class RegisterController extends Controller
      */
     public function save_register(Request $request)
     {
+        try {
+            $this->validator($request->all())->validate();
 
-        print('could not validate'); die;
-        $this->validator($request->all())->validate();
+            $user = $this->create($request->all());
 
-        
-        $user = $this->create($request->all());
-
-        // $this->guard()->login($user);
-
-        ## Send Suitable Email For New User ##
-        $user_register_mode = 'inactive';
-        if($user_register_mode == 'inactive'){
-            sendMail([
-                'template' => get_option('user_register_active_email'),
-                'recipent' => [$user->email]
+            ## Send Suitable Email For New User ##
+            $user_register_mode = get_option('user_register_mode');
+            if($user_register_mode == 'deactive'){
+                // $this->guard()->login($user);
+                $success_msg = 'Thanks for registration!';
+                session()->flash('success', translate($success_msg));
+                return redirect()->back()->with('msg',trans('main.thanks_reg'));
+            } else {
+                sendMail([
+                    'template'=>get_option('user_register_wellcome_email'),
+                    'recipent'=>[$user->email]
                 ]);
-            return redirect()->back()->with('msg',trans('main.thanks_reg'));
-        }
-        else {
-            sendMail([
-                'template'=>get_option('user_register_wellcome_email'),
-                'recipent'=>[$user->email]
-            ]);
-            return redirect()->back()->with('msg',trans('main.active_account_alert'));
-        }
+                $success_msg = 'Thanks for registration, Please check your mail and follow activation link to active your account.';
+                session()->flash('success', translate($success_msg));
+                return redirect()->back()->with('msg',trans('main.active_account_alert'));
+            }
+
+        } catch (ValidationException $e) {
+            // print_r($e->getMessage());
+            session()->flash('error', translate('Some validation error occur.'));
+            return redirect(route('signup'));
+        }            
     }
 
     /**
@@ -128,7 +131,6 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'username' => ['required', 'string', 'max:255'],
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
@@ -139,7 +141,7 @@ class RegisterController extends Controller
      * Create a new user instance after a valid registration.
      *
      * @param array $data
-     * @return \App\User
+     * @return \App\Models\User
      */
     protected function create(array $data)
     {

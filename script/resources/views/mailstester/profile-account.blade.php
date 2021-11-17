@@ -1,6 +1,20 @@
 @extends('mailstester.layout')
 
 @section('content')
+<style>
+.sdata-error {
+    width: 100%; 
+    margin-top: 0.25rem;
+    color: #CB5D65; 
+    margin-bottom: 20px;
+}
+.sdata-success {
+    width: 100%; 
+    margin-top: 0.25rem;
+    color: #48b11d; 
+    margin-bottom: 20px;
+}
+</style>
 <div class="row-fluid contentsize">
 
     <div id="system-message-container"></div>
@@ -19,6 +33,17 @@
                 <legend>
                     Edit Your Account Informations
                 </legend>
+                @if(session()->has('error'))
+                <div class="sdata-error">
+                    <strong>{{ session()->get('error') }}</strong>
+                </div>
+                @endif
+
+                @if(session()->has('success'))
+                <div class="sdata-success">
+                    <strong>{{ session()->get('success') }}</strong>
+                </div>
+                @endif
                 <input type="hidden" name="id" id="jform_id" value="{{ $userdata['user_login']['id'] }}"/>
                 <div class="control-group">
                     <div class="control-label">
@@ -46,7 +71,7 @@
                             aria-required="true"/>
                     </div>
                 </div>
-                <div class="control-group">
+                <!-- <div class="control-group">
                     <div class="control-label">
                         <label
                             id="jform_username-lbl"
@@ -69,7 +94,7 @@
                             size="30"
                             readonly />
                     </div>
-                </div>
+                </div> -->
                 <div class="control-group">
                     <div class="control-label">
                         <label
@@ -80,9 +105,6 @@
                             data-content="Enter your desired password."
                             data-original-title="Password">
                             Password</label>
-                        <span class="optional">
-                            (optional)
-                        </span>
                     </div>
                     <div class="controls">
                         <input type="password" style="display:none"/>
@@ -94,6 +116,7 @@
                             autocomplete="off"
                             class="validate-password"
                             size="30"
+                            minlength="6"
                             maxlength="99"/>
                     </div>
                 </div>
@@ -107,19 +130,17 @@
                             data-content="Confirm your password."
                             data-original-title="Confirm Password">
                             Confirm Password</label>
-                        <span class="optional">
-                            (optional)
-                        </span>
                     </div>
                     <div class="controls">
                         <input
                             type="password"
-                            name="password2"
+                            name="password_confirmation"
                             id="jform_password2"
                             value=""
                             autocomplete="off"
                             class="validate-password"
                             size="30"
+                            minlength="6"
                             maxlength="99"/>
                     </div>
                 </div>

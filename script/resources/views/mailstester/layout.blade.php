@@ -254,7 +254,7 @@
                 </div>
             </div>
         </div>
-        @include('mailstester.menunav');
+        @include('mailstester.menunav')
         
         <section>
             <div class='container'>
@@ -266,7 +266,7 @@
         <div id="footer" class="py-3">
 
             <div>
-                <a href="/" target="_blank">
+                <a href="/" target="_self">
                     <img src="/uploads/logo.png" alt="mail-tester" class="logo">
                 </a>
             </div>
@@ -275,8 +275,36 @@
         </div>
         <!-- The end of footer -->
 
+        <?php 
+            $current_route = \Request::route()->getName(); 
+            $autocomp = false;
+            if($current_route == 'profile'){
+                $params = request()->route()->parameters;
+                if(!empty($params) && !empty($params['type']) && $params['type'] == 'address'){
+                    $autocomp = true;
+                }
+            }
+        ?>
+
         <!-- jquery js -->
-        <script src="{{ asset('assets/js/vendor/jquery.min.js') }}"></script>
+        <!-- <script src="{{ asset('assets/js/vendor/jquery.min.js') }}"></script> -->
+        @if($autocomp)
+            <!-- for search location -->
+            <script src="{{ asset('assets/js/geocomplete/jquery.min.js') }}"></script>
+            <script src="https://maps.googleapis.com/maps/api/js?key={{env('GOOGLE_MAP_API_KEY')}}&sensor=false&libraries=places"></script>
+            <script src="{{ asset('assets/js/geocomplete/jquery.geocomplete.min.js') }}"></script>
+            <script>
+            $(function () { 
+                $("#address_street").geocomplete({
+                  details: ".geo-details",
+                  detailsAttribute: "data-geo"
+                });
+
+            });
+            </script>
+        @else 
+            <script src="{{ asset('assets/js/vendor/jquery.min.js') }}"></script>
+        @endif
         <!-- popper js -->
         <script src="{{ asset('assets/js/vendor/popper.min.js') }}"></script>
         <!-- bootstrap js -->
@@ -295,6 +323,7 @@
             "use strict";
             var fetch_time = "{{$setdata['fetch_time']}}",
                 url = "{{route('messages')}}",
+                email_url = "{{route('email')}}",
                 color = "{{$setdata['secondary_color']}}",
                 click_to_copy = "{{translate('Click To Copy!')}}",
                 copied = "{{translate('Copied!')}}";

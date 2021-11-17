@@ -22,7 +22,14 @@ class Profile extends Authenticatable
         'lastname',
         'address',
         'city',
-        'country'
+        'country',
+        'mail_addr',
+        'company',
+        'vatnum',
+        'postcode',
+        'telephone',
+        'state',
+        'default_address',
     ];
 
     /**
@@ -31,12 +38,13 @@ class Profile extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'mail_addr',
-        'company',
-        'vatnum',
-        'postcode',
-        'telephone',
-        'state',
+        // 'mail_addr',
+        // 'company',
+        // 'vatnum',
+        // 'postcode',
+        // 'telephone',
+        // 'state',
+        // 'default_address',
         'created_at',
         'updated_at'
 

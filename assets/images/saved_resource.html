@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<!-- saved from url=(0054)https://tpeweb.paybox.com/cgi/FramepagepaiementRWD.cgi -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
+<title>E-transactions</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0, target-densitydpi=device-dpi">
+<meta name="format-detection" content="telephone=no">
+<link rel="stylesheet" href="./jquery.ui.potato.menu.css">
+<link rel="stylesheet" href="./jquery-ui.min.css">
+<link rel="stylesheet" href="./jquery-ui.structure.min.css">
+<link rel="stylesheet" href="./jquery-ui.theme.min.css">
+<link rel="stylesheet" href="./pbxChkBin.css">
+<link rel="stylesheet" href="./styles.css">
+<link rel="stylesheet" href="./rwd.css">
+<link rel="stylesheet" href="./cedicam.css">
+<link rel="icon" href="https://tpeweb.paybox.com/images/page_paiement/etransactions.png" type="image/png"><style type="text/css">@import url(../images/page_paiement/1483184_01_CssCAPS.css);</style>
+<script src="./jquery.js.download"></script>
+<script src="./jquery-ui.min.js.download"></script>
+<script src="./pbxJquery.js.download"></script>
+<script src="./paiement.js.download"></script>
+<script>
+$(document).ready(function(){
+    $('form').preventDoubleSubmission();
+});
+
+function cvvsok(idform_pay) {
+var formulaire=document.getElementById(idform_pay);
+if (formulaire.INFO_CVVX.value == '1' && formulaire.CVVX.value.length < 3)
+{
+alert("Cryptogram:3  digits on the back of your card")
+return false;
+}
+hide("Paiement_frame");
+show("Patience");
+return Action();
+}
+function CheckValidate(CardType,idCardTypeSelected,idform_pay) {
+var formulaire=document.getElementById(idform_pay);
+var indexselect = document.getElementById(idCardTypeSelected);
+if (indexselect==null) 
+{var CardTypeSelected = idCardTypeSelected;}
+else 
+{var CardTypeSelected = indexselect.options[indexselect.selectedIndex].value;}
+if (CardType == "?") return true;
+if ((CardType.toUpperCase() == "VISA" || CardType.toUpperCase() == "EUROCARD_MASTERCARD") && (CardTypeSelected.toUpperCase() == "CB" || CardTypeSelected.toUpperCase() == "E_CARD")) return true;
+if (CardType.toUpperCase() == "VISA" && CardTypeSelected.toUpperCase() == "BINVISPREM" ) return true;
+if (CardType.toUpperCase() == "EUROCARD_MASTERCARD" && CardTypeSelected.toUpperCase() == "BINFRANCE" ) return true;
+if (CardType.toUpperCase() == "EUROCARD_MASTERCARD" && CardTypeSelected.toUpperCase() == "EUROCARD_MASTERCARD" ) return true;
+if (CardType.toUpperCase() == "EUROCARD_MASTERCARD" && CardTypeSelected.toUpperCase() == "MASTERCARD" ) return true;
+if (CardType.toUpperCase() == CardTypeSelected.toUpperCase()) return true;
+else 
+    {
+    alert("Type of card "+CardTypeSelected);
+    formulaire.NUMERO_CARTE.value="";
+    formulaire.NUMERO_CARTE.focus();
+    return false;
+    }
+}
+function MontreDiv(QuelDiv)
+{
+var LeDiv;
+LeDiv="DIV_"+QuelDiv;
+document.getElementById('cache').appendChild(document.getElementById('Paiement_frame').firstChild);
+document.getElementById('Paiement_frame').appendChild(document.getElementById(LeDiv));
+}
+function GereOption(qui,quoi)
+{
+var x=document.getElementById(qui);
+x.options[x.selectedIndex].selected = false;
+for (var i=0; i<x.options.length; i++) {
+    if (x.options[i].value == quoi){
+      x.options[i].selected = true;
+      x.selectedIndex=i;
+    }
+  }
+}
+function limitKeypress(event, value, maxLength) {
+    // Allow: backspace, delete, tab, escape, enter and .
+    var unicode=event.charCode? event.charCode : event.keyCode;
+    var ok = (unicode>=48 && unicode<=57);
+    if ($.inArray(unicode, [46, 8, 9, 27, 13, 110, 190]) !== -1
+        // Allow: Ctrl+A, Command+A, et Ctrl+a, Command+a
+        // Allow: Ctrl+V, Command+V, et Ctrl+v, Command+v
+        || (unicode== 65 && ( event.ctrlKey === true || event.metaKey === true ) )
+        || (unicode== 97 && ( event.ctrlKey === true || event.metaKey === true ) )
+        || (unicode== 86 && ( event.ctrlKey === true || event.metaKey === true ) )
+        || (unicode== 118 && ( event.ctrlKey === true || event.metaKey === true ) )
+        // Allow: home, end, left, right, down, up
+        ||(unicode>= 48 && unicode <= 57))
+    {
+        // let it happen, don't do anything
+        return;
+    }else{
+        event.preventDefault();
+    }
+    // Ensure that it is a number and stop the keypress
+    // And maxLength
+    if (value != undefined && value.toString().length >= maxLength && !ok) {
+        event.preventDefault();
+    }
+}
+function CVVused() {
+    if (document.getElementById('pbx-cvv-check-box').checked === true) {
+        document.getElementById('INFO_CVVX').value = '0';
+        document.getElementById('CVV').value = '';
+        document.getElementById('CVV').disabled = true;
+    }
+    else {
+        document.getElementById('INFO_CVVX').value = '1';
+        document.getElementById('CVV').disabled = false;
+    }
+}
+</script>
+<script src="./pbxChkBin.js.download"></script>
+<script>
+  var tradChkBinLabel    = "Click to change";
+  var tradChkBinTooltip  = "If you want to choose another payment brand, click here";
+  var tradChkBinTitle    = "Choose your payment brand";
+  var tradChkBinSub      = "Select your payment brand below";
+  var tradChkBinWrn      = "Warning";
+  var tradChkBinLenCarte = "Invalid card number length";
+  var tradChkBinErrCarte = "Incorrect card number";
+  var tradChkBinNoCarte  = "You must enter your card number.";
+  var tradChkBinNoDV     = "You must enter the expiry date.";
+  var tradChkBinNoCVV    = "You must enter the CSC.";
+  var tradChkBinErrDV    = "Incorrect expiry date";
+  var tradChkBinErrCVV   = "Incorrect CSC";
+  var chkBinNumCarte     = 'pan';
+  var chkBinDateValMois  = 'mois_val';
+  var chkBinDateValAnnee = 'an_val';
+  var chkBinInfoCVV      = 'INFO_CVVX';
+  var chkBinCVV          = 'CVV';
+  var chkBinSite         = 'PBX_SITE';
+  var chkBinRang         = 'PBX_RANG';
+  var chkBinAppel        = 'PBX_APPEL';
+  var chkBinLangue       = 'PBX_LANGUE';
+  var chkBinTypePaiement = 'PBX_TYPEPAIEMENT';
+  var chkBinTypeCarte    = 'PBX_TYPECARTE';
+  var chkBinSelection    = 'PBX_SELECTION';
+  var chkBinChoix        = 'PBX_CHOIX';
+  var chkBinPaiement     = 'saisie_carte';
+  $(document).ready(function() {
+    $("#pan").keyup(function(event) {
+      chkBin(event);
+    });
+    $("#idform_pay").unbind();
+    $("#idform_pay").submit(function(event) {
+      return chkBinForm();
+    });
+  });
+</script>
+<script>
+  $(document).ready(function() {
+    $('#cvvtooltip').tooltip({
+      track: true
+    });
+  });
+</script>
+<script type="text/javascript" charset="utf-8" async="" crossorigin="anonymous" src="./1.4e7a79d181ff9ae57577.songbird.js.download"></script><style type="text/css">.Cardinal-paymentButton{cursor:pointer;margin:3px}.discoverWallet{width:50em;max-height:31.25em}@media screen and (max-width:375px){.discoverWallet{width:23.875em}}.cardinal-stealth{position:absolute!important;display:block!important;top:-1000px!important;left:-1000px!important;z-index:-1000!important;width:1px!important;height:1px!important}#Cardinal-discoverWallet-IFrame{width:100%;height:100%}.cardinalOverlay-open.seamless{padding:0;border-radius:0}</style><script type="text/javascript" charset="utf-8" async="" crossorigin="anonymous" src="./12.4e7a79d181ff9ae57577.songbird.js.download"></script><script type="text/javascript" charset="utf-8" async="" crossorigin="anonymous" src="./11.4e7a79d181ff9ae57577.songbird.js.download"></script><script type="text/javascript" charset="utf-8" async="" crossorigin="anonymous" src="./3.4e7a79d181ff9ae57577.songbird.js.download"></script><style type="text/css">.cardinalOverlay-mask{position:fixed;z-index:999998;top:0;left:0;opacity:0;display:none;width:100%;height:100%;transition:opacity 1ms ease;background:rgba(0,0,0,.6)}.cardinalOverlay-content{position:fixed;z-index:999999;top:50%;left:50%;opacity:0;padding:24px 20px;transform:translate(-50%,-50%);border-radius:2px;background:#fff}@media screen and (max-width:425px){.cardinalOverlay-content{max-width:410px;padding:.5em}}@media screen and (max-width:375px){.cardinalOverlay-content{max-width:365px;padding:.5em}}@media screen and (max-height:375px) and (orientation:landscape){.cardinalOverlay-content{max-height:365px;padding-top:.5em;padding-bottom:.5em}}@media screen and (max-width:320px){.cardinalOverlay-content{max-width:310px;padding:.5em}}@media screen and (max-height:320px) and (orientation:landscape){.cardinalOverlay-content{max-height:310px;padding-top:.5em;padding-bottom:.5em}}.legacy{-ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=50)";filter:alpha(opacity=50);background-color:#000}.cardinalOverlay-closeButton{font-family:Helvetica,Arial,sans-serif;font-size:25px;line-height:12px;position:absolute;top:2px;right:-3px;cursor:pointer;color:#999;border:0;outline:none;background:none}.cardinalOverlay-closeButton:hover{color:#000}.cardinalOverlay-content.cardinalOverlay-open,.cardinalOverlay-mask.cardinalOverlay-open{display:block;opacity:1;transition:opacity .5s ease}.shadow-effect{-ms-box-shadow:0 6px 22px -3px #000;-o-box-shadow:0 6px 22px -3px #000;box-shadow:0 6px 22px -3px #000}#Cardinal-MerchantContent{width:100%;float:left}#Cardinal-ModalContent{height:100%;width:100%}@media screen and (max-width:425px){#Cardinal-ModalContent{-webkit-overflow-scrolling:touch;overflow-y:scroll;max-width:390px}}@media screen and (max-height:425px) and (orientation:landscape){#Cardinal-ModalContent{-webkit-overflow-scrolling:touch;overflow-y:scroll;max-height:360px}}@media screen and (max-width:375px){#Cardinal-ModalContent{-webkit-overflow-scrolling:touch;overflow-y:scroll;max-width:350px}}@media screen and (max-height:375px) and (orientation:landscape){#Cardinal-ModalContent{-webkit-overflow-scrolling:touch;overflow-y:scroll;max-height:350px}}@media screen and (max-width:320px){#Cardinal-ModalContent{-webkit-overflow-scrolling:touch;overflow-y:scroll;max-width:300px}}@media screen and (max-height:320px) and (orientation:landscape){#Cardinal-ModalContent{-webkit-overflow-scrolling:touch;overflow-y:scroll;max-height:295px}}@media screen and (min-width:768px) and (max-width:1024px){#Cardinal-ModalContent{-webkit-overflow-scrolling:touch;overflow-y:scroll}}#Cardinal-ModalContent.size-01,#Cardinal-ModalContent.size-02{height:400px}#Cardinal-ModalContent.size-03{height:600px}#Cardinal-ModalContent.size-04{height:400px}#Cardinal-CCA-IFrame{display:block;margin:0 auto}@media screen and (max-width:425px){#Cardinal-CCA-IFrame{max-width:390px}}@media screen and (max-height:425px) and (orientation:landscape){#Cardinal-CCA-IFrame{max-height:360px}}@media screen and (max-width:375px){#Cardinal-CCA-IFrame{max-width:350px}}@media screen and (max-height:375px) and (orientation:landscape){#Cardinal-CCA-IFrame{max-height:350px}}@media screen and (max-width:320px){#Cardinal-CCA-IFrame{max-width:300px}}@media screen and (max-height:320px) and (orientation:landscape){#Cardinal-CCA-IFrame{max-height:295px}}.cardinal-hide{display:none}.cardinal-img-responsive{max-width:100%;height:auto;display:block}.cardinal-center-block{display:block;margin:0 auto}.cardinal-text-center{text-align:center}</style></head>
+
+<body onload="document.getElementById(&#39;pan&#39;).focus();">
+<a id="top"></a>
+<div id="pbx-container">
+<div id="pbx-logo">
+</div><!--pbx-logo-->
+
+<div class="pbx-header">
+</div><!--pbx-header-->
+
+<div id="pbx-main" class="payment">
+<div id="pbx-custom-area">
+</div><!--pbx-custom-area-->
+
+<div id="pbx-language">
+</div><!--pbx-language-->
+
+<div id="pbx-transaction-summary" class="pbx-frame">
+<h1 id="pbx-transaction-summary-header">PAYMENT INFORMATION</h1>
+<div class="pbx-transaction-summary-content">
+<label>
+ Transaction reference :</label>
+
+<span class="label"> 40865</span>
+</div>
+<div class="pbx-transaction-summary-content">
+<label>
+ Order value :</label>
+
+<span class="label"> 60.50 EUR</span>
+</div>
+<div class="pbx-transaction-summary-content">
+<label>
+ Company identifier :</label>
+
+<span class="label"> WOOBEO MAIL TESTER</span>
+</div>
+
+<div id="patience">
+<h2> Processing in progress.  Please wait ...</h2>
+</div><!--patience-->
+
+</div><!--pbx-transaction-summary-->
+</div><!--pbx-main-->
+
+<div id="pbx-mean-payment" class="pbx-frame">
+<h1 id="pbx-mean-payment-header">PAYMENT DATA</h1>
+<h2 id="pbx-mean-payment-content-main-text">Please enter your payment data</h2>
+<div id="pbx-form-err" style="display: block;">
+<label>
+ Entry error</label>
+</div><!--pbx-form-err-->
+<input type="hidden" id="CardinalLogLevel" value="off">
+<input type="hidden" id="CardinalJWTContainer" value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJPcmdVbml0SWQiOiI2MGMyNDc2NjdiNTk2ZTZmZGE5MTIyNzgiLCJQYXlsb2FkIjp7IkN1c3RvbSI6eyJBdXRoZW50aWNhdGlvbkluZGljYXRvciI6IjAxIiwiQ2F0ZWdvcnlDb2RlIjo3MzcyLCJEZXZpY2VDaGFubmVsIjoiQnJvd3NlciIsIlBheW1lbnRVc2VDYXNlIjoiMDEifSwiQ3VzdG9tZXIiOnsiRW1haWwxIjoic2FsZXNAd29vYmVvLmNvbSJ9LCJPcmRlckRldGFpbHMiOnsiQW1vdW50Ijo2MDUwLCJDdXJyZW5jeUNvZGUiOiJFVVIiLCJPcmRlckNoYW5uZWwiOiJTIiwiT3JkZXJOdW1iZXIiOiIxNTc1OTg5MDYzIn19LCJpYXQiOjE2MzcxMTg1NTYsImlzcyI6IjYwYzdjYzI5OTFmN2U3MTUwYjJkMWY3ZSIsImp0aSI6ImUzMzdkMWIyLTBlZTgtNDY0OC1iNGU0LWE4YjBiMTcwZTQxOCJ9.FPJ7544xBJaZrp9QvkbVmx6-wi0fZOaEqEtHiOhmYfc">
+<input type="hidden" id="CardinalBrowserHeader" value="text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9">
+<input type="hidden" id="CardinalIPAddress" value="176.122.27.79">
+<input type="hidden" id="CardinalSite" value="623834855">
+<script type="text/javascript" src="./songbird.js.download"></script>
+<script type="text/javascript" src="./3DSv2.js.download"></script>
+<div id="pbx-mean-payment-content-list">
+<div id="pbx-form">
+<section id="middle">
+<section id="input_section">
+<form action="https://tpeweb.paybox.com/cgi/MYtraitetransaction3dpbxc_ip.cgi" method="post" name="form_pay" id="idform_pay" class="Form">
+<div id="cardnumber_validate" class="label">
+<label for="pan">
+ Card number</label>
+<br>
+<div class="input_container Finput"><input id="pan" name="NUMERO_CARTE" class="Finput error" onfocusout="checkCardNumber()" placeholder=" Card number" onkeypress="limitKeypress(event,this.value,19)" autocomplete="cc-number" pattern="[0-9]*" inputmode="numeric" type="tel">
+<div class="isvalid"></div></div><div id="pbx-card-error" class="ui-widget ui-state-error ui-corner-all" style="display: none;">
+</div>
+</div>
+
+<div id="date_validity" class="label">
+<label for="mois_val">
+ Expiry date (MM/YY)</label>
+<br>
+<div class="input_container Finput"><select id="mois_val" name="MOIS_VALIDITE" class="left Finput" onchange="checkDate()">
+<option disabled="" selected="">Month</option>
+<option>01</option>
+<option>02</option>
+<option>03</option>
+<option>04</option>
+<option>05</option>
+<option>06</option>
+<option>07</option>
+<option>08</option>
+<option>09</option>
+<option>10</option>
+<option>11</option>
+<option>12</option>
+</select>
+<div class="date_separator">/</div><select id="an_val" name="AN_VALIDITE" class="right Finput" onchange="checkDate()">
+<option disabled="" selected="">Year</option>
+<option value="21"> 2021 </option>
+<option value="22"> 2022 </option>
+<option value="23"> 2023 </option>
+<option value="24"> 2024 </option>
+<option value="25"> 2025 </option>
+<option value="26"> 2026 </option>
+<option value="27"> 2027 </option>
+<option value="28"> 2028 </option>
+<option value="29"> 2029 </option>
+<option value="30"> 2030 </option>
+<option value="31"> 2031 </option>
+<option value="32"> 2032 </option>
+<option value="33"> 2033 </option>
+<option value="34"> 2034 </option>
+<option value="35"> 2035 </option>
+<option value="36"> 2036 </option>
+<option value="37"> 2037 </option>
+<option value="38"> 2038 </option>
+<option value="39"> 2039 </option>
+<option value="40"> 2040 </option>
+<option value="41"> 2041 </option>
+<option value="42"> 2042 </option>
+<option value="43"> 2043 </option>
+<option value="44"> 2044 </option>
+<option value="45"> 2045 </option>
+<option value="46"> 2046 </option>
+<option value="47"> 2047 </option>
+<option value="48"> 2048 </option>
+<option value="49"> 2049 </option>
+<option value="50"> 2050 </option>
+<option value="51"> 2051 </option>
+<option value="52"> 2052 </option>
+<option value="53"> 2053 </option>
+<option value="54"> 2054 </option>
+<option value="55"> 2055 </option>
+<option value="56"> 2056 </option>
+<option value="57"> 2057 </option>
+<option value="58"> 2058 </option>
+<option value="59"> 2059 </option>
+<option value="60"> 2060 </option>
+<option value="61"> 2061 </option>
+<option value="62"> 2062 </option>
+<option value="63"> 2063 </option>
+<option value="64"> 2064 </option>
+</select>
+<div id="pbx-date-error" class="ui-widget ui-state-error ui-corner-all" style="display: none;">
+</div>
+<div class="isvalid"></div></div></div><div id="cvvlabel" class="label">
+<input type="hidden" id="INFO_CVVX" name="INFO_CVVX" value="1">
+<label class="cvv_label" for="CVV">
+CVV
+
+<img id="cvvtooltip" title="3  digits on the back of your card" src="./PictoPointInterrogation.png" alt="Pictogramme Interrogation">
+</label>
+<div class="input_container Finput"><input id="CVV" name="CVVX" value="" class="Finput" onfocusout="checkCVV()" placeholder="CVV" type="tel" pattern="[0-9]{3}" inputmode="numeric" onkeypress="limitKeypress(event,this.value,3)" autocomplete="cc-csc">
+<div id="pbx-cvv-check" class="checkcontainer" title="Check this box if your card doesn&#39;t have visual cryptogram">
+<input type="checkbox" id="pbx-cvv-check-box" tabindex="4">
+<span class="checkmark"></span>
+</div>
+
+<div id="pbx-cvv-error" class="ui-widget ui-state-error ui-corner-all" style="display: none;">
+</div>
+</div>
+<div class="isvalid"></div></div>
+
+<div class="Fsubmit">
+<input type="hidden" id="PBX_TYPECARTE" name="PBX_TYPECARTE" value="MIF">
+<input type="hidden" id="PBX_LANGUE" name="PBX_LANGUE" value="GBR">
+<input type="hidden" id="PBX_TRANSACTION_3DS" name="PBX_TRANSACTION_3DS" value=""><input type="hidden" id="PBX_DATEHEURECVV" name="PBX_DATEHEURECVV" value=""><input type="hidden" name="PBX_ANNULE" id="PBX_ANNULE" value="https://www.mail-tester.com/manager/paybox_2.php?pbx=user&amp;t=cancel">
+<input type="hidden" name="PBX_APPEL" id="PBX_APPEL" value="7E5D19EF11AF414761F4">
+<input type="hidden" name="PBX_ATTENTE" id="PBX_ATTENTE" value="https://www.mail-tester.com/manager/paybox_2.php?pbx=user&amp;t=wait">
+<input type="hidden" name="PBX_CMD" id="PBX_CMD" value="40865">
+<input type="hidden" name="PBX_DEVISE" id="PBX_DEVISE" value="978">
+<input type="hidden" name="PBX_EFFECTUE" id="PBX_EFFECTUE" value="https://www.mail-tester.com/manager/paybox_2.php?pbx=user&amp;t=confirm">
+<input type="hidden" name="PBX_HASH" id="PBX_HASH" value="SHA512">
+<input type="hidden" name="PBX_HMAC" id="PBX_HMAC" value="A59C60043EB94D2D1AEC5F42021F09ED06B3FE8138498A4CE20D5B1BFE38EBA59E7AD9939EF704F904E51E50A0FF8DA9BE7CB0787A322D698E6499A5DB9D48C9">
+<input type="hidden" name="PBX_IDAPH" id="PBX_IDAPH" value="2200066160941">
+<input type="hidden" name="PBX_IDENTIFIANT" id="PBX_IDENTIFIANT" value="623834855">
+<input type="hidden" name="PBX_PORTEUR" id="PBX_PORTEUR" value="sales@woobeo.com">
+<input type="hidden" name="PBX_RANG" id="PBX_RANG" value="001">
+<input type="hidden" name="PBX_REFERER" id="PBX_REFERER" value="FramepagepaiementRWD.cgi">
+<input type="hidden" name="PBX_REFUSE" id="PBX_REFUSE" value="https://www.mail-tester.com/manager/paybox_2.php?pbx=user&amp;t=refuse">
+<input type="hidden" name="PBX_REPONDRE_A" id="PBX_REPONDRE_A" value="https://www.mail-tester.com/manager/paybox_2.php">
+<input type="hidden" name="PBX_RETOUR" id="PBX_RETOUR" value="mt:M;ref:R;auth:A;err:E;sign:K">
+<input type="hidden" name="PBX_SELECTION" id="PBX_SELECTION" value="00">
+<input type="hidden" name="PBX_SITE" id="PBX_SITE" value="1483184">
+<input type="hidden" name="PBX_SOURCE" id="PBX_SOURCE" value="RWD">
+<input type="hidden" name="PBX_TEST" id="PBX_TEST" value="N">
+<input type="hidden" name="PBX_TIME" id="PBX_TIME" value="2021-11-17T04:09:15+01:00">
+<input type="hidden" name="PBX_TOTAL" id="PBX_TOTAL" value="6050">
+<input type="hidden" name="PBX_TYPEPAIEMENT" id="PBX_TYPEPAIEMENT" value="3DSECURE">
+<input type="hidden" name="state" id="state" value="99">
+</div><!--Fsubmit-->
+
+<span class="pbx-button-container">
+<button type="submit" id="pbx-button-validate" class="pbx-button" name="submitBtn" onclick="return checkValid();">
+<img src="./PictoValider.png" alt="Pictogramme Valider"> Pay<span id="pbx-spinner" style="display:none;">
+<img src="./spinner.gif">
+</span>
+</button>
+
+</span><!--pbx-button-container-->
+
+</form>
+
+<div class="Fsubmit">
+<span class="pbx-button-container">
+<a href="https://www.mail-tester.com/manager/paybox_2.php?pbx=user&amp;t=cancel&amp;mt=6050&amp;ref=40865&amp;err=00001&amp;sign=ZnF1Y%2FYJAXM9aOdjLYfNsthaqdTtze7Hzpz%2F9mzopBLlja%2FSQtJ%2FIKHHoWKES4YMB2xhofHHeE3BNDjCEeN2BdZc40s%2BFHbTqslnRi%2B9ywEbwas8R5XnyhpwVA7fFHTV%2FAjKCv50L1nQCJKzT1g4dZd2b6eR3z3Cgol%2Fkw8F3Oc%3D" id="idform_cancel" class="Form">
+<button type="button" id="pbx-button-cancel" class="pbx-button"><img src="./PictoAnnuler.png" alt="Pictogramme Annuler"> Cancel</button>
+</a>
+</span>
+</div>
+
+<section id="cardlogo">
+<span id="pbx-card-selection"></span>
+<div id="pbx-card-buttons">
+</div>
+</section><!--cardlogo-->
+</section><!--input_section-->
+</section><!--section_middle-->
+</div><!--pbx-form-->
+</div><!--pbx-mean-payment-content-list-->
+</div><!--pbx-mean-payment-->
+
+
+<div id="pbx-footer" class="pbx-frame">
+<div class="dv footer_text">
+Secure payment by 
+<img src="./logoCA.png" class="inlineImg" alt="footer logo">
+</div>
+</div><!--pbx-footer-->
+</div><!--pbx-container-->
+<div id="pbx-footer-version-mpads">
+MPADS 5.5 version 1.0.0</div>
+<div id="pbx-footer-merchant-nation">
+<p>Shop : France</p>
+</div><!--pbx-footer-merchant-nation-->
+<div id="pbx-footer-3ds-info">
+If your bank subscribes to the secured payments programme Verified by Visa or SecureCode Mastercard, after clicking on "SUBMIT» a new screen will be displayed, inviting you to confirm with a code that is different to your PIN number.</div>
+
+
+<div role="log" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div><div role="log" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div><div tabindex="-1" role="dialog" class="ui-dialog ui-corner-all ui-widget ui-widget-content ui-front pbx-card-dialog ui-draggable" aria-describedby="pbx-cvv-check-warning" aria-labelledby="ui-id-1" style="display: none;"><div class="ui-dialog-titlebar ui-corner-all ui-widget-header ui-helper-clearfix ui-draggable-handle"><span id="ui-id-1" class="ui-dialog-title">Warning</span><button type="button" class="ui-button ui-corner-all ui-widget ui-button-icon-only ui-dialog-titlebar-close" title="Close"><span class="ui-button-icon ui-icon ui-icon-closethick"></span><span class="ui-button-icon-space"> </span>Close</button></div><div id="pbx-cvv-check-warning" class="ui-dialog-content ui-widget-content" style="display: block;">
+  <p class="pbx-card-dialog-text">
+    WARNING: If your card has a visual cryptogram and you check this box, the payment could be refused.
+  </p>
+  <p class="pbx-card-dialog-buttons">
+    <button type="button" class="pbx-card-button" id="pbx-cvv-check-cancel" tabindex="1" autofocus="">
+    Cancel
+    </button>
+    <button type="button" class="pbx-card-button" id="pbx-cvv-check-ok" tabindex="1">
+    OK
+    </button>
+  </p>
+</div></div><div role="log" aria-live="assertive" aria-relevant="additions" class="ui-helper-hidden-accessible"></div><iframe id="Cardinal-collector" height="0" width="0" frameborder="0" src="./Render.html" style="display: none; position: absolute; top: -1000px; left: -1000px;"></iframe></body></html>

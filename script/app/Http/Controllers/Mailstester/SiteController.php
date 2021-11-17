@@ -22,6 +22,11 @@ use Illuminate\Support\Facades\Auth;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 use Stripe\Checkout\Session as StripeSession;
 use Stripe\Stripe;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rule;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class SiteController extends Controller
 {
@@ -347,15 +352,20 @@ class SiteController extends Controller
             $role = Auth::user()->role; 
             $userdata['user_login'] = Auth::user();
         }
+        $addressdata = [];
 
-        if($type=='account')
+        if($type=='account'){
             $viewpage = ('mailstester.profile-account');
-        else if($type=='address')
+        } else if($type=='address'){
+            $addressdata = Profile::where('user_id',$userdata['user_login']->id)->get();
             $viewpage = ('mailstester.profile-address');
-        else
+        } else {
             abort(404); //redirect(404);
+        }
 
-        return view($viewpage)->with('userdata' ,$userdata);        
+        return view($viewpage)
+            ->with('userdata' ,$userdata)
+            ->with('addressdata' ,$addressdata);        
     }
 
     public function ajax_getmemInfo($userid){
@@ -404,8 +414,109 @@ class SiteController extends Controller
 
         return redirect(route('get-started'));
     }
-    public function save_account(){ return null;}
-    public function save_address(){ return null;}
+    public function save_account(Request $request){ 
+        
+        $userdata = Auth::user();
+        try {
+            $this->account_validator($request->all())->validate();
+            $old_email = $userdata->email;
+            $new_email = $request->get('email');
+            if($old_email != $new_email){
+                User::find($userdata->id)->update([
+                    'email' => $new_email
+                ]);
+            }                
+
+            $password = $request->get('password');
+            $password_confirmation = $request->get('password_confirmation');
+
+            if (!empty($password) and !empty($password_confirmation) and $password == $password_confirmation) {
+                $new_password = Hash::make($password);
+                User::find($userdata->id)->update([
+                    'password' => $new_password
+                ]);
+            }
+            $success_msg = 'Your account updated successfully.';
+            session()->flash('success', translate($success_msg));
+            return redirect(route('profile','account'));
+
+        } catch (ValidationException $e) {
+            session()->flash('error', translate('Some validation error occur.'));
+            return redirect(route('profile','account'));
+        } 
+    }
+
+    protected function account_validator(array $data)
+    {
+        $userdata = Auth::user();
+        return Validator::make($data, [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($userdata)],
+        ]);
+    }
+
+    public function set_default_address(Request $request) {
+        $userdata = Auth::user();
+        Profile::where('user_id', $userdata->id)->where('default_address','1')->update(['default_address' => '0']);
+        $address_id = $request->get('default_address');
+        Profile::where('id', $address_id)->update(['default_address' => '1']);
+        return redirect(route('profile','address'));
+    }
+
+    public function get_address_detail(Request $request) {
+        $profile_id = $request->get('profile_id');
+        $addressdata = Profile::where('id',$profile_id)->first();
+        $result = ['detail'=>$addressdata];
+        return json_encode($result);
+    }
+
+    public function save_address(Request $request){
+        $userdata = Auth::user();
+        
+        $id = $request->get('profile_id');
+        // print_r($request->all());exit;
+        if(!empty($id)){ //edit profile
+            Profile::find($id)->update($request->all());
+            $success_msg = 'Your address updated successfully.';
+            session()->flash('success', translate($success_msg));
+        } else {
+            $firstname = $request->get('firstname');
+            $lastname = $request->get('lastname');
+            $company = $request->get('company');
+            $vatnum = $request->get('vatnum');
+            $address = $request->get('address');
+            $postcode = $request->get('postcode');
+            $city = $request->get('city');
+            $telephone = $request->get('telephone');
+            $country = $request->get('country');
+            $state = $request->get('state');
+            $flag =  Profile::create([
+                'user_id' => $userdata->id,
+                // 'mail_addr' => '',
+                'firstname' => $firstname,
+                'lastname' => $lastname,
+                'company' => $company,
+                'vatnum' => $vatnum,
+                'address' => $address,
+                'postcode' => $postcode,
+                'city' => $city,
+                'telephone' => $telephone,
+                'country' => $country,
+                'state' => $state
+            ]);
+            $success_msg = 'Your address created successfully.';
+            session()->flash('success', translate($success_msg));
+        }
+        return redirect(route('profile','address'));
+    }
+
+    public function delete_address(Request $request){
+        $profile_id = $request->get('profile_id');
+        Profile::where('id',$profile_id)->delete();
+        $result = ['status'=>'success'];
+        return json_encode($result);
+    }
+    
     public function order(){
         $guard = null;
         $userdata = [];
@@ -435,11 +546,51 @@ class SiteController extends Controller
         return view('mailstester.order_detail')
                 ->with('userdata' ,$userdata);
     }
+    public function cart_type_cart(){
+        $guard = null;
+        $userdata = [];
+        if (Auth::guard($guard)->check()) {
+            $role = Auth::user()->role; 
+            $userdata['user_login'] = Auth::user();
+        }
+        else
+        {
+            redirect(route('login'));
+        }
+        return view('mailstester.carts')
+                ->with('userdata' ,$userdata);
+    }
 
+    public function checkout($price=null){ 
+        $guard = null;
+        $userdata = [];
+        if (Auth::guard($guard)->check()) {
+            $role = Auth::user()->role; 
+            $userdata['user_login'] = Auth::user();
+        }
+        else
+        {
+            redirect(route('login'));
+        }
+        return redirect( route('checkout', 'step1') );
+    }
 
-    public function checkout($price){ return $price;}
-    public function address(){return null;}
-    public function cart_type_cart(){return null;}
+    public function checkout_step($step){ 
+        $guard = null;
+        $userdata = [];
+        if (Auth::guard($guard)->check()) {
+            $role = Auth::user()->role; 
+            $userdata['user_login'] = Auth::user();
+        }
+        else
+        {
+            redirect(route('login'));
+        }
+        return view('mailstester.checkout-' . substr($step, -1))
+                ->with('userdata' ,$userdata);
+    }
+    //public function address(){return null;}
+    
     public function affiliate(){return null;}
     public function check(){return null;}
     public function design_wait($site){return $site;}

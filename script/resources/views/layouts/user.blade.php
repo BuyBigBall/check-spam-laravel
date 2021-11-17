@@ -134,7 +134,7 @@
           @foreach ($links as $link)
             @if($link->postion == 0)
               <li class="nav-item">
-                <a class="nav-link" @if($link->target) target="_blank"  rel="noreferrer" @endif  href="{{$link->url}}">{!! $link->icon !!} {{$link->title}}</a>
+                <a class="nav-link" @if($link->target) target="_self"  rel="noreferrer" @endif  href="{{$link->url}}">{!! $link->icon !!} {{$link->title}}</a>
               </li>
             @endif
           @endforeach
@@ -255,6 +255,7 @@
     "use strict";
     var fetch_time = "{{$setdata['fetch_time']}}",
     url = "{{route('messages')}}" ,
+    email_url = "{{route('email')}}",
     color = "{{$setdata['secondary_color']}}",
     click_to_copy = "{{translate('Click To Copy!')}}",
     copied = "{{translate('Copied!')}}" ;

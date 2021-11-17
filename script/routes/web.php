@@ -118,6 +118,8 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
     Route::get('/', 'TrashMailController@index')->name("home");
     Route::get('/index', 'TrashMailController@index')->name("index");
     Route::get('/messages', 'TrashMailController@messages')->name("messages");
+    Route::get('/email', 'TrashMailController@temporaryEmailAddress')->name("email");
+    
     Route::get('/change', 'TrashMailController@change')->name("change");
     Route::get('/view/{id}', 'TrashMailController@show')->name("view");
     Route::get('/message/{id}', 'TrashMailController@message')->name("message");
@@ -133,7 +135,8 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
     Route::post('/spamtest',        'Mailstester\SpamTestController@index')->name("spamtest");
     Route::post('/profile',         'Mailstester\LoginController@profile_view')->name("profile_view");
     Route::post('/profile-save',    'Mailstester\LoginController@profile_save')->name("profile_save");
-    Route::get('/register',         'Mailstester\RegisterController@showRegistrationForm')->name("register");
+    Route::get('/signup',         'Mailstester\RegisterController@showRegistrationForm')->name("signup");
+    Route::post('/save-register',   'Mailstester\RegisterController@save_register')->name("save-register");
 
     Route::get('/forgot/{type}',    'Mailstester\LoginController@forgot')->name("forgot");
     Route::get('/prices',           'Mailstester\SiteController@index')->name("prices");
@@ -156,9 +159,12 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
         Route::get('/account',          'Mailstester\SiteController@account')->name("account");
         Route::get('/get-started',      'Mailstester\SiteController@started')->name("get-started");
         Route::post('/save-configure',        'Mailstester\SiteController@save_configure')->name("save-configure");
-        Route::get('/checkout/{price}', 'Mailstester\SiteController@checkout')->name("checkout");
+        Route::get('/payment/{price}', 'Mailstester\SiteController@checkout')->name("payment");
+
+        Route::get('/checkout/{step}', 'Mailstester\SiteController@checkout_step')->name("checkout");
+
         Route::get('/profile/{type}',   'Mailstester\SiteController@profile')->name("profile");
-        Route::get('/address',          'Mailstester\SiteController@address')->name("address");
+        //Route::get('/address',          'Mailstester\SiteController@address')->name("address");
         Route::get('/order',            'Mailstester\SiteController@order')->name("order");
         Route::get('/orderdetail/{orderid}', 'Mailstester\SiteController@order_detail')->name("orderdetail");
         
@@ -175,6 +181,9 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
         Route::post('/save-account',     'Mailstester\SiteController@save_account')->name("save-account");
         Route::post('/save-address',     'Mailstester\SiteController@save_address')->name("save-address");
         Route::get('/getmemInfo/{userid}',     'Mailstester\SiteController@ajax_getmemInfo')->name("getmemInfo");
+        Route::post('/set-default-address',     'Mailstester\SiteController@set_default_address')->name("set-default-address");
+	    Route::post('/get-address-detail',     'Mailstester\SiteController@get_address_detail')->name("get-address-detail");
+        Route::post('/delete-address',     'Mailstester\SiteController@delete_address')->name("delete-address");
         
     });
 });

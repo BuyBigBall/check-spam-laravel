@@ -53,8 +53,8 @@
                                     </td>
                                     <td>
                                         <a
-                                            class="btn btn-primary"
-                                            href="{{ route('register') }}">Register</a>
+                                            class="btn btn-primary @if (!empty($userdata['user_login'])) disabled @endif"
+                                            href="{{ route('signup') }}">Register</a>
                                     </td>
                                 </tr>
                                 <tr>

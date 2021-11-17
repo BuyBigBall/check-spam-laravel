@@ -14,7 +14,7 @@
                 action="{{ route('check') }}">
                 Send your message to :
                 <input
-                    placeholder="chakouri-whateveryouwant@srv1.{{ ($request=Request::capture())->gethttphost() }}"
+                    placeholder="{{$userdata['user_login']['name']}}-whateveryouwant{{ '@'.($request=Request::capture())->gethttphost() }}"
                     type="text"
                     name="id"
                     value="{{ $email }}" />
@@ -60,22 +60,19 @@
                     <tbody>
                         <tr>
                             <td>
-                                <a href="{{ route('/testresult', 'chakouri-RKSB') }}" target="_blank">2021-11-15 11:09:55</a>
+                                <a href="{{ route('testresult', 'chakouri-RKSB') }}" target="_blank">2021-11-15 11:09:55</a>
                             </td>
                             <td>
-                                <a
-                                    class="underlined-link"
-                                    href="{{ route('/testresult', 'chakouri-RKSB') }}"
-                                    target="_blank">spam - test</a>
+                                <a href="{{ route('testresult', 'chakouri-RKSB') }}" class="underlined-link" target="_blank">spam - test</a>
                             </td>
                             <td>
-                                <a href="{{ route('/testresult', 'chakouri-RKSB') }}" target="_blank">chakouri - RKSB</a>
+                                <a href="{{ route('testresult', 'chakouri-RKSB') }}" target="_blank">chakouri - RKSB</a>
                             </td>
                             <td>
-                                <a href="{{ route('/testresult', 'chakouri-RKSB') }}" target="_blank">9.7</a>
+                                <a href="{{ route('testresult', 'chakouri-RKSB') }}" target="_blank">9.7</a>
                             </td>
                             <td>
-                                <a href="{{ route('/testresult', 'chakouri-RKSB') }}" target="_blank"></a>
+                                <a href="{{ route('testresult', 'chakouri-RKSB') }}" target="_blank"></a>
                             </td>
                         </tr>
                     </tbody>

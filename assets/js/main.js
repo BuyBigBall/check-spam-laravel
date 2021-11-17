@@ -60,7 +60,7 @@ $(document).ready(function () {
 
 
   try {
-    function messages() {
+    function ajax_email() {
       var email = $("#trsh_mail");
       var btn_copy = $(".custom-email-botton");
 
@@ -88,6 +88,58 @@ $(document).ready(function () {
           email.val(val);
         }, 300);
       }
+
+      $.ajax({
+        url: email_url,
+        dataType: "text",
+        cache: false,
+        contentType: false,
+        processData: false,
+        type: "get",
+        success: function (data) {
+
+          clearInterval(myLand);
+          btn_copy.removeAttr("disabled");
+
+          Progress.configure({ color: [color] });
+          Progress.configure({ speed: 0.8 });
+          Progress.complete();
+          var d = JSON.parse(data);
+          $('#trsh_mail').val(d.email);
+          messages();
+
+        },
+      });
+    }
+
+    function messages() {
+      var email = $("#trsh_mail");
+      var btn_copy = $(".custom-email-botton");
+
+      // if (email.val().length == 0) {
+      //   btn_copy.attr("disabled", "disabled");
+      //   email.val("landing");
+      //   var myLand = setInterval(function () {
+      //     var val = "";
+      //     switch (email.val()) {
+      //       case "landing":
+      //         val = "landing.";
+      //         break;
+
+      //       case "landing.":
+      //         val = "landing..";
+      //         break;
+
+      //       case "landing..":
+      //         val = "landing...";
+      //         break;
+      //       case "landing...":
+      //         val = "landing";
+      //         break;
+      //     }
+      //     email.val(val);
+      //   }, 300);
+      // }
 
       $.ajax({
         url: url,
@@ -148,7 +200,8 @@ $(document).ready(function () {
       });
     }
 
-    messages();
+    //messages();
+    ajax_email();
     setInterval(messages, fetch_time * 1000);
   } catch (error) {}
 

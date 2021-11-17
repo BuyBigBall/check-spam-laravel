@@ -17,7 +17,7 @@
                             <tr>
                                 <td>
                                     <a
-                                        href="{{ route('order' )}}#">
+                                        href="{{ route('account' )}}#">
                                         <span class="icon-32-back" title="Back"></span>
                                         Back
                                     </a>

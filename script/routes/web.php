@@ -129,6 +129,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
     Route::get('/spf-detail/{type}',    'Mailstester\SiteController@spf')->name("spf-detail");
     Route::get('/spf-dkim-check',       'Mailstester\SiteController@dkim_check')->name("spf-dkim-check");
 
+    Route::get('/spamtest',        'Mailstester\SpamTestController@index')->name("go_spamtest");
     Route::post('/spamtest',        'Mailstester\SpamTestController@index')->name("spamtest");
     Route::post('/profile',         'Mailstester\LoginController@profile_view')->name("profile_view");
     Route::post('/profile-save',    'Mailstester\LoginController@profile_save')->name("profile_save");
@@ -151,7 +152,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
     // Route::post('/login', 'Mailstester\LoginController@loginchk')->name("loginchk");
     # <------------------
     Route::group(['middleware' => ['auth']], function () {
-		//Route::get('/{account}', 		'TrashMailController@index')->name("/");
+		Route::get('/testresult/{account}', 		'TrashMailController@index')->name("testresult");
         Route::get('/account',          'Mailstester\SiteController@account')->name("account");
         Route::get('/get-started',      'Mailstester\SiteController@started')->name("get-started");
         Route::post('/save-configure',        'Mailstester\SiteController@save_configure')->name("save-configure");
@@ -159,6 +160,8 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
         Route::get('/profile/{type}',   'Mailstester\SiteController@profile')->name("profile");
         Route::get('/address',          'Mailstester\SiteController@address')->name("address");
         Route::get('/order',            'Mailstester\SiteController@order')->name("order");
+        Route::get('/orderdetail/{orderid}', 'Mailstester\SiteController@order_detail')->name("orderdetail");
+        
         Route::get('/cart-type-cart',   'Mailstester\SiteController@cart_type_cart')->name("cart-type-cart");
         Route::get('/affiliate',        'Mailstester\SiteController@affiliate')->name("affiliate");
         Route::get('/check',            'Mailstester\SiteController@check')->name("check");

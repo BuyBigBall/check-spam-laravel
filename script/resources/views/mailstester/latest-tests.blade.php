@@ -60,22 +60,22 @@
                     <tbody>
                         <tr>
                             <td>
-                                <a href="{{ route('/', 'chakouri-RKSB') }}" target="_blank">2021-11-15 11:09:55</a>
+                                <a href="{{ route('/testresult', 'chakouri-RKSB') }}" target="_blank">2021-11-15 11:09:55</a>
                             </td>
                             <td>
                                 <a
                                     class="underlined-link"
-                                    href="{{ route('/', 'chakouri-RKSB') }}"
+                                    href="{{ route('/testresult', 'chakouri-RKSB') }}"
                                     target="_blank">spam - test</a>
                             </td>
                             <td>
-                                <a href="{{ route('/', 'chakouri-RKSB') }}" target="_blank">chakouri - RKSB</a>
+                                <a href="{{ route('/testresult', 'chakouri-RKSB') }}" target="_blank">chakouri - RKSB</a>
                             </td>
                             <td>
-                                <a href="{{ route('/', 'chakouri-RKSB') }}" target="_blank">9.7</a>
+                                <a href="{{ route('/testresult', 'chakouri-RKSB') }}" target="_blank">9.7</a>
                             </td>
                             <td>
-                                <a href="{{ route('/', 'chakouri-RKSB') }}" target="_blank"></a>
+                                <a href="{{ route('/testresult', 'chakouri-RKSB') }}" target="_blank"></a>
                             </td>
                         </tr>
                     </tbody>

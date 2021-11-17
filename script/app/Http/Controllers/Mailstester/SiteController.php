@@ -205,7 +205,7 @@ class SiteController extends Controller
         }
         else
         {
-            redirect(route('login'));
+            return redirect(route('login'));
         }
         //print_r($conf);die;
         return view('mailstester.started')
@@ -243,6 +243,10 @@ class SiteController extends Controller
             $role = Auth::user()->role; 
             $userdata['user_login'] = Auth::user();
         }
+        else
+        {
+            return redirect(route('go_spamtest'));
+        }
         return view('mailstester.latest-tests')
                 ->with('email', $email)
                 ->with('userdata' ,$userdata);
@@ -271,6 +275,10 @@ class SiteController extends Controller
         if (Auth::guard($guard)->check()) {
             $role = Auth::user()->role; 
             $userdata['user_login'] = Auth::user();
+        }
+        else
+        {
+            return redirect(route('login'));
         }
         return view('mailstester.design')
                 ->with('userdata' ,$userdata);
@@ -348,61 +356,89 @@ class SiteController extends Controller
             abort(404); //redirect(404);
 
         return view($viewpage)->with('userdata' ,$userdata);        
-}
-
-public function ajax_getmemInfo($userid){
-    $guard = null;
-    $userdata = [];
-    if (Auth::guard($guard)->check()) {
-        $role = Auth::user()->role; 
-        $userdata = Auth::user();
     }
 
-    $user_profile = [];
-    if(($user_profile = Profile::selectUserProfile($userid)))
-        $userdata = $userdata  + $user_profile;
-    print(json_encode($userdata));die;
-}
+    public function ajax_getmemInfo($userid){
+        $guard = null;
+        $userdata = [];
+        if (Auth::guard($guard)->check()) {
+            $role = Auth::user()->role; 
+            $userdata = Auth::user();
+        }
 
-public function save_configure(Request $request){ 
-    $guard = null;
-    $userdata = [];
-    if (Auth::guard($guard)->check()) {
-        $role = Auth::user()->role; 
-        $userdata = Auth::user();
-        //print_r($userdata); die;
-        if( ($configure = Configure::selectConfigures($userdata['id'])) )
-        {
-            $configure->private_key     = $request->pkey;
-            $configure->server_ips      = $request->serverip;
-            $configure->client_ips      = $request->clientip;
-            $configure->x_mt_tocken     = $request->mttoken;
-            $configure->micro_payment   = $request->micropayment;
-            $configure->update();
+        $user_profile = [];
+        if(($user_profile = Profile::selectUserProfile($userid)))
+            $userdata = $userdata  + $user_profile;
+        print(json_encode($userdata));die;
+    }
+
+    public function save_configure(Request $request){ 
+        $guard = null;
+        $userdata = [];
+        if (Auth::guard($guard)->check()) {
+            $role = Auth::user()->role; 
+            $userdata = Auth::user();
+            //print_r($userdata); die;
+            if( ($configure = Configure::selectConfigures($userdata['id'])) )
+            {
+                $configure->private_key     = $request->pkey;
+                $configure->server_ips      = $request->serverip;
+                $configure->client_ips      = $request->clientip;
+                $configure->x_mt_tocken     = $request->mttoken;
+                $configure->micro_payment   = $request->micropayment;
+                $configure->update();
+            }
+            else
+            {
+                $configure = new Configure();
+                $configure->user_id = $userdata['id'];
+                $configure->private_key     = $request->pkey;
+                $configure->server_ips      = $request->serverip;
+                $configure->client_ips      = $request->clientip;
+                $configure->x_mt_tocken     = $request->mttoken;
+                $configure->micro_payment   = $request->micropayment;
+                $configure->save();
+            }
+            
+        }
+
+        return redirect(route('get-started'));
+    }
+    public function save_account(){ return null;}
+    public function save_address(){ return null;}
+    public function order(){
+        $guard = null;
+        $userdata = [];
+        if (Auth::guard($guard)->check()) {
+            $role = Auth::user()->role; 
+            $userdata['user_login'] = Auth::user();
         }
         else
         {
-            $configure = new Configure();
-            $configure->user_id = $userdata['id'];
-            $configure->private_key     = $request->pkey;
-            $configure->server_ips      = $request->serverip;
-            $configure->client_ips      = $request->clientip;
-            $configure->x_mt_tocken     = $request->mttoken;
-            $configure->micro_payment   = $request->micropayment;
-            $configure->save();
+            redirect(route('login'));
         }
-        
+        return view('mailstester.orders')
+                ->with('userdata' ,$userdata);
     }
-
-    return redirect(route('get-started'));
-}
-public function save_account(){ return null;}
-public function save_address(){ return null;}
+    
+    public function order_detail($orderid){
+        $guard = null;
+        $userdata = [];
+        if (Auth::guard($guard)->check()) {
+            $role = Auth::user()->role; 
+            $userdata['user_login'] = Auth::user();
+        }
+        else
+        {
+            redirect(route('login'));
+        }
+        return view('mailstester.order_detail')
+                ->with('userdata' ,$userdata);
+    }
 
 
     public function checkout($price){ return $price;}
     public function address(){return null;}
-    public function order(){return null;}
     public function cart_type_cart(){return null;}
     public function affiliate(){return null;}
     public function check(){return null;}

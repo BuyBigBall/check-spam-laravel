@@ -14,7 +14,7 @@
                 action="{{ route('check') }}">
                 Send your message to :
                 <input
-                    placeholder="{{$userdata['user_login']['name']}}-whateveryouwant{{ '@'.($request=Request::capture())->gethttphost() }}"
+                    placeholder="{{$userdata['user_login']['name']}}-whateveryouwant{{ '@'.env('MAIL_HOST') }}"
                     type="text"
                     name="id"
                     value="{{ $email }}" />

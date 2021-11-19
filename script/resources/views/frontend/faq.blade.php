@@ -97,7 +97,7 @@
                     </strong>way to quickly test the quality of our own newsletters.</p>
                 <p>We simply built on our own tool. Now we're sharing it for free via our
                     web-interface and enable you to
-                    <a href="https://www.mail-tester.com/manager" target="_blank">include our tests in your own app and whitelist our service</a>
+                    <a href="/manager" target="_blank">include our tests in your own app and whitelist our service</a>
                     by creating an account.</p>
                 <p>We're geeky email software engineers.</p>
                 <a
@@ -113,7 +113,7 @@
             <h2 id="work" class="question">How does mail-tester work?</h2>
             <div class="answer">
                 <p>We generate a random email address each time you access our
-                    <a href="https://www.mail-tester.com/">port</a>.</p>
+                    <a href="/">port</a>.</p>
                 <p>You should send a message from your favourite Newsletter/email software to
                     this email address.</p>
                 <p>Once done, click on the
@@ -291,9 +291,9 @@
             <div class="answer">
                 <p>We have an iframe and a JSON API which are both available with our paid plans
                     so you can
-                    <a href="https://www.mail-tester.com/manager" target="_blank">integrate mail-tester results into your own software</a>.</p>
+                    <a href="/manager" target="_blank">integrate mail-tester results into your own software</a>.</p>
                 <p>Need more information?
-                    <a href="https://www.mail-tester.com/contact">Get in touch with us!</a>
+                    <a href="/contact">Get in touch with us!</a>
                 </p>
                 <a
                     class="btn btn-transparent float-right"
@@ -309,7 +309,7 @@
             <div class="answer">
                 <p>We'd like to see mail-tester in other languages.<br/>
                     Please
-                    <a href="https://www.mail-tester.com/contact">contact us</a>
+                    <a href="/contact">contact us</a>
                     to receive the latest version of your language file and help us improve it!</p>
                 <a
                     class="btn btn-transparent float-right"
@@ -323,7 +323,7 @@
         <div class="container py-3 clearfix">
             <h2 id="usage-restrictions" class="question">Usage Restrictions</h2>
             <div class="answer">
-                <p>You are free to use mail-tester.com provided that:</p>
+                <p>You are free to use {{ env('MAIL_HOST') }} provided that:</p>
                 <ol>
                     <li>You do not interfere or attempt to interfere with the proper working of the
                         service.</li>

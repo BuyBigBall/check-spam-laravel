@@ -49,6 +49,25 @@ class TrashMail extends Model
         return $connection;
     }
 
+    public static function GetLastUnreadMail($email)
+    {
+        # look for unread message for me
+        $results = TrashMail::allMessages($email);
+		
+        foreach($results["messages"] as $last_message)
+        {
+            if( !empty($last_message['error'])) continue;
+
+            if(!$last_message['is_seen'])
+            {
+                $id = $last_message['id'];
+				return $id;
+            }
+            break;
+        }
+		return null;
+    }
+  
 
     public static function allMessages($email)
     {
@@ -235,6 +254,7 @@ class TrashMail extends Model
             $data['receivedAt'] = $date->format('Y-m-d H:i:s');
             $data['id'] = $message->getNumber();
             $data['attachments'] = [];
+            $data['header'] = $message->getRawHeaders();
 
             $html = $message->getBodyHtml();
             if ($html) {

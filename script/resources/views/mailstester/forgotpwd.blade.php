@@ -7,7 +7,7 @@
         <div class="reset py-6">
             <form
                 id="user-registration"
-                action="https://www.mail-tester.com/manager/login.html?task=reset.request"
+                action="/manager/login.html?task=reset.request"
                 method="post"
                 class="form-validate form-horizontal well">
                 <fieldset>

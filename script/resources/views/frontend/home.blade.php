@@ -15,6 +15,7 @@
           <h1>{{as_it_is('First, send your email to:')}}</h1>
           <div class="custom-email">
             <input type="text" class="custom-email-input" id="trsh_mail" name="trsh_mail" readonly>
+            <input type="hidden" id="hFlag_MessageId" name="message_id" value=''>
             <button type="button" data-toggle="tooltip" data-placement="bottom" title="{{translate('Click To Copy!')}}"
               data-clipboard-target="#trsh_mail" class="custom-email-botton">
               <i class="fas fa-copy"></i>

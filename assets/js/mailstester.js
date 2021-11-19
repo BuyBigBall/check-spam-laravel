@@ -57,6 +57,7 @@ $(function() {
 		});
 	});
 
+	var waitingTimeout = null;
 	var progress = jQuery('#waiting-page .progress-bar');
 	if(progress.length){
 		var elapsedTime = 0,
@@ -74,8 +75,29 @@ $(function() {
 				window.location.reload();
 				return;
 			}
+			else
+			{
+				$.ajax({
+					url: wait_url,
+					dataType: "text",
+					cache: false,
+					contentType: false,
+					processData: false,
+					type: "get",
+					success: function (data) {
+						
+					  var d = JSON.parse(data);
+					  if(d.result=='ok')
+					  {
+						if(waitingTimeout!=null)clearInterval(waitingTimeout);
+						window.location.href = result_url + '?message_id='+d.message_id;
+
+					  }
+					},
+				  });
+			}
 			elapsedTime += refreshRate;
-			setTimeout( showRemainingTime, refreshRate*1000 );
+			waitingTimeout = setTimeout( showRemainingTime, refreshRate*1000 );
 		}
 
 		showRemainingTime();

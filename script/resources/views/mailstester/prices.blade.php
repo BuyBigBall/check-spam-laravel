@@ -46,6 +46,7 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @if (empty($userdata['user_login'])) 
                                 <tr>
                                     <td colspan="3">Micro-payment mode<br/>
                                         <span style="font-size:10px">So your users will pay for the tests they perform
@@ -53,10 +54,11 @@
                                     </td>
                                     <td>
                                         <a
-                                            class="btn btn-primary @if (!empty($userdata['user_login'])) disabled @endif"
+                                            class="btn btn-primary"
                                             href="{{ route('signup') }}">Register</a>
                                     </td>
                                 </tr>
+                                @endif
                                 <tr>
                                     <td>500</td>
                                     <td>50 €</td>

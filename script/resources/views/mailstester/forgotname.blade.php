@@ -7,7 +7,7 @@
         <div class="remind py-6">
             <form
                 id="user-registration"
-                action="https://www.mail-tester.com/manager/login.html?task=remind.remind"
+                action="/manager/login.html?task=remind.remind"
                 method="post"
                 class="form-validate form-horizontal well" >
                 <fieldset>

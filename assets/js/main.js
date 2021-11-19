@@ -150,7 +150,7 @@ $(document).ready(function () {
         type: "get",
         success: function (data) {
 
-          clearInterval(myLand);
+          //clearInterval(myLand);
           btn_copy.removeAttr("disabled");
 
           Progress.configure({ color: [color] });
@@ -170,10 +170,27 @@ $(document).ready(function () {
             $("#mailbox").html("");
           }
 
+          flag_unreadmail = false;
+          $('#hFlag_MessageId').val('');
+          var iLoop = 0;
           $.each(d.messages, function (key, value) {
+            iLoop++;
+            
+            // for test --->
+            if(flag_unreadmail==false)
+            {
+              flag_unreadmail = value.id;            $('#hFlag_MessageId').val(value.id);
+            }
+            //<--- 
+
             var is_seen = "";
             if (!value.is_seen) {
               is_seen = '<span class="badge badge-success" >new</span>';
+              //if(iLoop==1)
+              {
+                flag_unreadmail = value.id;
+                $('#hFlag_MessageId').val(value.id);
+              }
             }
             $("#mailbox").append(
               '<div class="message-item">' +
@@ -205,7 +222,7 @@ $(document).ready(function () {
     setInterval(messages, fetch_time * 1000);
   } catch (error) {}
 
-
+  var flag_unreadmail = false;
   /*--------------- Navbar Collapse ------------------ */
   $(".nav-link").on("click", function () {
     $(".navbar-collapse").collapse("hide");
@@ -219,7 +236,8 @@ $(document).ready(function () {
       
     // Adjusting the iframe height onload event
     $('iframe').on('load', function() {
-      iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 'px';
+		//alert(this);
+      this.style.height = this.contentWindow.document.body.scrollHeight + 'px';
     });
 
   } catch (error) {}
@@ -236,3 +254,19 @@ function show_error_msg(msg)
         });            
     }, 3000);
 }
+
+// Toggles a result details when clicking on div.header
+jQuery( '.test-result .header' ).on('click',function() {
+  jQuery(this).closest('.test-result').toggleClass('open');
+});
+
+jQuery('.copy').on('click',function(){
+  const copyText = document.getElementById(jQuery(this).data('target'));
+
+  /* Select the text field */
+  copyText.select();
+  copyText.setSelectionRange(0, 99999); /*For mobile devices*/
+
+  /* Copy the text inside the text field */
+  document.execCommand("copy");
+});

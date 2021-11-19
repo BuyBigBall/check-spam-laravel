@@ -20,11 +20,12 @@
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.3",
         "mcamara/laravel-localization": "^1.6",
+        "palpalani/laravel-spamassassin-score": "^0.2.3",
         "spatie/laravel-cookie-consent": "^2.12",
-        "vinkla/hashids": "^9.1",
-        "voku/anti-xss": "^4.1",
         "srmklive/paypal": "^3.0",
-        "stripe/stripe-php": "^7.72"
+        "stripe/stripe-php": "^7.72",
+        "vinkla/hashids": "^9.1",
+        "voku/anti-xss": "^4.1"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

@@ -114,12 +114,12 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
             Route::get('/category/{slug}', 'CategoryController@show')->name("category");
         }
     }
-
     Route::get('/', 'TrashMailController@index')->name("home");
     Route::get('/index', 'TrashMailController@index')->name("index");
     Route::get('/messages', 'TrashMailController@messages')->name("messages");
     Route::get('/email', 'TrashMailController@temporaryEmailAddress')->name("email");
-    
+    Route::get('/check_email', 'Mailstester\SpamTestController@temporaryEmailCheck')->name("check_email");
+
     Route::get('/change', 'TrashMailController@change')->name("change");
     Route::get('/view/{id}', 'TrashMailController@show')->name("view");
     Route::get('/message/{id}', 'TrashMailController@message')->name("message");
@@ -149,13 +149,16 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
     Route::get('/design',           'Mailstester\SiteController@design')->name("design");
     Route::get('/micro-payment',    'Mailstester\SiteController@micro_payment')->name("micro-payment");
     Route::get('/terms-of-service', 'Mailstester\SiteController@terms_of_service')->name("terms-of-service");
+    Route::get('/testresult',           'Mailstester\SpamTestController@TestResult')->name("testresult");
+    Route::get('/mail_body_html',       'Mailstester\SpamTestController@mail_body_html')->name("mail_body_html");
+    Route::get('/mail_body_html_noimg', 'Mailstester\SpamTestController@mail_body_html_noimg')->name("mail_body_html_noimg");
 
+    
     # --> never necessory call these, but for test using
     // Route::get('/login', 'Mailstester\LoginController@index')->name("login");
     // Route::post('/login', 'Mailstester\LoginController@loginchk')->name("loginchk");
     # <------------------
     Route::group(['middleware' => ['auth']], function () {
-		Route::get('/testresult/{account}', 		'TrashMailController@index')->name("testresult");
         Route::get('/account',          'Mailstester\SiteController@account')->name("account");
         Route::get('/get-started',      'Mailstester\SiteController@started')->name("get-started");
         Route::post('/save-configure',        'Mailstester\SiteController@save_configure')->name("save-configure");

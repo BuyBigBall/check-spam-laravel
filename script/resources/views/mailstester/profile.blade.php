@@ -181,7 +181,7 @@
                                                 </button>
                                                 <a
                                                     class="btn"
-                                                    href="https://www.mail-tester.com/manager/login/profile.html"
+                                                    href="/manager/login/profile.html"
                                                     title="Cancel">
                                                     Cancel
                                                 </a>

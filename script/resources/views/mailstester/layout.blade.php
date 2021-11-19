@@ -324,14 +324,16 @@
             var fetch_time = "{{$setdata['fetch_time']}}",
                 url = "{{route('messages')}}",
                 email_url = "{{route('email')}}",
+                wait_url =  "{{route('check_email')}}",
+                result_url =  "{{route('testresult')}}",
                 color = "{{$setdata['secondary_color']}}",
                 click_to_copy = "{{translate('Click To Copy!')}}",
                 copied = "{{translate('Copied!')}}";
         </script>
         <!-- main js -->
-        <script src="{{ asset('assets/js/main.js') }}"></script>
+        <script src="{{ asset('assets/js/main.js?v1.0') }}"></script>
 
-        <script type="text/javascript" src="/assets/js/mailstester.js"></script>
+        <script type="text/javascript" src="{{ asset('assets/js/mailstester.js?v1.0') }}"></script>
         @yield('addressjs')
         @yield('register-script')        
     </body>

@@ -28,6 +28,8 @@
   @if(\App\Models\Language::where('code', $lang_locale)->first()->rtl == 1)
   <link rel="stylesheet" href="{{ asset('assets/css/rtl.css') }}">
   @endif
+  
+  @yield('test_result_css')
 
   <!-- Custom  -->
 
@@ -256,12 +258,14 @@
     var fetch_time = "{{$setdata['fetch_time']}}",
     url = "{{route('messages')}}" ,
     email_url = "{{route('email')}}",
+    wait_url =  "{{route('check_email')}}",
+    result_url =  "{{route('testresult')}}",
     color = "{{$setdata['secondary_color']}}",
     click_to_copy = "{{translate('Click To Copy!')}}",
     copied = "{{translate('Copied!')}}" ;
   </script>
   <!-- main js -->
-  <script src="{{ asset('assets/js/main.js') }}"></script>
+  <script src="{{ asset('assets/js/main.js?v1.2.4') }}"></script>
   <script src="{{ asset('assets/js/cookieconsent.min.js') }}"></script>
 
 </body>

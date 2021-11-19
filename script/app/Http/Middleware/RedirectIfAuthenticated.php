@@ -27,7 +27,9 @@ class RedirectIfAuthenticated
                 return redirect('/admin/dashboard');
                 break;
             case 'user':
-                return redirect('/');
+                //return redirect('/');
+                return '/get-started';  
+                // this is no working , please reference LoginController->redirectTo()
                 break; 
         
             default:

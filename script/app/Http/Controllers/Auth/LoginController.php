@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\TrashMail;
+use App\Models\Settings;
+use Illuminate\Support\Facades\Cookie;
 
 class LoginController extends Controller
 {
@@ -37,6 +39,8 @@ class LoginController extends Controller
             return '/admin/dashboard';
             break;
         case 'user':
+            $email = TrashMail::GetUserEmail(Auth::user()->id);
+            Cookie::queue('email', $email, Settings::selectSettings("email_lifetime") * Settings::selectSettings("email_lifetime_type"));
             return '/get-started';
             break; 
     

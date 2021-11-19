@@ -106,7 +106,14 @@ $(document).ready(function () {
           Progress.complete();
           var d = JSON.parse(data);
           $('#trsh_mail').val(d.email);
-          messages();
+		  if(d.email=='')
+		  {
+			  alert("server error!");
+		  }
+		  else
+		  {
+	          messages();
+		  }
 
         },
       });

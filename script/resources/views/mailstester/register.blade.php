@@ -25,6 +25,7 @@
             method="post"
             id="hikashop_registration_form"
             enctype="multipart/form-data"
+            autocomplete="off"
             onsubmit="hikashopSubmitForm(this.id); return false;">
             @csrf
             <div class="hikashop_user_registration_page">
@@ -57,6 +58,7 @@
                                     id="register_name"
                                     value=""
                                     class="required validate-username"
+                                    autocomplete="off"
                                     size="30"
                                     maxlength="50"
                                     aria-required="true"
@@ -64,8 +66,27 @@
                                     required="required"/>
                                 <span style='color:red'><span style='color:red'>*</span></span>
                             </div>
-                            <div class="message_username">All your tests will have to be sent to <span style='color:#3333dd;'><span id='mail-prefix' ></span>WhateverYouWant@</span>{{ ($request=Request::capture())->gethttphost() }}</div>
-                        </div>
+                            <div class="controls hidden" id='div-suffix'>
+                                <input
+                                    type="text"
+                                    name="suffix"
+                                    id="input-suffix"
+                                    autocomplete="off"
+                                    value="{{ $suffix = substr(md5(date('YndHis')),3,3) }}"
+                                    class="required"
+                                    size="10"
+                                    maxlength="100"
+                                    aria-required="true"
+                                    onchange="document.getElementById('mail-suffix').innerHTML=this.value.replace(' ', '').replace(' ', '').replace(' ', '') + '-';"
+                                    required="required"/>
+                            </div>
+                            <div class="message_username left">All your tests will have to be sent to 
+                                <span style='color:#3333dd;'>
+                                    <span id='mail-prefix' ></span><span 
+                                        id='mail-suffix' style='cursor:pointer;' 
+                                        onclick_test="$('#div-suffix').toggleClass('hidden');">WhateverYouWant@</span>
+                                </span>{{ ($request=Request::capture())->gethttphost() }}</div>
+                            </div>
                         <!-- <div
                             class="control-group hikashop_registration_username_line"
                             id="hikashop_registration_username_line">
@@ -97,6 +118,7 @@
                                     id="register_email"
                                     value=""
                                     class="required validate-email"
+                                    autocomplete="off"
                                     maxlength="100"
                                     size="30"
                                     aria-required="true"
@@ -118,6 +140,7 @@
                                     id="register_password"
                                     value=""
                                     class="required validate-password"
+                                    autocomplete="off"
                                     size="30"
                                     minlength="6"
                                     aria-required="true"
@@ -152,6 +175,7 @@
                                     id="g-recaptcha"
                                     class="g-recaptcha"
                                     data-sitekey="{{ $RECAPTCHA_SITE_KEY }}"
+									data-callback="recaptchaCallback"
                                     data-theme="light"></div>
                                 <input type="hidden" onclick="checkRecaptcha();" value="submit"></input>
                             </div>
@@ -166,6 +190,7 @@
                         <div class="control-group">
                             <div class="controls">
                                 <input
+									disabled
                                     type="submit"
                                     class="btn button hikashop_cart_input_button btn btn-primary p-3"
                                     name="register"
@@ -193,12 +218,12 @@
 function checkRecaptcha() {
   var response = grecaptcha.getResponse();
   if(response.length == 0) { 
-    //reCaptcha not verified
-    alert("no pass"); 
+    alert("reCaptcha not verified"); 
+    return false;
   }
   else { 
-    //reCaptch verified
-    alert("pass"); 
+    //alert("reCaptch verified"); 
+    return true;
   }
 }
 
@@ -208,9 +233,29 @@ function backend_API_challenge() {
     $.ajax({
         type: "POST",
         url: 'https://www.google.com/recaptcha/api/siteverify',
-        data: {"secret" : {{ $RECAPTCHA_SECRET_KEY }}, "response" : response, "remoteip":"localhost"},
+		crossDomain: true,
+		cors: true ,
+		headers: 
+			{ "Access-Control-Allow-Origin":"*"},
+        data: {
+                "secret" : '{{ $RECAPTCHA_SECRET_KEY }}', 
+                "response" : response, 
+                "remoteip":"{{ $_SERVER['REMOTE_ADDR']}}"
+            },
         contentType: 'application/x-www-form-urlencoded',
-        success: function(data) { console.log(data); }
+		beforeSend: function (xhr) {
+            xhr.setRequestHeader ("Authorization", "Basic " + btoa(""));
+          },
+        success: function(data) {
+			
+		//	{
+		//		"success": true,
+		//		"challenge_ts": "2021-11-19T10:15:20Z",
+		//		"hostname": "87.106.124.240"
+		//	}
+			
+             console.log(data); 
+            }
     });
 }
 </script>
@@ -241,7 +286,10 @@ function backend_API_challenge() {
 
         $('#register_name').focus();
     });
-
+ 	function recaptchaCallback(){
+        var btnSubmit = document.getElementById("hikashop_register_form_button");
+        $('#hikashop_register_form_button').prop('disabled', false);
+    }
 
     function hikashopSubmitForm(formid, method)
     {
@@ -250,7 +298,11 @@ function backend_API_challenge() {
             text = text.split(' '); 
             if (text.length == 1) return false ; 
             return true;
-        }        
+        }     
+
+		$('#g-recaptcha-response').html(grecaptcha.getResponse());
+        //backend_API_challenge(); 
+		//return false;
         if(!validateForm()) return false;
         $('#' + formid).submit();
     }

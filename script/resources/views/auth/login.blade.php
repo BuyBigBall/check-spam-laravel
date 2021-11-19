@@ -114,17 +114,17 @@
         <div>
             <ul class="nav nav-tabs nav-stacked">
                 <li>
-                    <a href="/forgot/pwd">
+                    <a href="{{ route('forgot', 'pwd') }}">
                         Forgot your password?
                     </a>
                 </li>
                 <li>
-                    <a href="/forgot/usr">
+                    <a href="{{ route('forgot', 'usr') }}">
                         Forgot your username?
                     </a>
                 </li>
                 <li>
-                    <a href="/register">
+                    <a href="{{ route('signup') }}">
                         Don't have an account?
                     </a>
                 </li>

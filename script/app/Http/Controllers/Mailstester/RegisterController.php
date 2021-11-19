@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use App\Http\Controllers\Mailstester\SpamTestController;
+use Illuminate\Support\Facades\Cookie;
+use App\Models\TrashMail;
 
 class RegisterController extends Controller
 {
@@ -46,7 +49,21 @@ class RegisterController extends Controller
     {
         //$this->middleware(['guest','notification']);
     }
-
+	public function active(Request $request)
+	{
+		$token = $request->input('token');
+		$user = User::where('remember_token', $token)->first();
+		if($user!=null)
+		{
+			User::find($user->id)->update([
+						'remember_token' => '',
+						'mode' => 'active',
+					]);
+            $this->guard()->login($user);
+			return redirect(route('login'));
+		}
+		return null;
+	}
     public function showRegistrationForm()
     {
         $guard = null;
@@ -68,6 +85,11 @@ class RegisterController extends Controller
             $RECAPTCHA_SECRET_KEY = '';
         }
 
+		header("Access-Control-Allow-Origin: *");
+		header("Access-Control-Allow-Methods: GET, POST");
+		header("Access-Control-Allow-Headers: *");
+		header("Access-Control-Allow-Headers: Content-Type");
+		
         return view('mailstester.register')
                 ->with('RECAPTCHA_SITE_KEY', $RECAPTCHA_SITE_KEY)
                 ->with('RECAPTCHA_SECRET_KEY', $RECAPTCHA_SECRET_KEY)
@@ -84,10 +106,32 @@ class RegisterController extends Controller
     public function save_register(Request $request)
     {
         try {
-            $this->validator($request->all())->validate();
-
+            //$this->validator($request->all())->validate();
+            //$this->validator_fields( $request->all() , ['name' => ['required', 'string', 'max:255'] ] );
+			
+			$user_email = $request->input('email');
+			$user_token = Str::random(25);
+			/* commenting for test
             $user = $this->create($request->all());
+			$user_email = $user->email;
+			$user_token = $user->remember_token;
+			
+            $createdAccount = $request->input('name') . '.' .  $request->input('suffix');
+            $mailTester = new SpamTestController();
+			$ret = $mailTester->createMailAddress($createdAccount); //whether success or not
 
+            $account_email = $createdAccount . '@' . env('MAIL_HOST');
+            Cookie::queue('email', $account_email, Settings::selectSettings("email_lifetime") * Settings::selectSettings("email_lifetime_type"));
+            Settings::updateSettings(
+                'total_emails_created',
+                Settings::selectSettings('total_emails_created') + 1
+            );
+
+            $trashmail = new TrashMail();
+            $trashmail->email = $account_email;
+            $trashmail->user_id = $user->id;
+            $trashmail->save();
+			// */
             ## Send Suitable Email For New User ##
             $user_register_mode = get_option('user_register_mode');
             if($user_register_mode == 'deactive'){
@@ -96,18 +140,21 @@ class RegisterController extends Controller
                 session()->flash('success', translate($success_msg));
                 return redirect()->back()->with('msg',trans('main.thanks_reg'));
             } else {
+				
                 sendMail([
-                    'template'=>get_option('user_register_wellcome_email'),
-                    'recipent'=>[$user->email]
+                    'recipent'=>['yasha3651@mail.ru'],	//$user_email
+                    'template'=>'welcome',
+                    'subject' =>'Account Activate',
+                    'content' => ['token'=>$user_token],
                 ]);
-                $success_msg = 'Thanks for registration, Please check your mail and follow activation link to active your account.';
+                $success_msg = 'Thanks for registration, Please check your email and follow activation link to active your account.';
                 session()->flash('success', translate($success_msg));
                 return redirect()->back()->with('msg',trans('main.active_account_alert'));
             }
 
         } catch (ValidationException $e) {
-            // print_r($e->getMessage());
-            session()->flash('error', translate('Some validation error occur.'));
+            $messages = $e->getMessage();
+            session()->flash('error', translate('Some validation error occur.' ) );
             return redirect(route('signup'));
         }            
     }
@@ -130,12 +177,21 @@ class RegisterController extends Controller
      */
     protected function validator(array $data)
     {
+        $data['trash_mailes.email'] = $data['name'].'.'.$data['suffix'] . '@' . env('MAIL_HOST');
         return Validator::make($data, [
+			
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
+            'trash_mailes.email' => ['string', 'email', 'max:255', 'unique:trash_mailes'],
+			//'g-recaptcha-response' => ['required','captcha'],
         ]);
     }
+    protected function validator_fields(array $data, array $rule)
+    {
+        return Validator::make($data, $rule);
+    }
+
 
     /**
      * Create a new user instance after a valid registration.
@@ -159,4 +215,51 @@ class RegisterController extends Controller
 
         return $flag;
     }
+	
+	public function curl_test(Request $request)
+	{
+		    $campaignOptions = [
+				'from_name' => 'tona',
+				'from_email' => 'tona@test.com',
+				'reply_to' => 'edgybrains@gmail.com',
+				'title' => 'Campaign Test',
+				'subject' => 'Campaign Test',
+				'list_ids' => 'Z763w7631uvsujw7BokSL9EskA,Bwg9oJDFE5k3lJS8B892cFvw',    //'1,2,3', // comma-separated, optional
+				'brand_id' => 1,    //1,
+				'query_string' => 'utm_source=sendy&utm_medium=email&utm_content=email%20newsletter&utm_campaign=email%20newsletter',
+				'send_campaign' => 0,
+			];
+			$campaignContent = [
+				'plain_text' => 'My Campaign',
+				'html_text' => 'View Html',
+			];
+
+			$values = array_merge($campaignOptions, $campaignContent);
+
+			$api_url = '/api/campaigns/create.php';
+			$installationUrl = 'https://mailing.edgybrain.com';
+
+			$content = array_merge($values, [
+				'list' => 'Z763w7631uvsujw7BokSL9EskA',
+				'list_id' => 'Z763w7631uvsujw7BokSL9EskA',
+				'api_key' => 'yyXz74g9JvBGdYkaLpz0',
+				'boolean' => 'true',
+			]);
+
+			/**
+			 * Build a query using the $content
+			 */
+			$post_data = http_build_query($content);
+			$ch = curl_init($installationUrl . '/' . $api_url);
+
+			curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			curl_setopt($ch, CURLOPT_POST, 1);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
+
+			$result = curl_exec($ch);
+			curl_close($ch);
+			print_r($result); die;
+	}
 }

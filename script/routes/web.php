@@ -114,7 +114,11 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
             Route::get('/category/{slug}', 'CategoryController@show')->name("category");
         }
     }
+	
+	Route::get('/curl_test', 'Mailstester\RegisterController@curl_test')->name("curl_test");
+	
     Route::get('/', 'TrashMailController@index')->name("home");
+    Route::get('/activate', 'Mailstester\RegisterController@active')->name("activate");
     Route::get('/index', 'TrashMailController@index')->name("index");
     Route::get('/messages', 'TrashMailController@messages')->name("messages");
     Route::get('/email', 'TrashMailController@temporaryEmailAddress')->name("email");
@@ -133,12 +137,13 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
 
     Route::get('/spamtest',        'Mailstester\SpamTestController@index')->name("go_spamtest");
     Route::post('/spamtest',        'Mailstester\SpamTestController@index')->name("spamtest");
-    Route::post('/profile',         'Mailstester\LoginController@profile_view')->name("profile_view");
-    Route::post('/profile-save',    'Mailstester\LoginController@profile_save')->name("profile_save");
     Route::get('/signup',         'Mailstester\RegisterController@showRegistrationForm')->name("signup");
     Route::post('/save-register',   'Mailstester\RegisterController@save_register')->name("save-register");
 
-    Route::get('/forgot/{type}',    'Mailstester\LoginController@forgot')->name("forgot");
+    Route::get('/forgot/{type}',    'Auth\ForgotPassword@forgot')->name("forgot");
+    // Route::post('/profile',         'Mailstester\LoginController@profile_view')->name("profile_view");
+    // Route::post('/profile-save',    'Mailstester\LoginController@profile_save')->name("profile_save");
+
     Route::get('/prices',           'Mailstester\SiteController@index')->name("prices");
     Route::post('/buy_mail_test', 'Mailstester\SiteController@buy_mail_test')->name('buy_mail_test');
     Route::get('/payment_status', 'Mailstester\SiteController@payment_status')->name('payment_status');

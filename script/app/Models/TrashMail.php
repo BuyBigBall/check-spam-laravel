@@ -22,7 +22,7 @@ class TrashMail extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['delete_in', 'email'];
+    protected $fillable = ['delete_in', 'email', 'user_id'];
 
     public static function connection($email = null)
     {
@@ -208,6 +208,15 @@ class TrashMail extends Model
         }
     }
 
+    public static function GetUserEmail($user_id)
+    {
+        $email = null;
+        $user_email = TrashMail::where('user_id', $user_id)->first();
+        if ($user_email) {
+            $email = $user_email->email;
+        }
+        return $email;
+    }
 
     public static function DeleteMessage($email, $id)
     {

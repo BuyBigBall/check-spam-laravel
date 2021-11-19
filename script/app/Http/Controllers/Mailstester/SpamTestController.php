@@ -23,6 +23,7 @@ use App\Models\Language;
 use DomDocument;
 use SimpleXMLElement;
 use Exception;
+use SPFLib\Term\Mechanism;
  
 class SpamTestController extends Controller
 {
@@ -224,7 +225,6 @@ class SpamTestController extends Controller
         $domain     = env('PLESK_DOMAIN');
 
         $randPassword= $this->randomPassword();
-		//print($randPassword); // die;
 		$randPassword = env('TEMPORARY_MAIL_PASSWORD');
 		
         $curl = $this->curlInit($host, $login, $password, $panel_port);
@@ -235,10 +235,12 @@ class SpamTestController extends Controller
             $this->checkResponse($responseXml);
         
         } catch (ApiRequestException $e) {
-            echo $e;
-            die();
+            //echo $e;
+            //die();
+            return $e;
         }
         //print_r($responseXml); die;
+        return null;
     }
 	function randomPassword() {
         $special = '!@#$%^&*_';
@@ -332,7 +334,7 @@ class SpamTestController extends Controller
 		if( stripos($header, 'spf=pass', 0)!==false )
 			$result = 'auth';
 		
-		return [$result, $server_ip];
+		return ['auth_result'=>$result, 'serverip'=>$server_ip];
 	}
 	
 	function getDKIMsign($header) 
@@ -372,7 +374,7 @@ class SpamTestController extends Controller
 		if( stripos($header, 'dkim=pass', 0)!==false )
 			$result = 'pass';
 		
-		return [$result, $dkim_sign];
+		return ['auth_result'=>$result, 'dkim_sign'=>$dkim_sign];
 	}
 	function getDMARCsign($header) 
 	{
@@ -407,11 +409,11 @@ class SpamTestController extends Controller
 			}
 		}
 		$result = 'fail';
-		$dkim_sign = substr($header, $pos, $posend - $pos);
+		$dmarc_sign = substr($header, $pos, $posend - $pos);
 		if( stripos($header, 'dmarc=pass', 0)!==false )
 			$result = 'pass';
 		
-		return [$result, $dkim_sign];
+		return ['auth_result'=>$result, 'dmarc_sign'=>$dmarc_sign];
 	}
 
 	function getRDNSsign($header, $server) 
@@ -445,10 +447,44 @@ class SpamTestController extends Controller
 		}
 		
 		$helo_name = substr($header, $pos, $posend - $pos);
-		$rdns_name = gethostbyaddr($server[1]);
+		$rdns_name = gethostbyaddr($server['serverip']);
 		
-		return [$server[1], $helo_name, $rdns_name];
+		return ['server_ip'=>$server['serverip'], 'helo_domain'=>$helo_name, 'rdns_domain'=>$rdns_name];
 	}
+
+    function getSPFcheck($header, $server_Helo_info, $from_email) 
+	{
+		$environment = new \SPFLib\Check\Environment($server_Helo_info['server_ip'], $server_Helo_info['helo_domain'], $from_email);
+		$checker = new \SPFLib\Checker();
+        $checkResult = $checker->check($environment);
+		$email_domain = explode('@', $from_email);
+		if(count($email_domain)>1)	$email_domain = $email_domain[1];
+		else 						$server_Helo_info['helo_domain'];
+		
+		$record = new \SPFLib\Record($email_domain);
+		$record
+			->addTerm(new Mechanism\MxMechanism(Mechanism::QUALIFIER_PASS))
+			->addTerm(new Mechanism\IncludeMechanism(Mechanism::QUALIFIER_PASS, $email_domain))
+			->addTerm(new Mechanism\AllMechanism(Mechanism::QUALIFIER_FAIL));		
+		
+		
+		$auth_result = $checkResult->getCode();	//'pass' or 'softfail'
+		$spf_record = (string) $record;
+		
+		$spf = 'v=spf1 all redirect=' . $email_domain . ' redirect='.$server_Helo_info['helo_domain'].' ptr:foo.bar mx include=' . $email_domain . ' exp=test.%{p}';
+		$record = (new \SPFLib\Decoder())->getRecordFromTXT($spf);
+		$issues = (new \SPFLib\SemanticValidator())->validate($record);
+		$issue_strings = '';
+		foreach ($issues as $issue) {$issue_strings .= ((string) $issue. "\n");}
+		/*
+		print_r($checkResult->getMatchedMechanism());	//object (spf.mtasv.net)
+		print('<br>');
+        print_r($checkResult); die;
+		*/
+		//print_r(['auth_result'=>$auth_result, 'spf_record'=>$spf_record, 'spf_issues'=>$issue_strings]); die;
+		return ['auth_result'=>$auth_result, 'spf_record'=>$spf_record, 'spf_issues'=>$issue_strings];
+	}
+
     public function TestResult(Request $request)
     {
         $score = new \palPalani\SpamassassinScore\SpamassassinScore();
@@ -476,39 +512,39 @@ class SpamTestController extends Controller
 			$response['content'] = '';
 			$response['header'] = '';
 		}
-        
+        $diff = date_diff( new \DateTime( "now" ), new \DateTime($response['receivedAt']) );
+		$ago_time = (($diff->y>=1) ? (($diff->y+1) . ' years ago' ) : 
+					(($diff->m>=1) ? (($diff->m+1) . ' months ago' ) : 
+					(($diff->d>=1) ? (($diff->d+1) . ' days ago' ) : 
+					(($diff->h>=1) ? (($diff->h+1) . ' hours ago' ) : 
+					(($diff->i>=1) ? (($diff->i+1) . ' minutes ago' ) : 
+					date( 'l d M Y H:i:s P (T)', strtotime($response['receivedAt']) )   )))));
         //Cookie::queue('mail_body_html', $response['content'], 3);	//size error
 		Session::put('mail_body_html', $response['content']);
         $score_report = $score->getScore( '<header>'.$response['header'].'</header>' .'<subject>'.$response['subject'].'</subject>'  .'<body>'.$this->getbody($response['content']).'</body>');
 
-		/*
-		$assassin_item = [];
-		$ary = (explode("<br />", nl2br($score_report['report']))); 
-		for($i=0; $i<count($ary); $i++)
-		{
-			if($i<=1) continue;
-			if( is_numeric(substr($ary[$i],0,3)) || substr($ary[$i],0,1)=='-')
-			{
-				$temp = (explode(' ', $ary[$i])); 
-				$assassin_item[] = ($temp[0]=='') ? $temp[1] : $temp[2];
-			}
-		}
-		*/
 		
-		//for($i=0; $i<strlen($ary[0]); $i++)			print( ord(substr($ary[0], $i,1))."<br>");		die;
-		//print_r($this->getserverauth($response['header'] )); die;
 		$auth_serverInfo = $this->getserverauth( $response['header'] );
+		$auth_rDnsInfo   = $this->getRDNSsign($response['header'], $auth_serverInfo );
+        $auth_DMARCInfo  = $this->getDMARCsign($response['header'] );
+        $auth_DKIMInfo   = $this->getDKIMsign($response['header'] );
+        $auth_SPDcheck   = $this->getSPFcheck($response['header'], $auth_rDnsInfo, $response['from_email'] );
+
+		//print(10 - $score_report['score']);
+		//print_r($score_report); die;
 		
         return view('mailstester.testresult')
-            ->with('email',     $email )
-            ->with('report', 	$score_report['report'])
-			->with('rules', 	$score_report['rules'])
-			->with('score', 	10 - $score_report['score'])
-			->with('server_auth', $auth_serverInfo )
-            ->with('dkim_auth', $this->getDKIMsign($response['header'] ) )
-			->with('dmarc_auth', $this->getDMARCsign($response['header'] ) )
-			->with('rdns_auth', $this->getRDNSsign($response['header'], $auth_serverInfo ) )
-			->with('message',   $response );
+            ->with('email',         $email )
+			->with('ago_time',		$ago_time)
+            ->with('report', 	    $score_report['report'])
+			->with('rules', 	    $score_report['rules'])
+			->with('score', 	    10 - $score_report['score'])
+			->with('server_auth',   $auth_serverInfo )
+            ->with('dkim_auth',     $auth_DKIMInfo )
+			->with('dmarc_auth',    $auth_DMARCInfo )
+			->with('rdns_auth',     $auth_rDnsInfo )
+			->with('spf_check',     $auth_SPDcheck )
+			->with('message',       $response );
 		
 		
     }

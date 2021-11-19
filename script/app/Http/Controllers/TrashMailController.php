@@ -79,7 +79,7 @@ class TrashMailController extends Controller
     public function temporaryEmailAddress()
     {
         
-        if (Cookie::has('email')) {
+        if (Cookie::has('email') && !empty(Cookie::get('email'))) {
             $email =  Cookie::get('email');
         } else {
             $date = Carbon::now();

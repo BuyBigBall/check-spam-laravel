@@ -29,8 +29,8 @@
             </a>
             Subject :
             {{ $message['subject'] }}
-            <div class="float-right date-received">
-                <i class="icon-clock"></i>Received 2 days ago</div>
+            <div class="float-right date-received" title="{{date( 'l d M Y H:i:s P (T)', strtotime($message['receivedAt']) )}}">
+                <i class="icon-clock"></i>Received {{$ago_time}}</div>
         </div>
     </div>
 
@@ -200,28 +200,28 @@ X-Spam-Report:
 					<div class="status success icon-check">
 											</div>
 					<h2 class="title"><i class="icon-down"></i>
-							@if ($server_auth[0]=='auth') You're properly authenticated 
+							@if ($server_auth['auth_result']=='auth') You're properly authenticated 
 							@else Your server don't properly authenticated  @endif</h2>
 				</div>
 				<div class="content">
 					<div class="about">
-						@if ($server_auth[0]=='auth') We check if the server you are sending from is authenticated
+						@if ($server_auth['auth_result']=='auth') We check if the server you are sending from is authenticated
 						@else We could not check if the server you are sending from is authenticated.  @endif
 						</div>
 
 					<!-- SPF -->
-					<div class="test-result spf opened">
+					<div class="test-result spf">
 						<div class="header clearfix">
 							<div class="status success icon-check">
 															</div>
 							<h3 class="title"><i class="icon-down"></i>
-								[SPF] Your server <b>{{$server_auth[1]}}</b> is authorized to use <b>{{$message['from_email']}}</b></h3>
+								[SPF] Your server <b>{{$server_auth['serverip']}}</b> is @if($spf_check['auth_result']!='pass') not @endif authorized to use <b>{{$message['from_email']}}</b></h3>
 						</div>
 						<div class="content">
 							<div class="about">Sender Policy Framework (SPF) is an email validation system designed to prevent email spam by detecting email spoofing, a common vulnerability, by verifying sender IP addresses.</div>
-							<div class="result"><p>What we retained as your current SPF record is:</p><pre>v=spf1 redirect=_spf.mail.ru</pre><br/><br/>
+							<div class="result"><p>What we retained as your current SPF record is:</p><pre>{{$spf_check['spf_record']}}</pre><br/><br/>
                             <p>Verification details:</p>
-                            <pre>dig +short TXT mail.ru :<ul><li>"facebook-domain-verification=3ebp0vez7u8uabf5unafvjak2i6pm4"</li><li>"google-site-verification=3Pifghdk3UShd7gzYd0Bjfqrq8Mn3bQAVonGr3xb9qg"</li><li>"mailru-verification: 43e81e646c1675e5"</li><li>"v=spf1 redirect=_spf.mail.ru"</li></ul>dig +short TXT @ns2.mail.ru. mail.ru :<ul><li>"mailru-verification: 43e81e646c1675e5"</li><li>"v=spf1 redirect=_spf.mail.ru"</li><li>"facebook-domain-verification=3ebp0vez7u8uabf5unafvjak2i6pm4"</li><li>"google-site-verification=3Pifghdk3UShd7gzYd0Bjfqrq8Mn3bQAVonGr3xb9qg"</li></ul>spfquery --scope mfrom --id yasha3651@mail.ru --ip 185.5.136.54 --helo-id f383.i.mail.ru :<ul><li>pass</li><li>mail.ru ... _spf.mail.ru: 185.5.136.54 is authorized to use 'yasha3651@mail.ru' in 'mfrom' identity (mechanism 'ip4:185.5.136.0/22' matched)</li><li>mail.ru ... _spf.mail.ru: 185.5.136.54 is authorized to use 'yasha3651@mail.ru' in 'mfrom' identity (mechanism 'ip4:185.5.136.0/22' matched)</li><li>Received-SPF: pass (mail.ru ... _spf.mail.ru: 185.5.136.54 is authorized to use 'yasha3651@mail.ru' in 'mfrom' identity (mechanism 'ip4:185.5.136.0/22' matched)) receiver=ns303428.ip-94-23-206.eu; identity=mailfrom; envelope-from="yasha3651@mail.ru"; helo=f383.i.mail.ru; client-ip=185.5.136.54</li></ul></pre>
+                            <pre>{{$spf_check['spf_issues']}}</pre>
                         </div>
                     </div>
                 </div>
@@ -240,7 +240,7 @@ X-Spam-Report:
                             organization to claim some responsibility for the message.</div>
                         <div class="result">
                             <p>The DKIM signature of your message is:</p>
-                            <pre>{{$dkim_auth[1]}}</pre>
+                            <pre>{{$dkim_auth['dkim_sign']}}</pre>
 							<!--
                             <p>Your public key is:</p>
                             <pre>"v=DKIM1;
@@ -265,7 +265,7 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                             are protected by SPF and/or DKIM, and give instruction if neither of those
                             authentication methods passes. Please be sure you have a DKIM and SPF set before
                             using DMARC.</div>
-                        <div class="result">Your DMARC record is @if($dmarc_auth[0]!='auth') not @endif set correctly and your message passed the DMARC test
+                        <div class="result">Your DMARC record is @if($dmarc_auth['auth_result']!='auth') not @endif set correctly and your message passed the DMARC test
 								<p>DMARC DNS entry found for the domain <b>_dmarc.{{env('MAIL_HOST')}}</b>:</p>
 							<!--
                             <pre>"v=DMARC1;p=reject;rua=mailto:d@rua.agari.com,mai" "lto:dmarc_rua@corp.mail.ru"</pre>
@@ -284,9 +284,9 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                         <h3 class="title">
                             <i class="icon-down"></i>
                             Your server
-                            <b>{{$server_auth[1]}}</b>
+                            <b>{{$server_auth['serverip']}}</b>
                             is successfully associated with
-                            <b>{{ empty($rdns_auth[1]) ? $rdns_auth[2] :$rdns_auth[1] }}</b>
+                            <b>{{ empty($rdns_auth['helo_domain']) ? $rdns_auth['rdns_domain'] :$rdns_auth['helo_domain'] }}</b>
                         </h3>
                     </div>
                     <div class="content">
@@ -298,7 +298,7 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                             <p></p>
                         </div>
                         <pre class="result">Here are the tested values for this check:<br /><ul>
-							<li>IP: {{$rdns_auth[0]}}</li><li>HELO: {{$rdns_auth[1]}}</li><li>rDNS: {{$rdns_auth[2]}}</li></ul></pre>
+							<li>IP: {{$rdns_auth['server_ip']}}</li><li>HELO: {{$rdns_auth['helo_domain']}}</li><li>rDNS: {{$rdns_auth['rdns_domain']}}</li></ul></pre>
                     </div>
                 </div>
                 <!-- A Record Bounce DNS-->
@@ -327,16 +327,16 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                         <h3 class="title">
                             <i class="icon-down"></i>
                             Your hostname
-                            <strong>{{ empty($rdns_auth[2]) ? $rdns_auth[1] : $rdns_auth[2]}}</strong>
+                            <strong>{{ empty($rdns_auth['rdns_domain']) ? $rdns_auth['helo_domain'] : $rdns_auth['rdns_domain']}}</strong>
                             is assigned to a server.</h3>
                     </div>
                     <div class="content">
                         <div class="about">We check if there is a server (A Record) behind your hostname
-                            <strong>{{ empty($rdns_auth[2]) ? $rdns_auth[1] : $rdns_auth[2]}}</strong>.</div>
+                            <strong>{{ empty($rdns_auth['rdns_domain']) ? $rdns_auth['helo_domain'] : $rdns_auth['rdns_domain']}}</strong>.</div>
                         <div class="result">
                             <p></p>
                         </div>
-                        <pre class="result">A records ({{ empty($rdns_auth[2]) ? $rdns_auth[1] : $rdns_auth[2]}}) : <ul><li>{{$server_auth[1]}}</li></ul></pre>
+                        <pre class="result">A records ({{ empty($rdns_auth['rdns_domain']) ? $rdns_auth['helo_domain'] : $rdns_auth['rdns_domain']}}) : <ul><li>{{$server_auth['serverip']}}</li></ul></pre>
                     </div>
                 </div>
             </div>
@@ -436,7 +436,7 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                     <i class="icon-down"></i>You're not blacklisted</h2>
             </div>
             <div class="content">
-                <div class="about">Matches your server IP address (<b>{{$server_auth[1]}}</b>) against 24 of the most common IPv4 blacklists.</div>
+                <div class="about">Matches your server IP address (<b>{{$server_auth['serverip']}}</b>) against 24 of the most common IPv4 blacklists.</div>
                 <div class="result">
                     <div class="row">
                         <div class="col-sm-6 col-md-4 bl-result">
@@ -577,7 +577,7 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
             </div>
         </div>
 
-        <div class="total text-right subtitle">Your lovely total: 9.7/10</div>
+        <div class="total text-right subtitle">Your lovely total: {{$score}}/10</div>
     </div>
 </div>
 

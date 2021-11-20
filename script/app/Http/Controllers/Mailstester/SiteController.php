@@ -5,13 +5,15 @@ namespace App\Http\Controllers\Mailstester;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Session;
 use App\Models\Settings;
 use App\Models\Profile;
 use App\Models\Configure;
-// use Illuminate\Support\Str;
-// use Illuminate\Support\Facades\Cache;
-// use Vinkla\Hashids\Facades\Hashids;
-// use Carbon\Carbon;
+use App\Models\TestResult;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
+use Vinkla\Hashids\Facades\Hashids;
+use Carbon\Carbon;
 use Artesaos\SEOTools\Facades\SEOMeta;
 use Artesaos\SEOTools\Facades\OpenGraph;
 
@@ -247,6 +249,9 @@ class SiteController extends Controller
         if (Auth::guard($guard)->check()) {
             $role = Auth::user()->role; 
             $userdata['user_login'] = Auth::user();
+            $user_id    = $userdata['user_login']->id;
+            $email      = $userdata['user_login']->email;
+            $db_hist    = TestResult::where('user_id', $user_id)->get();
         }
         else
         {
@@ -254,6 +259,7 @@ class SiteController extends Controller
         }
         return view('mailstester.latest-tests')
                 ->with('email', $email)
+                ->with('db_hist', $db_hist)
                 ->with('userdata' ,$userdata);
     }
 
@@ -464,8 +470,12 @@ class SiteController extends Controller
     }
 
     public function get_address_detail(Request $request) {
-        $profile_id = $request->get('profile_id');
-        $addressdata = Profile::where('id',$profile_id)->first();
+        $profile_id = $request->input('profile_id');
+        $user_id = $request->input('user_id');
+        if( !empty($user_id ))
+            $addressdata = Profile::where('id',$user_id)->first();
+        else
+            $addressdata = Profile::where('id',$profile_id)->first();
         $result = ['detail'=>$addressdata];
         return json_encode($result);
     }
@@ -575,19 +585,53 @@ class SiteController extends Controller
         return redirect( route('checkout', 'step1') );
     }
 
-    public function checkout_step($step){ 
+    public function checkout_step(Request $request, $step){ 
         $guard = null;
         $userdata = [];
         if (Auth::guard($guard)->check()) {
             $role = Auth::user()->role; 
             $userdata['user_login'] = Auth::user();
+            $user_id = Auth::user()->id;
+            $addressdata = Profile::where([ 'user_id'=>$user_id, 'default_address'=>1 ])->get();
+            if(!$addressdata->isEmpty())
+            {
+                $userdata['user_profile'] = $addressdata->first();
+            }
+            else
+            {
+                redirect( route('profile', 'address') );
+            }
         }
         else
         {
             redirect(route('login'));
         }
+
+        $checkout_payment_mode = 0;
+        $checkout_payment_coupon = '';
+        if($step=='step3')
+        {
+            if(     !empty($request->input('mailtester_payment'))  )
+            {
+                $coupon_code = $request->input('coupon');
+                $mailtester_payment_mode = $request->input('mailtester_payment');
+                Session::put('checkout_payment_mode',   $mailtester_payment_mode);
+                Session::put('checkout_payment_coupon', $coupon_code );
+                $checkout_payment_mode = Session::get('checkout_payment_mode');
+                $checkout_payment_coupon = Session::get('checkout_payment_coupon');
+            }
+            else
+            {
+                if(Session::has('checkout_payment_mode'))
+                    $checkout_payment_mode = Session::get('checkout_payment_mode');
+                if(Session::has('checkout_payment_mode'))
+                    $checkout_payment_coupon = Session::get('checkout_payment_coupon');
+            }
+        }
         return view('mailstester.checkout-' . substr($step, -1))
-                ->with('userdata' ,$userdata);
+                    ->with('checkout_payment_mode' ,$checkout_payment_mode)
+                    ->with('checkout_payment_coupon' ,$checkout_payment_coupon)
+                    ->with('userdata' ,$userdata);
     }
     //public function address(){return null;}
     

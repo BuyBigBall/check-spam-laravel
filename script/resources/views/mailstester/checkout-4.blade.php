@@ -5,51 +5,51 @@
     <div class="row-fluid contentsize">
         <div id="system-message-container"></div>
         <div
-            id="hikashop_checkout_page"
-            class="hikashop_checkout_page hikashop_checkout_page_step3">
-            <div class="hikashop_wizardbar">
+            id="mailtester_cart_checkout_page"
+            class="mailtester_cart_checkout_page mailtester_cart_checkout_page_step3">
+            <div class="mailtester_cart_wizardbar">
                 <ul>
-                    <li class="hikashop_cart_step_finished">
+                    <li class="mailtester_cart_cart_step_finished">
                         <span class="badge badge-success">1</span>
                         Address
-                        <span class="hikashop_chevron"></span>
+                        <span class="mailtester_cart_chevron"></span>
                     </li>
 
-                    <li class="hikashop_cart_step_finished">
+                    <li class="mailtester_cart_cart_step_finished">
                         <span class="badge badge-success">2</span>
                         Payment
-                        <span class="hikashop_chevron"></span>
+                        <span class="mailtester_cart_chevron"></span>
                     </li>
 
-                    <li class="hikashop_cart_step_finished">
+                    <li class="mailtester_cart_cart_step_finished">
                         <span class="badge badge-success">3</span>
                         Cart
-                        <span class="hikashop_chevron"></span>
+                        <span class="mailtester_cart_chevron"></span>
                     </li>
 
-                    <li class="hikashop_cart_step_current">
+                    <li class="mailtester_cart_cart_step_current">
                         <span class="badge badge-info">4</span>
                         End
-                        <span class="hikashop_chevron"></span>
+                        <span class="mailtester_cart_chevron"></span>
                     </li>
 
                 </ul>
             </div>
-            <div class="hikashop_paybox_end" id="hikashop_paybox_end">
+            <div class="mailtester_cart_paybox_end" id="mailtester_cart_paybox_end">
                 <span
-                    id="hikashop_paybox_end_message"
-                    class="hikashop_paypal_end_message"
+                    id="mailtester_cart_paybox_end_message"
+                    class="mailtester_cart_paypal_end_message"
                     style="display: none;">
                     Please wait while you are redirected to Credit Card<br/>If you are not redirected after 10 seconds, please click on the button below.
                 </span>
                 <span
-                    id="hikashop_paybox_end_spinner"
-                    class="hikashop_paybox_end_spinner hikashop_checkout_end_spinner"
+                    id="mailtester_cart_paybox_end_spinner"
+                    class="mailtester_cart_paybox_end_spinner mailtester_cart_checkout_end_spinner"
                     style="display: none;"></span>
                 <br/>
                 <form
-                    id="hikashop_paybox_form"
-                    name="hikashop_paybox_form"
+                    id="mailtester_cart_paybox_form"
+                    name="mailtester_cart_paybox_form"
                     action="https://tpeweb.paybox.com/cgi/FramepagepaiementRWD.cgi"
                     method="post"
                     target="payboxframe">
@@ -91,11 +91,11 @@
                         name="PBX_HMAC"
                         value="ABF4724A744AEF4DFF2B96639765EDAFB4A7621B1FCA2457A8CBA42684305B9D474BEDA5947E76E67242BC25DF74024F5B52C881F61C5A6A66F1979009AD88D2"/>
                     <div
-                        id="hikashop_paybox_end_image"
-                        class="hikashop_paybox_end_image"
+                        id="mailtester_cart_paybox_end_image"
+                        class="mailtester_cart_paybox_end_image"
                         style="display: none;">
                         <input
-                            id="hikashop_paybox_button"
+                            id="mailtester_cart_paybox_button"
                             type="submit"
                             class="btn btn-primary"
                             value="Pay now"

@@ -140,7 +140,8 @@
 }
 </style>
 <div class="modal fade" id="buyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <form class="form-horizontal" method="POST" id="payment-form" role="form" action="{!! URL::route('buy_mail_test') !!}" >
+    <form class="form-horizontal" method="POST" id="payment-form" role="form" 
+        action="{!! URL::route('buy_mail_test') !!}" >
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -168,6 +169,7 @@
 </div>
 <script>
 function showBuyModal(price,qty){
+	window.location.href = "{{route('checkout', 'step1')}}"+('?price='+price); return;
     $('#mail_price').val(price);
     $('#mail_qty').val(qty);
     $('#buyModal').modal('show');

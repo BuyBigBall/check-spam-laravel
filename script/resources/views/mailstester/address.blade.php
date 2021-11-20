@@ -18,7 +18,7 @@
 <div class="modal fade" id="practice_modal" style='opacity:1'>
     <div class="modal-dialog">
         <div class="modal-header" style='border:none;'>
-            <h3 id="hikashop_address_form_header_iframe"
+            <h3 id="mailtester_cart_address_form_header_iframe"
                 style='margin-bottom:0px; border:none;'>
                 Address information</h1>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -26,12 +26,12 @@
         </div>
         <div class="modal-content">
             <div id="system-message-container"></div>
-            <div id="hikashop_address_form_span_iframe" class="geo-details" style="padding:20px;">
+            <div id="mailtester_cart_address_form_span_iframe" class="geo-details" style="padding:20px;">
                 <form
                     action="{{ route('save-address') }}"
                     method="post"
-                    id="hikashop_address_form"
-                    name="hikashop_address_form"
+                    id="mailtester_cart_address_form"
+                    name="mailtester_cart_address_form"
                     onsubmit="return validation();"
                     enctype="multipart/form-data">
                     @csrf
@@ -39,11 +39,11 @@
                     <table>
                         <tbody>
                             <tr
-                                class="hikashop_address_address_firstname_line"
-                                id="hikashop_address_address_firstname">
+                                class="mailtester_cart_address_address_firstname_line"
+                                id="mailtester_cart_address_address_firstname">
                                 <td class="key">
                                     <label for="address_firstname">First name</label>
-                                    <span class="hikashop_field_required">*</span>
+                                    <span class="mailtester_cart_field_required">*</span>
                                 </td>
                                 <td><input
                                     class="inputbox address-input required"
@@ -56,11 +56,11 @@
                                 </td>
                             </tr>
                             <tr
-                                class="hikashop_address_address_lastname_line"
-                                id="hikashop_address_address_lastname">
+                                class="mailtester_cart_address_address_lastname_line"
+                                id="mailtester_cart_address_address_lastname">
                                 <td class="key">
                                     <label for="address_lastname">Last name</label>
-                                    <span class="hikashop_field_required">*</span>
+                                    <span class="mailtester_cart_field_required">*</span>
                                 </td>
                                 <td><input
                                     class="inputbox address-input required"
@@ -72,8 +72,8 @@
                                 </td>
                             </tr>
                             <tr
-                                class="hikashop_address_address_company_line"
-                                id="hikashop_address_address_company">
+                                class="mailtester_cart_address_address_company_line"
+                                id="mailtester_cart_address_address_company">
                                 <td class="key">
                                     <label for="address_company">Company</label>
                                 </td>
@@ -84,7 +84,7 @@
                                     name="company"
                                     value=""/></td>
                             </tr>
-                            <tr class="hikashop_address_address_vat_line" id="hikashop_address_address_vat">
+                            <tr class="mailtester_cart_address_address_vat_line" id="mailtester_cart_address_address_vat">
                                 <td class="key">
                                     <label for="address_vat">VAT number</label>
                                 </td>
@@ -97,11 +97,11 @@
                                     value=""/></td>
                             </tr>
                             <tr
-                                class="hikashop_address_address_street_line"
-                                id="hikashop_address_address_street">
+                                class="mailtester_cart_address_address_street_line"
+                                id="mailtester_cart_address_address_street">
                                 <td class="key">
                                     <label for="address_street">Address</label>
-                                    <span class="hikashop_field_required">*</span>
+                                    <span class="mailtester_cart_field_required">*</span>
                                 </td>
                                 <td><input
                                     class="inputbox address-input required"
@@ -113,8 +113,8 @@
                                 </td>
                             </tr>
                             <tr
-                                class="hikashop_address_address_post_code_line"
-                                id="hikashop_address_address_post_code">
+                                class="mailtester_cart_address_address_post_code_line"
+                                id="mailtester_cart_address_address_post_code">
                                 <td class="key">
                                     <label for="address_post_code">Post code</label>
                                 </td>
@@ -127,11 +127,11 @@
                                     value=""/></td>
                             </tr>
                             <tr
-                                class="hikashop_address_address_city_line"
-                                id="hikashop_address_address_city">
+                                class="mailtester_cart_address_address_city_line"
+                                id="mailtester_cart_address_address_city">
                                 <td class="key">
                                     <label for="address_city">City</label>
-                                    <span class="hikashop_field_required">*</span>
+                                    <span class="mailtester_cart_field_required">*</span>
                                 </td>
                                 <td><input
                                     class="inputbox address-input required"
@@ -144,8 +144,8 @@
                                 </td>
                             </tr>
                             <tr
-                                class="hikashop_address_address_telephone_line"
-                                id="hikashop_address_address_telephone">
+                                class="mailtester_cart_address_address_telephone_line"
+                                id="mailtester_cart_address_address_telephone">
                                 <td class="key">
                                     <label for="address_telephone">Telephone</label>
                                 </td>
@@ -157,8 +157,8 @@
                                     value=""/></td>
                             </tr>
                             <tr 
-                                class="hikashop_address_address_country_line"
-                                id="hikashop_address_address_country">
+                                class="mailtester_cart_address_address_country_line"
+                                id="mailtester_cart_address_address_country">
                                 <td class="key">
                                     <label for="address_country">Country</label>
                                 </td>
@@ -173,8 +173,8 @@
                                 </td>
                             </tr>
                             <tr
-                                class="hikashop_address_address_state_line"
-                                id="hikashop_address_address_state">
+                                class="mailtester_cart_address_address_state_line"
+                                id="mailtester_cart_address_address_state">
                                 <td class="key">
                                     <label for="address_state">State</label>
                                 </td>
@@ -193,10 +193,10 @@
                     
                     <input
                         type="submit"
-                        class="btn button hikashop_cart_input_button"
+                        class="btn button mailtester_cart_cart_input_button"
                         name="ok"
                         value="OK"
-                        onclick="var field=document.getElementById('hikashop_product_quantity_field_1');if(hikashopCheckChangeForm('address','hikashop_address_form')) document.forms['hikashop_address_form'].submit(); return false;"/>
+                        onclick="var field=document.getElementById('mailtester_cart_product_quantity_field_1');if(mailtester_cartCheckChangeForm('address','mailtester_cart_address_form')) document.forms['mailtester_cart_address_form'].submit(); return false;"/>
                      <button class="btn button close"  data-dismiss="modal" aria-label="Close">
                          Cancel
                     </button>

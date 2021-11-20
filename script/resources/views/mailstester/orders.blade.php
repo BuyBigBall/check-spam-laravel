@@ -6,13 +6,13 @@
 
         <div id="system-message-container"></div>
 
-        <div id="hikashop_order_listing">
+        <div id="mailtester_cart_order_listing">
             <fieldset>
-                <div class="header hikashop_header_title">
+                <div class="header mailtester_cart_header_title">
                     <h1>Orders</h1>
                 </div>
-                <div class="toolbar hikashop_header_buttons" id="toolbar" style="float: right;">
-                    <table class="hikashop_no_border">
+                <div class="toolbar mailtester_cart_header_buttons" id="toolbar" style="float: right;">
+                    <table class="mailtester_cart_no_border">
                         <tbody>
                             <tr>
                                 <td>
@@ -33,7 +33,7 @@
                 method="post"
                 name="adminForm"
                 id="adminForm">
-                <table class="hikashop_no_border">
+                <table class="mailtester_cart_no_border">
                     <tbody>
                         <tr>
                             <td width="100%">
@@ -41,20 +41,20 @@
                                 <input
                                     type="text"
                                     name="search"
-                                    id="hikashop_search"
+                                    id="mailtester_cart_search"
                                     value=""
                                     class="inputbox"
                                     onchange="document.adminForm.submit();"/>
                                 <button class="btn" onclick="this.form.submit();">Go</button>
                                 <button
                                     class="btn"
-                                    onclick="document.getElementById('hikashop_search').value='';this.form.submit();">Reset</button>
+                                    onclick="document.getElementById('mailtester_cart_search').value='';this.form.submit();">Reset</button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
                 <input type="hidden" name="Itemid" value="111"/>
-                <input type="hidden" name="option" value="com_hikashop"/>
+                <input type="hidden" name="option" value="com_mailtester_cart"/>
                 <input type="hidden" name="task" value=""/>
                 <input type="hidden" name="ctrl" value="order"/>
                 <input type="hidden" name="boxchecked" value="0"/>
@@ -63,18 +63,18 @@
                 <input type="hidden" name="45adedc08584ba24ea6f3e97d550bc4a" value="1"/>
             </form>
             <table
-                id="hikashop_order_listing"
-                class="hikashop_orders adminlist table table-striped table-hover"
+                id="mailtester_cart_order_listing"
+                class="mailtester_cart_orders adminlist table table-striped table-hover"
                 cellpadding="1">
                 <thead>
                     <tr>
-                        <th class="hikashop_order_num_title title titlenum" align="center">
+                        <th class="mailtester_cart_order_num_title title titlenum" align="center">
                             #
                         </th>
-                        <th class="hikashop_order_number_title title" align="center">
+                        <th class="mailtester_cart_order_number_title title" align="center">
                             Order number
                         </th>
-                        <th class="hikashop_order_date_title title" align="center">
+                        <th class="mailtester_cart_order_date_title title" align="center">
                             <a
                                 href="{{ route('order' )}}#"
                                 onclick="Joomla.tableOrdering('a.order_created','asc','');return false;"
@@ -85,7 +85,7 @@
                                 data-original-title="Date">Date<span class="icon-arrow-down-3"></span>
                             </a>
                         </th>
-                        <th class="hikashop_order_status_title title" align="center">
+                        <th class="mailtester_cart_order_status_title title" align="center">
                             <a
                                 href="{{ route('order' )}}#"
                                 onclick="Joomla.tableOrdering('a.order_status','asc','');return false;"
@@ -95,7 +95,7 @@
                                 data-placement="top"
                                 data-original-title="Order status">Order status</a>
                         </th>
-                        <th class="hikashop_order_total_title title" align="center">
+                        <th class="mailtester_cart_order_total_title title" align="center">
                             <a
                                 href="{{ route('order' )}}#"
                                 onclick="Joomla.tableOrdering('a.order_full_price','asc','');return false;"
@@ -138,7 +138,7 @@
                                     </div>
                                     Results 1 - 1 of 1
                                     <input type="hidden" name="Itemid" value="111"/>
-                                    <input type="hidden" name="option" value="com_hikashop"/>
+                                    <input type="hidden" name="option" value="com_mailtester_cart"/>
                                     <input type="hidden" name="task" value=""/>
                                     <input type="hidden" name="ctrl" value="order"/>
                                     <input type="hidden" name="boxchecked" value="0"/>
@@ -151,22 +151,22 @@
                 </tfoot>
                 <tbody>
                     <tr class="row0">
-                        <td class="hikashop_order_num_value">
+                        <td class="mailtester_cart_order_num_value">
                             1
                         </td>
-                        <td class="hikashop_order_number_value">
+                        <td class="mailtester_cart_order_number_value">
                             <a href="{{ route('orderdetail', 'cid-40746') }}">
                                 MT202140746
                             </a>
                         </td>
-                        <td class="hikashop_order_date_value">
+                        <td class="mailtester_cart_order_date_value">
                             2021-11-11 07:23
                         </td>
-                        <td class="hikashop_order_status_value">
-                            <span class="hikashop_order_listing_status hikashop_order_status_created">
+                        <td class="mailtester_cart_order_status_value">
+                            <span class="mailtester_cart_order_listing_status mailtester_cart_order_status_created">
                                 created</span>
                         </td>
-                        <td class="hikashop_order_total_value">
+                        <td class="mailtester_cart_order_total_value">
                             60,50 €
                         </td>
                     </tr>
@@ -174,7 +174,7 @@
             </table>
         </div>
         <div class="clear_both"></div>
-        <!-- HikaShop Component powered by http://www.hikashop.com -->
+        <!-- mailtester_cart Component powered by http://www.mailtester_cart.com -->
         <!-- version Business : 2.6.2 [1604182302] -->
 
     </div>

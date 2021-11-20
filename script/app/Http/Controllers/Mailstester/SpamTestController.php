@@ -7,7 +7,9 @@ use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Session;
 use App\Models\Settings;
 use App\Models\TrashMail;
+use App\Models\TestResult;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 // use Illuminate\Support\Str;
 // use Illuminate\Support\Facades\Cache;
@@ -24,6 +26,7 @@ use DomDocument;
 use SimpleXMLElement;
 use Exception;
 use SPFLib\Term\Mechanism;
+use Vinkla\Hashids\Facades\Hashids;
  
 class SpamTestController extends Controller
 {
@@ -185,6 +188,21 @@ class SpamTestController extends Controller
                  throw new ApiRequestException("Plesk API returned error: " . (string)$resultNode->result->errtext);
     }
     
+    function deleteXML($site_id, $mail_account_name)
+    {
+        $xmlString = '<packet version="1.6.3.0">
+                        <mail>
+                        <remove>
+                        <filter>
+                            <site-id>'.$site_id.'</site-id>
+                            <name>'.$mail_account_name.'</name>
+                            </filter>
+                        </remove>
+                        </mail>
+                        </packet>';
+		return $xmlString;
+    }
+
     function createXML($site_id, $mail_account_name, $mail_password)
     {
         $xmlString = '<?xml version="1.0" encoding="UTF-8"?>
@@ -285,9 +303,9 @@ class SpamTestController extends Controller
         #<-----
 
         if(!empty($id))
-            return json_encode(['result'=>'ok', 'message_id'=>$id] );
+            return json_encode(['result'=>'ok', 'message_id'=>$id, 'email'=>$email] );
         else
-            return json_encode(['result'=>'fail']);
+            return json_encode(['result'=>'fail', 'email'=>$email]);
         
     }
 
@@ -447,7 +465,14 @@ class SpamTestController extends Controller
 		}
 		
 		$helo_name = substr($header, $pos, $posend - $pos);
-		$rdns_name = gethostbyaddr($server['serverip']);
+        $rdns_name = '';
+        try
+        {
+            $rdns_name = gethostbyaddr($server['serverip']);
+        }catch (\Exception $e) {
+            
+        }
+        
 		
 		return ['server_ip'=>$server['serverip'], 'helo_domain'=>$helo_name, 'rdns_domain'=>$rdns_name];
 	}
@@ -489,28 +514,33 @@ class SpamTestController extends Controller
     {
         $score = new \palPalani\SpamassassinScore\SpamassassinScore();
 		
-        $message_id = $request->input('message_id');
+        $Hashid = $request->input('message_id');
+        if( !empty($request->input('mail_id')))
+        {
+            $Hashid = Hashids::encode($request->input('mail_id'));
+        }
         $email = null;
         if (Cookie::has('email')) 
             $email =  Cookie::get('email');
-        $response = TrashMail::messages($email, $message_id);
+        $response = TrashMail::messages($email, $Hashid);
 		
-
         if( empty($response['messages']['error'])  && count($response)>0 )
         {
+			//print_r($response); die;
             $response = $response[0];
         }
 		else
 		{
-			$response['subject'] = '';
-            $response['is_seen'] = 0;
-            $response['from'] = '';
-            $response['from_email'] = '';
-            $response['receivedAt'] = '';
-            $response['id'] = $message_id;
-            $response['attachments'] = [];
-			$response['content'] = '';
-			$response['header'] = '';
+			// $response['subject'] = '';
+            // $response['is_seen'] = 0;
+            // $response['from'] = '';
+            // $response['from_email'] = '';
+            // $response['receivedAt'] = '';
+            // $response['id'] = $Hashid;
+            // $response['attachments'] = [];
+			// $response['content'] = '';
+			// $response['header'] = '';
+            abort(419);
 		}
         $diff = date_diff( new \DateTime( "now" ), new \DateTime($response['receivedAt']) );
 		$ago_time = (($diff->y>=1) ? (($diff->y+1) . ' years ago' ) : 
@@ -530,9 +560,32 @@ class SpamTestController extends Controller
         $auth_DKIMInfo   = $this->getDKIMsign($response['header'] );
         $auth_SPDcheck   = $this->getSPFcheck($response['header'], $auth_rDnsInfo, $response['from_email'] );
 
-		//print(10 - $score_report['score']);
-		//print_r($score_report); die;
-		
+        $guard = null;
+		if (Auth::guard($guard)->check()) {
+            $user_id = Auth::user()->id;
+            $user_name = Auth::user()->name;
+            $mail_id = $response['id'];
+            $email = Auth::user()->email;
+            $db_hist = TestResult::where(['mail_id'=>$mail_id, 'user_id'=>$user_id])->first();
+            if($db_hist==null)
+            {
+                $db_hist =  TestResult::create([
+                    'main_id' => $mail_id,
+                    'user_id' => $user_id,
+                    'name' => $user_name ,
+                    'email' => $email,
+                    'tested_at' => time(),
+                    'received_at' => $response['receivedAt'],
+                    'subject' => $response['subject'],
+                    'header' => $response['header'],
+                    'content' => $response['content'],
+                    'sender' => $response['from_email'],
+                    'score' => $score_report['score'],
+                    // 'created_at' => time(),
+                ]);
+            }
+        }
+
         return view('mailstester.testresult')
             ->with('email',         $email )
 			->with('ago_time',		$ago_time)

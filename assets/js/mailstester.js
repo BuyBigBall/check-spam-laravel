@@ -62,7 +62,7 @@ $(function() {
 	if(progress.length){
 		var elapsedTime = 0,
 			refreshRate = 1,
-			reloadTime = 14,
+			reloadTime = 1400,
 			countdown = jQuery('.countdown');
 
 		// Show the remaining time before reloading the page

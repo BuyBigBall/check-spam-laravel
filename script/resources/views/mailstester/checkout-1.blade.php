@@ -7,14 +7,14 @@
         <div id="system-message-container"></div>
 
         <div
-            id="hikashop_checkout_page"
-            class="hikashop_checkout_page hikashop_checkout_page_step0">
-            <div class="hikashop_wizardbar">
+            id="mailtester_cart_checkout_page"
+            class="mailtester_cart_checkout_page mailtester_cart_checkout_page_step0">
+            <div class="mailtester_cart_wizardbar">
                 <ul>
-                    <li class="hikashop_cart_step_current">
+                    <li class="mailtester_cart_cart_step_current">
                         <span class="badge badge-info">1</span>
                         Address
-                        <span class="hikashop_chevron"></span>
+                        <span class="mailtester_cart_chevron"></span>
                     </li>
 
                     <li class="">
@@ -23,7 +23,7 @@
                             href="{{ route('checkout', 'step2') }}">
                             Payment
                         </a>
-                        <span class="hikashop_chevron"></span>
+                        <span class="mailtester_cart_chevron"></span>
                     </li>
 
                     <li class="">
@@ -32,7 +32,7 @@
                             href="{{ route('checkout', 'step3') }}">
                             Cart
                         </a>
-                        <span class="hikashop_chevron"></span>
+                        <span class="mailtester_cart_chevron"></span>
                     </li>
 
                     <li class="">
@@ -41,7 +41,7 @@
                             href="{{ route('checkout', 'step4') }}">
                             End
                         </a>
-                        <span class="hikashop_chevron"></span>
+                        <span class="mailtester_cart_chevron"></span>
                     </li>
 
                 </ul>
@@ -49,92 +49,165 @@
             <form
                 action="{{ route('checkout', 'step2') }}"
                 method="post"
-                name="hikashop_checkout_form"
+                name="mailtester_cart_checkout_form"
                 enctype="multipart/form-data"
-                onsubmit="if('function' == typeof(hikashopSubmitForm)) { hikashopSubmitForm('hikashop_checkout_form'); return false; } else { return true; }">
+                onsubmit="if('function' == typeof(mailtester_cartSubmitForm)) { mailtester_cartSubmitForm('mailtester_cart_checkout_form'); return false; } else { return true; }">
                 <div
-                    id="hikashop_checkout_address_billing_only"
-                    class="hikashop_checkout_address_billing_only row-fluid">
+                    id="mailtester_cart_checkout_address_billing_only"
+                    class="mailtester_cart_checkout_address_billing_only row-fluid">
                     <div
-                        id="hikashop_checkout_billing_address"
-                        class="hikashop_checkout_billing_address span6">
-                        <fieldset class="hika_address_field" id="hikashop_checkout_billing_address">
+                        id="mailtester_cart_checkout_billing_address"
+                        class="mailtester_cart_checkout_billing_address span6">
+                        <fieldset class="mailtester_cart_address_listing_div hika_address_field" id="mailtester_cart_checkout_billing_address">
                             <legend>Billing address</legend>
+                            @csrf
+                            @if( !empty($userdata['user_profile']) )
                             <table class="table">
                                 <tbody>
                                     <tr class="row0">
                                         <td>
                                             <input
-                                                id="hikashop_checkout_billing_address_radio_44126"
+                                                id="mailtester_cart_checkout_billing_address_radio_44126"
                                                 type="hidden"
-                                                name="hikashop_address_billing"
+                                                name="mailtester_cart_address_billing"
                                                 value="44126"/>
-                                            <span class="hikashop_checkout_billing_address_info">
-                                                Samir Chakouri<br/>
-                                                Calle julio colomer 29<br/>
-                                                46910 Alfafar Valencia<br/>
-                                                Spain
+                                            <span class="mailtester_cart_checkout_billing_address_info">
+                                                {{ $userdata['user_profile']->firstname }} {{ $userdata['user_profile']->lastname }}<br/>
+                                                {{ $userdata['user_profile']->company }}<br/>
+                                                {{ $userdata['user_profile']->address }} {{ $userdata['user_profile']->city }} {{ $userdata['user_profile']->vatnum }}<br/>
+                                                {{ $userdata['user_profile']->postcode }}  {{ $userdata['user_profile']->state }} {{ $userdata['user_profile']->country }} <br/>
                                             </span>
                                         </td>
                                         <td>
-                                            <span class="hikashop_checkout_billing_address_buttons">
+                                            <span class="mailtester_cart_checkout_billing_address_buttons">
                                                 <a
-                                                    id="hikashop_checkout_billing_address_edit_44126"
+                                                    id="mailtester_cart_checkout_billing_address_edit_44126"
                                                     title="Edit"
-                                                    class="hikashop_checkout_billing_address_edit"
+                                                    style='cursor:pointer'
+                                                    class="mailtester_cart_checkout_billing_address_edit"
                                                     rel="{handler: 'iframe', size: {x: 450, y: 480}}"
-                                                    href="{{ route('payment', 'tmpl-component') }}"
-                                                    onclick="return hikashopEditAddress(this,0,false);">
-                                                    <img alt="Edit" src="./Checkout-1_files/edit.png" border="0"/></a>
+                                                    onclick="return showModal('{{$userdata['user_profile']->id}}');">
+                                                    <img alt="Edit" src="{{asset('assets/images/icons/edit.png')}}" border="0"/></a>
                                             </span>
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
+                            @endif
                             <span
-                                id="hikashop_checkout_billing_address_new"
-                                class="hikashop_checkout_billing_address_new">
+                                id="mailtester_cart_checkout_billing_address_new"
+                                class="mailtester_cart_checkout_billing_address_new">
                                 <a
-                                    id="hikashop_checkout_billing_address_new_link"
-                                    rel="{handler: 'iframe', size: {x: 450, y: 480}}"
-                                    href="{{ route('payment', 'tmpl-component') }}"
-                                    onclick="return hikashopEditAddress(this,0,true);">
-                                    <input
-                                        type="button"
-                                        class="btn button hikashop_cart_input_button"
-                                        name="new"
-                                        value="New"
-                                        onclick="var field=document.getElementById('hikashop_product_quantity_field_1');var link = document.getElementById('hikashop_checkout_billing_address_new_link'); if(link) return hikashopEditAddress(link,0,true); return false;"/>
-                                </a >
+                                    id="mailtester_cart_checkout_billing_address_new_link"
+                                    class="btn button mailtester_cart_cart_input_button"
+                                    onclick="return showModal('0');">
+                                    New
+                                </a>
                             </span>
                         </fieldset>
                     </div>
                 </div>
                 <div style="clear:both"></div>
-                <input type="hidden" name="Itemid" value="168"/>
-                <input type="hidden" name="option" value="com_hikashop"/>
+                <!-- <input type="hidden" name="Itemid" value="168"/>
+                <input type="hidden" name="option" value="com_mailtester_cart"/>
                 <input type="hidden" name="ctrl" value="checkout"/>
                 <input type="hidden" name="task" value="step"/>
                 <input type="hidden" name="previous" value="0"/>
                 <input type="hidden" name="step" value="1"/>
-                <input type="hidden" id="hikashop_validate" name="validate" value="0"/>
+                <input type="hidden" id="mailtester_cart_validate" name="validate" value="0"/>
                 <input type="hidden" name="45adedc08584ba24ea6f3e97d550bc4a" value="1"/>
                 <input
                     type="hidden"
                     name="unique_id"
-                    value="[04a41f3c14335bf17e4ae3d68cf4643e]"/>
-                <br style="clear:both"/>
-                <input
-                    type="submit"
-                    class="btn button hikashop_cart_input_button"
+                    value="[04a41f3c14335bf17e4ae3d68cf4643e]"/> -->
+                <br style="clear:both"/> 
+                <a
+                    class="btn button mailtester_cart_cart_input_button"
                     name="next"
-                    value="Next"
-                    onclick="var field=document.getElementById('hikashop_product_quantity_field_2');if(hikashopCheckChangeForm('order','hikashop_checkout_form')){ if(hikashopCheckMethods()){ document.getElementById('hikashop_validate').value=1; this.disabled = true; document.forms['hikashop_checkout_form'].submit();}} return false;"
-                    id="hikashop_checkout_next_button"/>
+                    href="{{ route('checkout', 'step2') }}"
+                    id="mailtester_cart_checkout_next_button">Next</a>
             </form>
         </div>
         <div class="clear_both"></div>
 
     </div>
 </div>
+
+<script>
+function showModal(profile_id) {
+    var url = "{{ route('get-address-detail') }}";
+    var _token = $("input[name='_token']",".mailtester_cart_address_listing_div").val();
+    if(profile_id != '0'){
+        $.ajax({
+            url: url,
+            type:'POST',
+            data: {_token:_token,profile_id:profile_id},
+            success: function(data) {
+                var result = JSON.parse(data);
+                var profile = result.detail;                
+                $('#address_firstname').val('');
+                $('#address_lastname').val('');
+                $('#address_company').val('');
+                $('#address_vat').val('');
+                $('#address_street').val('');
+                $('#address_post_code').val('');
+                $('#address_city').val('');
+                $('#address_telephone').val('');
+                $('#address_country').val('');
+                $('#data_address_address_state').val('');
+
+                $('#profile_id').val(profile_id);
+                if(profile.firstname && typeof profile.firstname!="undefined")        
+                    $('#address_firstname').val(profile.firstname);
+                if(profile.lastname && typeof profile.lastname!="undefined")          
+                    $('#address_lastname').val(profile.lastname);
+                if(profile.company && typeof profile.company!="undefined")            
+                    $('#address_company').val(profile.company);
+                if(profile.vatnum && typeof profile.vatnum!="undefined")              
+                    $('#address_vat').val(profile.vatnum);
+                if(profile.address && typeof profile.address!="undefined")            
+                    $('#address_street').val(profile.address);
+                if(profile.postcode && typeof profile.postcode!="undefined")          
+                    $('#address_post_code').val(profile.postcode);
+                if(profile.city && typeof profile.city!="undefined")                  
+                    $('#address_city').val(profile.city);
+                if(profile.telephone && typeof profile.telephone!="undefined")        
+                    $('#address_telephone').val(profile.telephone);
+                if(profile.country && typeof profile.country!="undefined")        
+                    $('#address_country').val(profile.country);
+                if(profile.state && typeof profile.state!="undefined")        
+                    $('#address_state').val(profile.state);
+                $('#practice_modal').modal('show');
+
+            },
+            error: function (data) {
+                  
+            }
+        });
+    } else {
+        $('#profile_id').val('0');
+        $('#address_firstname').val('');
+        $('#address_lastname').val('');
+        $('#address_company').val('');
+        $('#address_vat').val('');
+        $('#address_street').val('');
+        $('#address_post_code').val('');
+        $('#address_city').val('');
+        $('#address_telephone').val('');
+        $('#address_country').val('');
+        $('#data_address_address_state').val('');
+        $('#address_state').val('');
+        $('#practice_modal').modal('show');
+    }
+}
+</script>
+
+
+@include('mailstester.address')
+
 @endsection
+
+@section('addressjs')
+
+@endsection
+

@@ -19,8 +19,20 @@ class ForgotPasswordController extends Controller
     */
 
     use SendsPasswordResetEmails;
-    public function forgot($type=null)
-    {
-        return null;
-    }
+    // public function forgot($type=null)
+    // {
+    //     if($type=='pwd')
+    //     {
+    //         return view('mailstester.forgotpwd');
+    //     }
+    //     if($type=='usr')
+    //     {
+    //         return view('mailstester.forgotname');
+    //     }
+    //     else
+    //     {
+    //         abort(404);
+    //     }
+    //     return null;
+    // }
 }

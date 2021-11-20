@@ -39,8 +39,14 @@ class LoginController extends Controller
             return '/admin/dashboard';
             break;
         case 'user':
-            $email = TrashMail::GetUserEmail(Auth::user()->id);
-            Cookie::queue('email', $email, Settings::selectSettings("email_lifetime") * Settings::selectSettings("email_lifetime_type"));
+            $user_id = Auth::user()->id;
+            $email = TrashMail::GetUserEmail($user_id);
+            if(!empty($email))
+                Cookie::queue('email', $email, Settings::selectSettings("email_lifetime") * Settings::selectSettings("email_lifetime_type"));
+            else if(Cookie::has('email'))
+                $email = Cookie::get('email');
+            else
+                abort(419);
             return '/get-started';
             break; 
     

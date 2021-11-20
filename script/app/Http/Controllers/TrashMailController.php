@@ -82,6 +82,8 @@ class TrashMailController extends Controller
         if (Cookie::has('email') && !empty(Cookie::get('email'))) {
             $email =  Cookie::get('email');
         } else {
+
+            ########## create new email address  ###########
             $date = Carbon::now();
             if(Settings::selectSettings("email_lifetime_type") == 1){
                 $newDateTime = Carbon::now()->addMinutes(Settings::selectSettings("email_lifetime"));
@@ -101,41 +103,47 @@ class TrashMailController extends Controller
 
             $trashmail = new TrashMail();
             $trashmail->email = $email;
-            $trashmail->delete_in = $newDateTime;
+            //$trashmail->delete_in = $newDateTime;
             $trashmail->save();
         }
         return json_encode( ['email'=>$email] );
     }
+
+
     // get all messages from 
     public function messages()
     {
         
-        if (Cookie::has('email')) {
-            $email =  Cookie::get('email');
-        } else {
-            $date = Carbon::now();
-            if(Settings::selectSettings("email_lifetime_type") == 1){
-                $newDateTime = Carbon::now()->addMinutes(Settings::selectSettings("email_lifetime"));
-            }elseif(Settings::selectSettings("email_lifetime_type") == 60){
-                $newDateTime = Carbon::now()->addHours(Settings::selectSettings("email_lifetime"));
-            }else{
-                $newDateTime = Carbon::now()->addDays(Settings::selectSettings("email_lifetime"));
-            }
+        // if (Cookie::has('email')) {
+        //     $email =  Cookie::get('email');
+        // } else {
+        //     $date = Carbon::now();
+        //     if(Settings::selectSettings("email_lifetime_type") == 1){
+        //         $newDateTime = Carbon::now()->addMinutes(Settings::selectSettings("email_lifetime"));
+        //     }elseif(Settings::selectSettings("email_lifetime_type") == 60){
+        //         $newDateTime = Carbon::now()->addHours(Settings::selectSettings("email_lifetime"));
+        //     }else{
+        //         $newDateTime = Carbon::now()->addDays(Settings::selectSettings("email_lifetime"));
+        //     }
             
 
-            $email = $this->generateRandomEmail();
-            Cookie::queue('email', $email, Settings::selectSettings("email_lifetime") * Settings::selectSettings("email_lifetime_type"));
-            Settings::updateSettings(
-                'total_emails_created',
-                Settings::selectSettings('total_emails_created') + 1
-            );
+        //     $email = $this->generateRandomEmail();
+        //     Cookie::queue('email', $email, Settings::selectSettings("email_lifetime") * Settings::selectSettings("email_lifetime_type"));
+        //     Settings::updateSettings(
+        //         'total_emails_created',
+        //         Settings::selectSettings('total_emails_created') + 1
+        //     );
 
-            $trashmail = new TrashMail();
-            $trashmail->email = $email;
-            $trashmail->delete_in = $newDateTime;
-            $trashmail->save();
-        }
-        
+        //     $trashmail = new TrashMail();
+        //     $trashmail->email = $email;
+        //     $trashmail->delete_in = $newDateTime;
+        //     $trashmail->save();
+        // }
+        $json = $this->temporaryEmailAddress();
+        $email = json_decode($json, true);
+        if(empty($email)) abort(419);   // server error
+        $email = $email['email'];
+
         $response  = TrashMail::allMessages($email);
         
         return $response;

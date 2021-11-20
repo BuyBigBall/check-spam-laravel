@@ -111,7 +111,7 @@ class RegisterController extends Controller
 			
 			$user_email = $request->input('email');
 			$user_token = Str::random(25);
-			/* commenting for test
+			// /* commenting for test
             $user = $this->create($request->all());
 			$user_email = $user->email;
 			$user_token = $user->remember_token;

@@ -4,7 +4,7 @@
 
 @section('content')
 <style>
-.hikashop_address_listing_item_actions {
+.mailtester_cart_address_listing_item_actions {
     padding-left: 15px;
 }
 .sdata-error { 
@@ -24,23 +24,23 @@
 
         <div id="system-message-container"></div>
 
-        <div id="hikashop_address_listing">
+        <div id="mailtester_cart_address_listing">
             <fieldset>
-                <div class="header hikashop_header_title">
+                <div class="header mailtester_cart_header_title">
                     <h1>Addresses</h1>
                 </div>
                 @if(session()->has('error'))
-                <div class="hikashop_header_title sdata-error">
+                <div class="mailtester_cart_header_title sdata-error">
                     <strong>{{ session()->get('error') }}</strong>
                 </div>
                 @endif
 
                 @if(session()->has('success'))
-                <div class="hikashop_header_title sdata-success">
+                <div class="mailtester_cart_header_title sdata-success">
                     <strong>{{ session()->get('success') }}</strong>
                 </div>
                 @endif
-                <div class="toolbar hikashop_header_buttons" id="toolbar">
+                <div class="toolbar mailtester_cart_header_buttons" id="toolbar">
                     <table>
                         <tbody>
                             <tr>
@@ -48,7 +48,7 @@
                                     <a
                                         rel="nofollow"
                                         onclick="return showModal('0');"
-                                        id="hikashop_new_address_popup"
+                                        id="mailtester_cart_new_address_popup"
                                         data-hk-popup="vex"
                                         data-vex="{x:760, y:480}">
                                         <span class="icon-32-new" title="New"></span>New</a>
@@ -64,27 +64,27 @@
                     </table>
                 </div>
             </fieldset>
-            <div class="hikashop_address_listing_div">
+            <div class="mailtester_cart_address_listing_div">
                 <form
                     action="{{ route('set-default-address') }}"
-                    name="hikashop_user_address"
+                    name="mailtester_cart_user_address"
                     method="post">
                     @csrf
-                    <table class="hikashop_address_listing_table">
+                    <table class="mailtester_cart_address_listing_table">
                         <tbody>
                             @foreach($addressdata as $row)
-                                <tr class="hikashop_address_listing_item">
-                                    <td class="hikashop_address_listing_item_default">
+                                <tr class="mailtester_cart_address_listing_item">
+                                    <td class="mailtester_cart_address_listing_item_default">
                                         <input type="radio" name="default_address" 
                                             value="{{$row->id}}" 
                                             {{ $row->default_address == '1'?'checked':''}}
                                             onclick="this.form.submit();"/></td>
-                                    <td class="hikashop_address_listing_item_details">
+                                    <td class="mailtester_cart_address_listing_item_details">
                                         <span>{{$row->firstname." ".$row->lastname}}<br/>
                                             {{$row->postcode." ".$row->city." ".$row->state}}<br/>
                                             {{$row->country}}</span>
                                     </td>
-                                    <td class="hikashop_address_listing_item_actions">
+                                    <td class="mailtester_cart_address_listing_item_actions">
                                         <a
                                             onclick="if(!confirm('Are you sure you want to delete this address ?')){return false;}else{return deleteAddress('{{$row->id}}');}"
                                             title="Delete">
@@ -92,7 +92,7 @@
                                         <a
                                             rel="nofollow"
                                             onclick="return showModal('{{$row->id}}');"
-                                            id="hikashop_edit_address_popup_44126"
+                                            id="mailtester_cart_edit_address_popup_44126"
                                             href="#"
                                             data-hk-popup="vex"
                                             data-vex="{x:760, y:480}">
@@ -102,10 +102,10 @@
                             @endforeach
                         </tbody>
                     </table>
-                    <input type="hidden" name="option" value="com_hikashop"/>
+                    <!-- <input type="hidden" name="option" value="com_mailtester_cart"/>
                     <input type="hidden" name="ctrl" value="address"/>
                     <input type="hidden" name="task" value="setdefault"/>
-                    <input type="hidden" name="02da9f5c81fc9e643cc9b1546a6e1e60" value="1"/>
+                    <input type="hidden" name="02da9f5c81fc9e643cc9b1546a6e1e60" value="1"/> -->
                 </form>
             </div>
         </div>
@@ -115,7 +115,7 @@
 <script>
 function deleteAddress(profile_id) {
     var url = "{{ route('delete-address') }}";
-    var _token = $("input[name='_token']",".hikashop_address_listing_div").val();
+    var _token = $("input[name='_token']",".mailtester_cart_address_listing_div").val();
     if(profile_id != '0'){
         $.ajax({
             url: url,
@@ -132,7 +132,7 @@ function deleteAddress(profile_id) {
 }
 function showModal(profile_id) {
     var url = "{{ route('get-address-detail') }}";
-    var _token = $("input[name='_token']",".hikashop_address_listing_div").val();
+    var _token = $("input[name='_token']",".mailtester_cart_address_listing_div").val();
     if(profile_id != '0'){
         $.ajax({
             url: url,
@@ -205,7 +205,7 @@ function showModal(profile_id) {
 
 @section('addressjs')
 
-<!-- <script src="/assets/js/hikashop.js" type="text/javascript"></script>
+<!-- <script src="/assets/js/mailtester_cart.js" type="text/javascript"></script>
 <script src="/assets/js/vex.min.js" type="text/javascript"></script>
 <script src="/assets/js/keepalive.js" type="text/javascript"></script> -->
 

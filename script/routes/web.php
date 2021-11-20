@@ -140,12 +140,15 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
     Route::get('/signup',         'Mailstester\RegisterController@showRegistrationForm')->name("signup");
     Route::post('/save-register',   'Mailstester\RegisterController@save_register')->name("save-register");
 
-    Route::get('/forgot/{type}',    'Auth\ForgotPassword@forgot')->name("forgot");
+    Route::get('/forgot/{type}',    'Auth\ForgotPasswordController@forgot')->name("forgot");
     // Route::post('/profile',         'Mailstester\LoginController@profile_view')->name("profile_view");
     // Route::post('/profile-save',    'Mailstester\LoginController@profile_save')->name("profile_save");
 
+    # payment interface
     Route::get('/prices',           'Mailstester\SiteController@index')->name("prices");
+    #payment url request
     Route::post('/buy_mail_test', 'Mailstester\SiteController@buy_mail_test')->name('buy_mail_test');
+    #payment return url
     Route::get('/payment_status', 'Mailstester\SiteController@payment_status')->name('payment_status');
 
     Route::get('/json-api',         'Mailstester\SiteController@json_api')->name("json-api");
@@ -170,6 +173,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
         Route::get('/payment/{price}', 'Mailstester\SiteController@checkout')->name("payment");
 
         Route::get('/checkout/{step}', 'Mailstester\SiteController@checkout_step')->name("checkout");
+        Route::post('/checkout/{step}', 'Mailstester\SiteController@checkout_step')->name("checkout");
 
         Route::get('/profile/{type}',   'Mailstester\SiteController@profile')->name("profile");
         //Route::get('/address',          'Mailstester\SiteController@address')->name("address");

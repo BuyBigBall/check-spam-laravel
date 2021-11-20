@@ -23,12 +23,12 @@
         <form
             action="{{ route('save-register') }}"
             method="post"
-            id="hikashop_registration_form"
+            id="mailtester_cart_registration_form"
             enctype="multipart/form-data"
             autocomplete="off"
-            onsubmit="hikashopSubmitForm(this.id); return false;">
+            onsubmit="mailtester_cartSubmitForm(this.id); return false;">
             @csrf
-            <div class="hikashop_user_registration_page">
+            <div class="mailtester_cart_user_registration_page">
                 <fieldset class="input">
                     <h2>Registration</h2>
 
@@ -46,8 +46,8 @@
 
                     <fieldset class="form-horizontal">
                     <div
-                            class="control-group hikashop_registration_name_line"
-                            id="hikashop_registration_name_line">
+                            class="control-group mailtester_cart_registration_name_line"
+                            id="mailtester_cart_registration_name_line">
                             <div class="control-label">
                                 <label id="namemsg" for="register_name" class="required" title="">Name</label>
                             </div>
@@ -88,8 +88,8 @@
                                 </span>{{ ($request=Request::capture())->gethttphost() }}</div>
                             </div>
                         <!-- <div
-                            class="control-group hikashop_registration_username_line"
-                            id="hikashop_registration_username_line">
+                            class="control-group mailtester_cart_registration_username_line"
+                            id="mailtester_cart_registration_username_line">
                             <div class="control-label">
                                 <label id="usernamemsg" for="register_username" class="required" title="">Username</label>
                             </div>
@@ -107,7 +107,7 @@
                                 <span style='color:red'>*</span>
                             </div>
                         </div> -->
-                        <div class="control-group hikashop_registration_email_line">
+                        <div class="control-group mailtester_cart_registration_email_line">
                             <div class="control-label">
                                 <label id="emailmsg" for="register_email" class="required" title="">E-mail</label>
                             </div>
@@ -127,8 +127,8 @@
                             </div>
                         </div>
                         <div
-                            class="control-group hikashop_registration_password_line"
-                            id="hikashop_registration_password_line">
+                            class="control-group mailtester_cart_registration_password_line"
+                            id="mailtester_cart_registration_password_line">
                             <div class="control-label">
                                 <label id="pwmsg" for="register_password" class="required" title="">Password</label>
                             </div>
@@ -149,8 +149,8 @@
                             </div>
                         </div>
                         <div
-                            class="control-group hikashop_registration_password2_line"
-                            id="hikashop_registration_password2_line">
+                            class="control-group mailtester_cart_registration_password2_line"
+                            id="mailtester_cart_registration_password2_line">
                             <div class="control-label">
                                 <label id="pw2msg" for="register_password2" class="required" title="">Verify Password</label>
                             </div>
@@ -182,7 +182,7 @@
                             @endif
                         </div>
 
-                        <div class="control-group hikashop_registration_required_info_line">
+                        <div class="control-group mailtester_cart_registration_required_info_line">
                             <div class="controls">Fields marked with an asterisk (<span style='color:red'>*</span>) are required.</div>
                         </div>
                         <input type="hidden" name="data[register][id]" value="0"/>
@@ -192,17 +192,17 @@
                                 <input
 									disabled
                                     type="submit"
-                                    class="btn button hikashop_cart_input_button btn btn-primary p-3"
+                                    class="btn button mailtester_cart_cart_input_button btn btn-primary p-3"
                                     name="register"
                                     value="Register"
-                                    onclick="var field=document.getElementById('hikashop_product_quantity_field_1'); hikashopSubmitForm('hikashop_registration_form', 'register'); return false;"
-                                    id="hikashop_register_form_button"/></div>
+                                    onclick="var field=document.getElementById('mailtester_cart_product_quantity_field_1'); mailtester_cartSubmitForm('mailtester_cart_registration_form', 'register'); return false;"
+                                    id="mailtester_cart_register_form_button"/></div>
                         </div>
                     </fieldset>
                 </fieldset>
             </div>
         </form>
-        <!-- HikaShop Component powered by http://www.hikashop.com -->
+        <!-- mailtester_cart Component powered by http://www.mailtester_cart.com -->
         <!-- version Business : 2.6.2 [1604182302] -->
 
     </div>
@@ -287,11 +287,11 @@ function backend_API_challenge() {
         $('#register_name').focus();
     });
  	function recaptchaCallback(){
-        var btnSubmit = document.getElementById("hikashop_register_form_button");
-        $('#hikashop_register_form_button').prop('disabled', false);
+        var btnSubmit = document.getElementById("mailtester_cart_register_form_button");
+        $('#mailtester_cart_register_form_button').prop('disabled', false);
     }
 
-    function hikashopSubmitForm(formid, method)
+    function mailtester_cartSubmitForm(formid, method)
     {
         function validateForm(){
             var text = this.getElementById('register_name').value;

@@ -1,7 +1,7 @@
 /**
- * @package    HikaShop for Joomla!
+ * @package    mailtester_cart for Joomla!
  * @version    2.6.2
- * @author     hikashop.com
+ * @author     mailtester_cart.com
  * @copyright  (C) 2010-2016 HIKARI SOFTWARE. All rights reserved.
  * @license    GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
  */
@@ -299,9 +299,9 @@
 		window.obscurelighty = Oby;
 	}
 
-	var oldHikaShop = window.hikashop || hikashop;
+	var oldmailtester_cart = window.mailtester_cart || mailtester_cart;
 
-	var hikashop = {
+	var mailtester_cart = {
 		submitFct: null,
 		submitBox: function(data) {
 			var t = this, d = document, w = window;
@@ -585,10 +585,10 @@
 				else
 					el = jQuery('#modal-' + id).find('iframe').get(0);
 			}
-			if(el && el.contentWindow.hikashop) {
+			if(el && el.contentWindow.mailtester_cart) {
 				if(task === undefined) task = null;
 				if(form === undefined) form = 'adminForm';
-				el.contentWindow.hikashop.submitform(task, form);
+				el.contentWindow.mailtester_cart.submitform(task, form);
 			}
 			return false;
 		},
@@ -618,10 +618,10 @@
 				w.Oby.updateElem(id + '_container', xhr.responseText);
 				var defaultVal = '', defaultValInput = d.getElementById(id + '_default_value'), stateSelect = d.getElementById(id);
 				if(defaultValInput) { defaultVal = defaultValInput.value; }
-				if(stateSelect && w.hikashop.optionValueIndexOf(stateSelect.options, defaultVal) >= 0)
+				if(stateSelect && w.mailtester_cart.optionValueIndexOf(stateSelect.options, defaultVal) >= 0)
 					stateSelect.value = defaultVal;
 				if(typeof(jQuery) != "undefined" && jQuery().chosen) { jQuery('#'+id).chosen(); }
-				w.Oby.fireAjax('hikashop.stateupdated', {id: id, elem: stateSelect});
+				w.Oby.fireAjax('mailtester_cart.stateupdated', {id: id, elem: stateSelect});
 			});
 		},
 		optionValueIndexOf: function(options, value) {
@@ -800,8 +800,8 @@
 			if(!arr)
 				return false;
 
-			if(!this.fields_data && window.hikashopFieldsJs)
-				this.fields_data = window.hikashopFieldsJs;
+			if(!this.fields_data && window.mailtester_cartFieldsJs)
+				this.fields_data = window.mailtester_cartFieldsJs;
 
 			if(this.fields_data === undefined || this.fields_data[field_type] === undefined)
 				return false;
@@ -809,7 +809,7 @@
 			size = (arr[0] && arr[0].length !== undefined) ? arr[0].length : arr.length;
 
 			if(prefix === undefined || !prefix || prefix.length == 0 || prefix.substr(-1) != '_')
-				prefix = 'hikashop_';
+				prefix = 'mailtester_cart_';
 
 			for(var c = 0; c < size; c++) {
 				if(arr && arr[0] != undefined && arr[0].length != undefined)
@@ -866,12 +866,12 @@
 			}
 		}
 	};
-	window.hikashop = hikashop;
+	window.mailtester_cart = mailtester_cart;
 
-	if(oldHikaShop && oldHikaShop instanceof Object) {
-		for (var attr in oldHikaShop) {
-			if (oldHikaShop.hasOwnProperty(attr) && !window.hikashop.hasOwnProperty(attr))
-				window.hikashop[attr] = oldHikaShop[attr];
+	if(oldmailtester_cart && oldmailtester_cart instanceof Object) {
+		for (var attr in oldmailtester_cart) {
+			if (oldmailtester_cart.hasOwnProperty(attr) && !window.mailtester_cart.hasOwnProperty(attr))
+				window.mailtester_cart[attr] = oldmailtester_cart[attr];
 		}
 	}
 })();
@@ -900,34 +900,34 @@ function submitform(pressbutton) {
 	return false;
 }
 
-function hikashopCheckChangeForm(type, form) {
+function mailtester_cartCheckChangeForm(type, form) {
 	if(!form)
 		return true;
 	var varform = document[form];
 
-	if(typeof(hikashopFieldsJs) == 'undefined' || typeof(hikashopFieldsJs['reqFieldsComp']) == 'undefined' || typeof(hikashopFieldsJs['reqFieldsComp'][type]) == 'undefined' || hikashopFieldsJs['reqFieldsComp'][type].length <= 0)
+	if(typeof(mailtester_cartFieldsJs) == 'undefined' || typeof(mailtester_cartFieldsJs['reqFieldsComp']) == 'undefined' || typeof(mailtester_cartFieldsJs['reqFieldsComp'][type]) == 'undefined' || mailtester_cartFieldsJs['reqFieldsComp'][type].length <= 0)
 		return true;
 
 	var d = document;
-	for(var i = 0; i < hikashopFieldsJs['reqFieldsComp'][type].length; i++) {
-		elementName = 'data['+type+']['+hikashopFieldsJs['reqFieldsComp'][type][i]+']';
+	for(var i = 0; i < mailtester_cartFieldsJs['reqFieldsComp'][type].length; i++) {
+		elementName = 'data['+type+']['+mailtester_cartFieldsJs['reqFieldsComp'][type][i]+']';
 		if(typeof(varform.elements[elementName]) == 'undefined')
-			elementName = type+'_'+hikashopFieldsJs['reqFieldsComp'][type][i];
+			elementName = type+'_'+mailtester_cartFieldsJs['reqFieldsComp'][type][i];
 
 		elementToCheck = varform.elements[elementName];
-		elementId = 'hikashop_'+type+'_'+ hikashopFieldsJs['reqFieldsComp'][type][i];
+		elementId = 'mailtester_cart_'+type+'_'+ mailtester_cartFieldsJs['reqFieldsComp'][type][i];
 		el = d.getElementById(elementId);
 
-		if(elementToCheck && (typeof el == 'undefined' || el == null || typeof el.style == 'undefined' || el.style.display!='none') && !hikashopCheckField(elementToCheck,type,i,elementName,varform.elements)) {
-			if(typeof(hikashopFieldsJs['entry_id']) == 'undefined')
+		if(elementToCheck && (typeof el == 'undefined' || el == null || typeof el.style == 'undefined' || el.style.display!='none') && !mailtester_cartCheckField(elementToCheck,type,i,elementName,varform.elements)) {
+			if(typeof(mailtester_cartFieldsJs['entry_id']) == 'undefined')
 				return false;
 
-			for(var j = 1; j <= hikashop['entry_id']; j++) {
-				elementName = 'data['+type+'][entry_'+j+']['+hikashopFieldsJs['reqFieldsComp'][type][i]+']';
+			for(var j = 1; j <= mailtester_cart['entry_id']; j++) {
+				elementName = 'data['+type+'][entry_'+j+']['+mailtester_cartFieldsJs['reqFieldsComp'][type][i]+']';
 				elementToCheck = varform.elements[elementName];
-				elementId = 'hikashop_'+type+'_'+ hikashopFieldsJs['reqFieldsComp'][type][i] + '_' + j;
+				elementId = 'mailtester_cart_'+type+'_'+ mailtester_cartFieldsJs['reqFieldsComp'][type][i] + '_' + j;
 				el = d.getElementById(elementId);
-				if(elementToCheck && (typeof el == 'undefined' || el == null || typeof el.style == 'undefined' || el.style.display != 'none') && !hikashopCheckField(elementToCheck,type,i,elementName,varform.elements)) {
+				if(elementToCheck && (typeof el == 'undefined' || el == null || typeof el.style == 'undefined' || el.style.display != 'none') && !mailtester_cartCheckField(elementToCheck,type,i,elementName,varform.elements)) {
 					return false;
 				}
 			}
@@ -950,7 +950,7 @@ function hikashopCheckChangeForm(type, form) {
 				passwd = varform.elements['data[register][password]'];
 				passwd2 = varform.elements['data[register][password2]'];
 				if(passwd.value != passwd2.value) {
-					alert(hikashopFieldsJs['password_different']);
+					alert(mailtester_cartFieldsJs['password_different']);
 					return false;
 				}
 			}
@@ -961,7 +961,7 @@ function hikashopCheckChangeForm(type, form) {
 		emailField.value = emailField.value.replace(/ /g,"");
 		var filter = /^([a-z0-9_'&\.\-\+])+\@(([a-z0-9\-])+\.)+([a-z0-9]{2,14})+$/i;
 		if(!emailField || !filter.test(emailField.value)) {
-			alert(hikashopFieldsJs['valid_email']);
+			alert(mailtester_cartFieldsJs['valid_email']);
 			return false;
 		}
 	} else if(type == 'address' && typeof(varform.elements['data[address][address_telephone]']) != 'undefined') {
@@ -969,7 +969,7 @@ function hikashopCheckChangeForm(type, form) {
 		if(phoneField) {
 			phoneField.value = phoneField.value.replace(/ /g,"");
 			if(phoneField.value.length > 0 && !filter.test(phoneField.value)) {
-				alert(hikashopFieldsJs['valid_phone']);
+				alert(mailtester_cartFieldsJs['valid_phone']);
 				return false;
 			}
 		}
@@ -978,7 +978,7 @@ function hikashopCheckChangeForm(type, form) {
 	return true;
 }
 
-function hikashopCheckField(elementToCheck, type, i, elementName, form) {
+function mailtester_cartCheckField(elementToCheck, type, i, elementName, form) {
 	if(!elementToCheck)
 		return true;
 
@@ -995,11 +995,11 @@ function hikashopCheckField(elementToCheck, type, i, elementName, form) {
 			}
 		} else if(elementToCheck.value.length > 0){
 			var found = false;
-			for(var j in hikashopFieldsJs['regexFieldsComp'][type]) {
-				if(hikashopFieldsJs['regexFieldsComp'][type][j] == hikashopFieldsJs['reqFieldsComp'][type][i]) found = j;
+			for(var j in mailtester_cartFieldsJs['regexFieldsComp'][type]) {
+				if(mailtester_cartFieldsJs['regexFieldsComp'][type][j] == mailtester_cartFieldsJs['reqFieldsComp'][type][i]) found = j;
 			}
-			if(typeof(hikashopFieldsJs['regexFieldsComp']) != 'undefined' && typeof(hikashopFieldsJs['regexFieldsComp'][type]) != 'undefined' && found){
-				myregexp = new RegExp(hikashopFieldsJs['regexValueFieldsComp'][type][found]);
+			if(typeof(mailtester_cartFieldsJs['regexFieldsComp']) != 'undefined' && typeof(mailtester_cartFieldsJs['regexFieldsComp'][type]) != 'undefined' && found){
+				myregexp = new RegExp(mailtester_cartFieldsJs['regexValueFieldsComp'][type][found]);
 				if(myregexp.test(elementToCheck.value)){
 					isValid = true;
 				}
@@ -1036,7 +1036,7 @@ function hikashopCheckField(elementToCheck, type, i, elementName, form) {
 	}
 	if(!isValid) {
 		window.Oby.addClass(elementToCheck, 'invalid');
-		alert(hikashopFieldsJs['validFieldsComp'][type][i]);
+		alert(mailtester_cartFieldsJs['validFieldsComp'][type][i]);
 		return false;
 	} else {
 		window.Oby.removeClass(elementToCheck, 'invalid');
@@ -1044,10 +1044,10 @@ function hikashopCheckField(elementToCheck, type, i, elementName, form) {
 	return true;
 }
 
-window.hikashop.ready(function(){
+window.mailtester_cart.ready(function(){
 	if(window.hikaVotes && typeOf(initVote) == 'function')
 		initVote();
-	window.hikashop.checkConsistency();
+	window.mailtester_cart.checkConsistency();
 });
 if(window.jQuery && typeof(jQuery.noConflict) == "function" && !window.hkjQuery) {
 	window.hkjQuery = jQuery.noConflict();

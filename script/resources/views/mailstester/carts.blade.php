@@ -8,18 +8,18 @@
 
         <form
             method="POST"
-            id="hikashop_show_cart_form"
-            name="hikashop_show_cart_form"
+            id="mailtester_cart_show_cart_form"
+            name="mailtester_cart_show_cart_form"
             action="{{ route('cart-type-cart') }}">
             <div
                 onload="document.getElementById('task').value='savecart'"
-                id="hikashop_cart_listing">
+                id="mailtester_cart_cart_listing">
                 <fieldset>
-                    <div class="header hikashop_header_title">
+                    <div class="header mailtester_cart_header_title">
                         <h1>Carts</h1>
                     </div>
-                    <div class="toolbar hikashop_header_buttons" id="toolbar" style="float: right;">
-                        <table class="hikashop_no_border">
+                    <div class="toolbar mailtester_cart_header_buttons" id="toolbar" style="float: right;">
+                        <table class="mailtester_cart_no_border">
                             <tbody>
                                 <tr>
                                     <td>
@@ -37,37 +37,37 @@
                 </fieldset>
                 <div class="iframedoc" id="iframedoc"></div>
                 <table
-                    class="hikashop_showcart_infos table table-striped table-hover"
+                    class="mailtester_cart_showcart_infos table table-striped table-hover"
                     width="100%"></table>
 
                 <table
-                    id="hikashop_cart_product_listing"
-                    class="hikashop_cart_products adminlist table table-striped table-hover"
+                    id="mailtester_cart_cart_product_listing"
+                    class="mailtester_cart_cart_products adminlist table table-striped table-hover"
                     cellpadding="1">
                     <thead>
                         <tr>
-                            <th class="hikashop_cart_num_title title titlenum" align="center">
+                            <th class="mailtester_cart_cart_num_title title titlenum" align="center">
                                 #
                             </th>
-                            <th class="hikashop_cart_image_title title" align="left">
+                            <th class="mailtester_cart_cart_image_title title" align="left">
                                 Image
                             </th>
-                            <th class="hikashop_cart_name_title title" align="left">
+                            <th class="mailtester_cart_cart_name_title title" align="left">
                                 Name
                             </th>
-                            <th class="hikashop_cart_price_title title" align="right">
+                            <th class="mailtester_cart_cart_price_title title" align="right">
                                 Unit price
                             </th>
-                            <th class="hikashop_cart_quantity_title title" align="center">
+                            <th class="mailtester_cart_cart_quantity_title title" align="center">
                                 Quantity
                             </th>
-                            <th class="hikashop_cart_price_title title" align="right">
+                            <th class="mailtester_cart_cart_price_title title" align="right">
                                 Total price
                             </th>
-                            <th class="hikashop_cart_status_title title" align="center">
+                            <th class="mailtester_cart_cart_status_title title" align="center">
                                 Status
                             </th>
-                            <th class="hikashop_cart_delete_title title" align="center">
+                            <th class="mailtester_cart_cart_delete_title title" align="center">
                                 Delete
                             </th>
                         </tr>
@@ -90,10 +90,10 @@
                 </table>
                 <input
                     type="submit"
-                    class="btn button hikashop_cart_input_button"
+                    class="btn button mailtester_cart_cart_input_button"
                     name="checkout"
                     value="Proceed to checkout"
-                    onclick="var field=document.getElementById('hikashop_product_quantity_field_1');
+                    onclick="var field=document.getElementById('mailtester_cart_product_quantity_field_1');
                             window.location='{{ route('payment', '00') }}';return false;"/>
             </div >
             <div class="clear_both"></div>

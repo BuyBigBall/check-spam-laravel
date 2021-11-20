@@ -7533,12 +7533,12 @@ table.pricelist tr:hover td{
 	background-color:#ddd;
 }
 
-#content_container .hikashop_field_required {
+#content_container .mailtester_cart_field_required {
 	float: none;
 	margin-left: 0px;
 }
 
-.hikashop_user_registration_page div.recaptcha, #hikashop_checkout_login div.recaptcha{
+.mailtester_cart_user_registration_page div.recaptcha, #mailtester_cart_checkout_login div.recaptcha{
 	margin-left:180px;
 	margin-top:20px;
 }
@@ -7709,12 +7709,12 @@ body#com_mtmanager_checkout_listing, body#com_mtmanager_checkout_address, body#c
 }
 .login input, 
 .latest-tests input[type=text], 
-.hikashop_user_registration_page input,
+.mailtester_cart_user_registration_page input,
 .profile-edit #member-profile input
 {
 	padding:14px 6px !important;
 }
-.hikashop_user_registration_page input.btn.button
+.mailtester_cart_user_registration_page input.btn.button
 {
 	padding:6px 16px !important;
 }
@@ -7728,11 +7728,11 @@ body#com_mtmanager_checkout_listing, body#com_mtmanager_checkout_address, body#c
 .oneresult input[type=submit]{
 	padding:1px 16px !important;
 }
-#hikashop_order_listing input[type=text]{
+#mailtester_cart_order_listing input[type=text]{
 	padding:12px 16px !important;
 }
-#hikashop_order_listing input[type=submit], #hikashop_order_listing button,
-#hikashop_cart_listing  input[type=submit], #hikashop_cart_listing button
+#mailtester_cart_order_listing input[type=submit], #mailtester_cart_order_listing button,
+#mailtester_cart_cart_listing  input[type=submit], #mailtester_cart_cart_listing button
 {
 	padding:1px 16px !important;
 }
@@ -7741,7 +7741,7 @@ body#com_mtmanager_checkout_listing, body#com_mtmanager_checkout_address, body#c
 	padding:2px 16px !important;
 }
 
-.star, .hikashop_field_required
+.star, .mailtester_cart_field_required
 {
 	color:red;
 }

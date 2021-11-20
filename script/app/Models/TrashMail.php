@@ -54,13 +54,34 @@ class TrashMail extends Model
         # look for unread message for me
         $results = TrashMail::allMessages($email);
 		
-        foreach($results["messages"] as $last_message)
+        foreach($results["messages"] as &$last_message)
         {
             if( !empty($last_message['error'])) continue;
 
             if(!$last_message['is_seen'])
             {
                 $id = $last_message['id'];
+				$last_message->markAsSeen(); 	//it has setted as read in inbox really.
+				return $id;
+            }
+            break;
+        }
+		return null;
+    }
+  
+    public static function GetLastReadMail($email)
+    {
+        # look for unread message for me
+        $results = TrashMail::allMessages($email);
+		
+        foreach($results["messages"] as &$last_message)
+        {
+            if( !empty($last_message['error'])) continue;
+
+            if($last_message['is_seen'])
+            {
+                $id = $last_message['id'];
+				$last_message->markAsSeen(); 	//it has setted as read in inbox really.
 				return $id;
             }
             break;
@@ -89,78 +110,81 @@ class TrashMail extends Model
             $search = new SearchExpression();
             $search->addCondition(new To($email));
             $messages = $mailbox->getMessages($search, \SORTDATE, true);
-            
+            //Cache::Flush(); // for test cache clear
             
             foreach ($messages as $message) {
 
-                $id = Hashids::encode($message->getNumber());
+                $Hashid = Hashids::encode($message->getNumber());
 
-                if (!$message->isSeen()) {
-                    Settings::updateSettings(
-                        'total_messages_received',
-                        Settings::selectSettings('total_messages_received') + 1
-                    );
-                    $message->markAsSeen();
-                }
+                //deleted 2021.11.20 by yasha
+                // if (!$message->isSeen()) {
+                //     Settings::updateSettings(
+                //         'total_messages_received',
+                //         Settings::selectSettings('total_messages_received') + 1
+                //     );
+                //     $message->markAsSeen(); 
+                // }
+                
+                $cashtime = Settings::selectSettings("email_lifetime") * Settings::selectSettings("email_lifetime_type") * 60;
+                $data = Cache::remember(
+                    $Hashid, 
+                    $cashtime, 
+                    function () use ($message, $Hashid) 
+                    {
+                        $sender = $message->getFrom();
+                        $date = $message->getDate();
+                        $date = new Carbon($date);
+                        $data['subject'] = $message->getSubject();
+                        $data['is_seen'] = $message->isSeen();
+                        $data['from'] = $sender->getName();
+                        $data['from_email'] = $sender->getAddress();
+                        $data['receivedAt'] = $date->format('Y-m-d H:i:s');
+                        $data['id'] = $Hashid;
+                        $data['attachments'] = [];
 
+                        $html = $message->getBodyHtml();
+                        if ($html) {
+                            $data['content'] = str_replace('<a', '<a target="blank"', $html);
+                        } else {
+                            $text = $message->getBodyText();
+                            $data['content'] = str_replace('<a', '<a target="blank"', str_replace(array("\r\n", "\n"), '<br/>', $text));
+                        }
 
-                $data = Cache::remember($id, Settings::selectSettings("email_lifetime") * Settings::selectSettings("email_lifetime_type") * 60, function () use ($message, $id) {
-
-                    $sender = $message->getFrom();
-                    $date = $message->getDate();
-                    $date = new Carbon($date);
-                    $data['subject'] = $message->getSubject();
-                    $data['is_seen'] = $message->isSeen();
-                    $data['from'] = $sender->getName();
-                    $data['from_email'] = $sender->getAddress();
-                    $data['receivedAt'] = $date->format('Y-m-d H:i:s');
-                    $data['id'] = $id;
-                    $data['attachments'] = [];
-
-                    $html = $message->getBodyHtml();
-                    if ($html) {
-                        $data['content'] = str_replace('<a', '<a target="blank"', $html);
-                    } else {
-                        $text = $message->getBodyText();
-                        $data['content'] = str_replace('<a', '<a target="blank"', str_replace(array("\r\n", "\n"), '<br/>', $text));
-                    }
-
-                    if ($message->hasAttachments()) {
-                        $attachments = $message->getAttachments();
-                        $directory = './temp/attachments/' . $message->getNumber() . '/';
-                        $download = './download/' . $id . '/';
-                        is_dir($directory) ?: mkdir($directory, 0777, true);
-                        foreach ($attachments as $attachment) {
-                            $filenameArray = explode('.', $attachment->getFilename());
-                            $extension = strtolower(end($filenameArray));
-                            $allowed = explode(',', Settings::selectSettings('allowed_files'));
-                            if (in_array($extension, $allowed)) {
-                                if (!file_exists($directory . $attachment->getFilename())) {
-                                    file_put_contents(
-                                        $directory . $attachment->getFilename(),
-                                        $attachment->getDecodedContent()
-                                    );
-                                }
-                                if ($attachment->getFilename() !== 'undefined') {
-                                    $url = Settings::selectSettings('site_url') . str_replace('./', '/', $download . $attachment->getFilename());
-                                    array_push($data['attachments'], [
-                                        'file' => $attachment->getFilename(),
-                                        'url' => $url
-                                    ]);
+                        if ($message->hasAttachments()) {
+                            $attachments = $message->getAttachments();
+                            $directory = './temp/attachments/' . $message->getNumber() . '/';
+                            $download = './download/' . $Hashid . '/';
+                            is_dir($directory) ?: mkdir($directory, 0777, true);
+                            foreach ($attachments as $attachment) {
+                                $filenameArray = explode('.', $attachment->getFilename());
+                                $extension = strtolower(end($filenameArray));
+                                $allowed = explode(',', Settings::selectSettings('allowed_files'));
+                                if (in_array($extension, $allowed)) {
+                                    if (!file_exists($directory . $attachment->getFilename())) {
+                                        file_put_contents(
+                                            $directory . $attachment->getFilename(),
+                                            $attachment->getDecodedContent()
+                                        );
+                                    }
+                                    if ($attachment->getFilename() !== 'undefined') {
+                                        $url = Settings::selectSettings('site_url') . str_replace('./', '/', $download . $attachment->getFilename());
+                                        array_push($data['attachments'], [
+                                            'file' => $attachment->getFilename(),
+                                            'url' => $url
+                                        ]);
+                                    }
                                 }
                             }
                         }
-                    }
-                    return $data;
+                        return $data;
                 });
-
 
                 array_push($response["messages"], $data);
             }
             return $response;
         } catch (Exception $e) {
             $response = [
-                'mailbox' => "Erorr :/ , Please Reload Page Agin ",
+                'mailbox' => "Erorr : Please Reload Page Again ",
                 'messages' => []
             ];
         }
@@ -211,10 +235,16 @@ class TrashMail extends Model
     public static function GetUserEmail($user_id)
     {
         $email = null;
-        $user_email = TrashMail::where('user_id', $user_id)->first();
-        if ($user_email) {
+        
+        $user_email = TrashMail::where('user_id', $user_id)->get();
+        
+        if ( !$user_email->isEmpty()) 
+        {
+            $user_email = $user_email->first();
             $email = $user_email->email;
         }
+        else
+            return null;
         return $email;
     }
 
@@ -231,11 +261,11 @@ class TrashMail extends Model
     }
 
 
-    public static function messages($email, $id)
+    public static function messages($email, $Hashid)
     {
         try {
 
-            $id_hash = Hashids::decode($id);
+            $id_hash = Hashids::decode($Hashid);
 
             $connection = TrashMail::connection($email);
             if($connection==null)
@@ -276,7 +306,7 @@ class TrashMail extends Model
             if ($message->hasAttachments()) {
                 $attachments = $message->getAttachments();
                 $directory = './temp/attachments/' . $data['id'] . '/';
-                $download = './download/' . $id . '/';
+                $download = './download/' . $Hashid . '/';
                 is_dir($directory) ?: mkdir($directory, 0777, true);
                 foreach ($attachments as $attachment) {
                     $filenameArray = explode('.', $attachment->getFilename());
@@ -301,7 +331,6 @@ class TrashMail extends Model
             }
             array_push($response, $data);
             $message->markAsSeen();
-
             return $response;
         } catch (Exception $e) {
             \abort(404);

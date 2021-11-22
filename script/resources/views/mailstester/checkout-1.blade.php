@@ -99,7 +99,7 @@
                                 class="mailtester_cart_checkout_billing_address_new">
                                 <a
                                     id="mailtester_cart_checkout_billing_address_new_link"
-                                    class="btn button mailtester_cart_cart_input_button"
+                                    class="btn button mailtester_checkout_input_button"
                                     onclick="return showModal('0');">
                                     New
                                 </a>
@@ -122,7 +122,8 @@
                     value="[04a41f3c14335bf17e4ae3d68cf4643e]"/> -->
                 <br style="clear:both"/> 
                 <a
-                    class="btn button mailtester_cart_cart_input_button"
+                
+                    class="btn button mailtester_checkout_input_button"
                     name="next"
                     href="{{ route('checkout', 'step2') }}"
                     id="mailtester_cart_checkout_next_button">Next</a>
@@ -202,7 +203,15 @@ function showModal(profile_id) {
 }
 </script>
 
+<style>
+a#mailtester_cart_checkout_next_button, a#mailtester_cart_checkout_billing_address_new_link
+{
+    color:#fff;
+    padding-top : 1px !important;
+    padding-bottom : 1px !important;
+}
 
+</style>
 @include('mailstester.address')
 
 @endsection

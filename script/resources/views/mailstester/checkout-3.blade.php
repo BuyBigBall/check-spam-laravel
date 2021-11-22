@@ -49,12 +49,13 @@
                 action="{!! URL::route('buy_mail_test') !!}"
                 method="post"
                 name="mailtester_cart_checkout_form"
+                id="mailtester_checkout_form"
                 enctype="multipart/form-data" >
                 @csrf
-                <input type="hidden" id="mail_price"    name="price"    value="{{$pay_price}}" />
-                <input type="hidden" id="mail_qty"      name="qty"      value="{{$pay_qty}}" />
-                <input type="hidden" id="mode-pay"      name="buyMode"  value="{{$checkout_payment_mode}}" />
-
+                <input type='hidden' name='buyMode' value='{{$checkout_payment_mode}}'>
+                <input type='hidden' name='pay_name' value='{{$pay_name}}'>
+                <input type='hidden' name='pay_coupon' value='{{$checkout_payment_coupon}}'>
+                
                 <div id="mailtester_cart_checkout_cart" class="mailtester_cart_checkout_cart">
                     <br/>
                     <table class="table table-striped table-hover" width="100%">
@@ -104,13 +105,14 @@
                                         <a
                                             class="mailtester_cart_no_print"
                                             href="/mailtester_cart/product/1-500-tests.html?Itemid=0">
-                                            500 tests
+                                            {{ $pay_name }}
                                         </a>
                                     </p>
                                 </td>
                                 <td data-title="Unit price" class="mailtester_cart_cart_product_price_value">
                                     <span class="mailtester_cart_product_price_full">
-                                        <span class="mailtester_cart_product_price">50,00 €</span>
+                                        <span class="mailtester_cart_product_price">{{ $pay_price }} €</span>
+                                        <input type="hidden" id="mail_price"    name="pay_price"    value="{{$pay_price}}" />
                                     </span>
                                     <span class="visible-phone">
                                         each</span>
@@ -118,33 +120,33 @@
                                 <td data-title="Quantity" class="mailtester_cart_cart_product_quantity_value">
                                     <input
                                         id="mailtester_cart_checkout_quantity_27201"
-                                        type="text"
-                                        name="item[27201]"
+                                        type="number"
+                                        name="pay_qty"
                                         class="mailtester_cart_product_quantity_field"
-                                        value="1"
-                                        onchange="var qty_field = document.getElementById('mailtester_cart_checkout_quantity_27201'); if (qty_field){}; return true;"/>
+                                        value="{{ $pay_qty }}"
+                                        />
                                     <div class="mailtester_cart_cart_product_quantity_refresh">
                                         <a
                                             class="mailtester_cart_no_print"
                                             href="{{ route('checkout', 'step3') }}"
-                                            onclick="var qty_field = document.getElementById('mailtester_cart_checkout_quantity_27201'); if (qty_field &amp;&amp; qty_field.value != '1'){ qty_field.form.submit(); } return false;"
+                                            onclick="var qty_field = document.getElementById('mailtester_cart_checkout_quantity_27201'); if (qty_field && qty_field.value != '1'){ qty_field.value = '1';requery(); } return false;"
                                             title="Refresh">
-                                            <img src="/assets/images/refresh.png" border="0" alt="Refresh"/>
+                                            <img src="/assets/images/refresh.png" alt="Refresh"/>
                                         </a>
                                     </div>
                                     <div class="mailtester_cart_cart_product_quantity_delete">
                                         <a
                                             class="mailtester_cart_no_print"
                                             href="/checkout/product/updatecart/quantity-0/return_url-aHR0cHM6Ly93d3cubWFpbC10ZXN0ZXIuY29tL21hbmFnZXIvY2hlY2tvdXQvY2hlY2tvdXQvdGFzay1zdGVwL3N0ZXAtMi5odG1s/cid-1.html"
-                                            onclick="var qty_field = document.getElementById('mailtester_cart_checkout_quantity_27201'); if(qty_field){qty_field.value=0;  qty_field.form.submit();} return false;"
+                                            onclick="var qty_field = document.getElementById('mailtester_cart_checkout_quantity_27201'); if(qty_field){qty_field.value=0;  requery();} return false;"
                                             title="Delete">
-                                            <img src="/assets/images/delete2.png" border="0" alt="Delete"/>
+                                            <img src="/assets/images/delete2.png" alt="Delete"/>
                                         </a>
                                     </div>
                                 </td>
                                 <td data-title="Total price" class="mailtester_cart_cart_product_total_value">
                                     <span class="mailtester_cart_product_price_full">
-                                        <span class="mailtester_cart_product_price">50,00 €</span>
+                                        <span class="mailtester_cart_product_price">{{ number_format ($pay_price * $pay_qty, 2, ',' , ' ') }} €</span>
                                     </span>
                                 </td>
                             </tr>
@@ -163,7 +165,7 @@
                                 </td>
                                 <td class="mailtester_cart_cart_subtotal_value" data-title="Subtotal">
                                     <span class="mailtester_cart_checkout_cart_subtotal">
-                                        50,00 €
+                                        {{ number_format ($pay_price * $pay_qty, 2, ',' , ' ') }} €
                                     </span>
                                 </td>
                             </tr>
@@ -176,7 +178,7 @@
                                 </td>
                                 <td class="mailtester_cart_cart_tax_value" data-title="VAT (ES)">
                                     <span class="mailtester_cart_checkout_cart_taxes">
-                                        10,50 €
+                                        {{ number_format ($pay_price * $pay_qty *  env('VAT_FEE')  / 100.0, 2, ',' , ' ') }} €
                                     </span>
                                 </td>
                             </tr>
@@ -189,7 +191,7 @@
                                 </td>
                                 <td class="mailtester_cart_cart_total_value" data-title="Total">
                                     <span class="mailtester_cart_checkout_cart_final_total">
-                                        60,50 €
+                                    {{ number_format ($pay_price * $pay_qty * (100+ env('VAT_FEE') )/100.0, 2, ',' , ' ') }} €
                                     </span>
                                 </td>
                             </tr>
@@ -199,7 +201,15 @@
                 <br/>
                 <span id="mailtester_cart_checkout_status">
                     You chose the payment method:
-                    <span class="label label-info">Paypal</span>
+                    <span class="label label-info">
+                        @if( $checkout_payment_mode=='paybox_paypal' )
+                            Paypal
+                        @elseif( $checkout_payment_mode=='paybox_stripe' )
+                            Stripe
+                        @else 
+                            Error!
+                        @endif
+                    </span>
                 </span>
                 <div class="clear_both"></div>
                 <!-- <input type="hidden" name="Itemid" value="168"/>
@@ -219,9 +229,6 @@
             </form>
         </div>
         <div class="clear_both"></div>
-        <!-- mailtester_cart Component powered by http://www.mailtester_cart.com -->
-        <!-- version Business : 2.6.2 [1604182302] -->
-
     </div>
 </div>
 <style>
@@ -229,5 +236,18 @@
     {
         color:#fff !important;
     }
+
+    input#mailtester_cart_checkout_quantity_27201.mailtester_cart_product_quantity_field
+    {
+        width:40px;
+        margin-left:60px !important;
+    }
 </style>
+<script>
+    function requery()
+    {
+        $('#mailtester_checkout_form').attr('action', "{{route('checkout', 'step3')}}");
+        $('#mailtester_checkout_form').submit();
+    }
+    </script>
 @endsection

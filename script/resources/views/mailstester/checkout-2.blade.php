@@ -62,14 +62,16 @@
                                         <tr class="row0">
                                             <td>
                                                 
-                                                <label class="btn btn-radio active btn-primary checked" style='width:100px;' for="radio_paybox_stripe" onclick='toggle_check(event, this)'>
+                                                <label class="btn btn-radio btn-primary checked @if( $checkout_payment_mode=='paybox_stripe' ) active @endif" style='width:100px;' for="radio_paybox_stripe" onclick='toggle_check(event, this)'>
                                                     <input
                                                         class="mailtester_cart_checkout_payment_radio"
                                                         id="radio_paybox_stripe"
                                                         type="radio"
                                                         name="mailtester_payment"
                                                         value="paybox_stripe"
+                                                        @if( $checkout_payment_mode=='paybox_stripe' )
                                                         checked="checked" 
+                                                        @endif
                                                         onclick='return false;' />
                                                     Stripe</label>
                                                 <span class="mailtester_cart_checkout_payment_image">
@@ -92,13 +94,16 @@
                                         </tr>
                                         <tr class="row0">
                                             <td onclick="">
-                                                <label class="btn btn-radio checked" for="radio_paybox_paypal" style='width:100px;'  onclick='toggle_check(event, this)'>
+                                                <label class="btn btn-radio  checked @if( $checkout_payment_mode=='paybox_paypal' ) active @endif" for="radio_paybox_paypal" style='width:100px;'  onclick='toggle_check(event, this)'>
                                                     <input
                                                         class="mailtester_cart_checkout_payment_radio"
                                                         id="radio_paybox_paypal"
                                                         type="radio"
                                                         name="mailtester_payment"
                                                         value="paybox_paypal"
+                                                        @if( $checkout_payment_mode=='paybox_paypal' )
+                                                        checked="checked" 
+                                                        @endif                                                        
                                                         />
                                                     Paypal</label>
                                                 <span class="mailtester_cart_checkout_payment_image">
@@ -128,10 +133,10 @@
                 <span class="mailtester_cart_checkout_coupon" id="mailtester_cart_checkout_coupon">
                     Do you have a coupon? Enter it here
                     <input id="mailtester_cart_checkout_coupon_input" type="text" 
-                            name="coupon" value=""/>
+                            name="coupon" value="{{$checkout_payment_coupon}}"/>
                     <input
                         type="button"
-                        class="btn button mailtester_cart_cart_input_button"
+                        class="btn button mailtester_checkout_input_button"
                         name="refresh"
                         value="Add"
                         onclick="return mailtester_cartCheckCoupon('mailtester_cart_checkout_coupon_input');"/>
@@ -152,7 +157,7 @@
                 <br style="clear:both"/>
                 <input
                     type="submit"
-                    class="btn button mailtester_cart_cart_input_button"
+                    class="btn button mailtester_checkout_input_button"
                     name="next"
                     value="Next"
                     id="mailtester_cart_checkout_next_button" />
@@ -167,7 +172,8 @@
     {
         $('label.checked').removeClass('active');
         $(obj).addClass('active');
-        //alert($('#' + $(obj).attr('for')).prop('checked'));
+        $('#' + $(obj).attr('for')).prop('checked',  true);
+        //alert();
         //alert($('#radio_paybox_stripe').prop('checked'));
     }
     </script>
@@ -176,10 +182,10 @@
         {
             padding:12px !important;
         }
-        .mailtester_cart_cart_input_button
+        .mailtester_checkout_input_button
         {
             padding:0 12px 0 12px !important;
-            color:#ccc !important;
+            color:#fff !important;
         }
         label.checked
         {

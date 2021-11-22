@@ -56,10 +56,11 @@ class SiteController extends Controller
         }
 
         $payment_method = $request->buyMode;
-        $price = $request->price;
-        $qty = $request->qty;
+        $price = $request->pay_price;
+        $qty = $request->pay_qty;
+        $coupon = $request->pay_coupon;
 
-        if($payment_method == 'paypal'){ 
+        if($payment_method == 'paybox_paypal'){ 
             // paypal ---------------------------------------
             $provider = new PayPalClient([]);
             $provider->getAccessToken();
@@ -89,7 +90,7 @@ class SiteController extends Controller
             }
             session()->flash('error', translate('Some error occur, sorry for inconvenient.'));
             return redirect(route('prices'));
-        }else{ 
+        }else if($payment_method == 'paybox_stripe'){ 
             // stripe -----------------------------------------
             Stripe::setApiKey(env('STRIPE_SECRET'));
 
@@ -123,6 +124,9 @@ class SiteController extends Controller
                 return redirect(route('prices'));
             }
         }
+        else{
+            abort(419);
+        }
     }
 
     public function payment_status(Request $request){
@@ -135,7 +139,7 @@ class SiteController extends Controller
         }
         $payment_method = session()->get('Order_method_'.$userdata['id']);
 
-        if($payment_method == 'paypal'){ 
+        if($payment_method == 'paybox_paypal'){ 
             // paypal status ---------------------------------
             $orderID = session()->get('Order_id_'.$userdata['id']);
             $qty = session()->get('Order_qty_'.$userdata['id']);
@@ -148,7 +152,7 @@ class SiteController extends Controller
                 session()->flash('error', translate('Payment failed.'));
                 return redirect(route('prices'));
             } 
-        }else{
+        }else if($payment_method == 'paybox_stripe'){ 
             // stripe status ---------------------------------
             $orderID = session()->get('Order_id_'.$userdata['id']);
             $qty = session()->get('Order_qty_'.$userdata['id']);
@@ -162,6 +166,10 @@ class SiteController extends Controller
             session()->flash('error', translate('Payment failed.'));
             return redirect(route('prices'));
         }         
+        else
+        {
+            abort(419);
+        }
     }
 
 
@@ -609,8 +617,14 @@ class SiteController extends Controller
 
         $checkout_payment_mode = 0;
         $checkout_payment_coupon = '';
+        $pay_price = 50;
+        $pay_qty = 1;
+        $pay_name = '500 tests';
+
+      //  print($step . $request->input('pay_qty')); die;
         if($step=='step3')
         {
+            //print($request->input('mailtester_payment')); die;
             if(     !empty($request->input('mailtester_payment'))  )
             {
                 $coupon_code = $request->input('coupon');
@@ -620,15 +634,48 @@ class SiteController extends Controller
                 $checkout_payment_mode = Session::get('checkout_payment_mode');
                 $checkout_payment_coupon = Session::get('checkout_payment_coupon');
             }
-            else
+            if(     $request->input('pay_qty')!==null )
             {
-                if(Session::has('checkout_payment_mode'))
-                    $checkout_payment_mode = Session::get('checkout_payment_mode');
-                if(Session::has('checkout_payment_mode'))
-                    $checkout_payment_coupon = Session::get('checkout_payment_coupon');
+                $pay_qty = $request->input('pay_qty');
+                $pay_price = $request->input('pay_price');
+                Session::put('pay_qty',   $pay_qty);
+                Session::put('pay_price', $pay_price );
             }
         }
+
+        if($step=='step1')
+        {
+            if(     !empty($request->input('price'))  )
+            {
+                $pay_price = $request->input('price');
+                $pay_qty = $request->input('qty');
+                $pay_name = $request->input('name');
+                Session::put('pay_price',   $pay_price);
+                Session::put('pay_qty',   $pay_qty);
+                Session::put('pay_name',   $pay_name);
+            }
+        }
+
+
+        #---------------------------------------------step1
+        if(Session::has('pay_price'))
+            $pay_price = Session::get('pay_price');
+        if(Session::has('pay_qty'))
+            $pay_qty = Session::get('pay_qty');
+        if(Session::has('pay_name'))
+            $pay_name = Session::get('pay_name');
+        #---------------------------------------------step2
+        if(Session::has('checkout_payment_mode'))
+            $checkout_payment_mode = Session::get('checkout_payment_mode');
+        if(Session::has('checkout_payment_mode'))
+            $checkout_payment_coupon = Session::get('checkout_payment_coupon');
+        #---------------------------------------------
+
+       // print($pay_qty); die;
         return view('mailstester.checkout-' . substr($step, -1))
+                    ->with('pay_price' ,$pay_price)
+                    ->with('pay_qty' ,$pay_qty)
+                    ->with('pay_name' ,$pay_name)
                     ->with('checkout_payment_mode' ,$checkout_payment_mode)
                     ->with('checkout_payment_coupon' ,$checkout_payment_coupon)
                     ->with('userdata' ,$userdata);

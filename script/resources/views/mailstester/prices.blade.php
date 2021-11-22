@@ -64,7 +64,7 @@
                                     <td>50 €</td>
                                     <td>0.100 €</td>
                                     <td>
-                                        <a class="btn btn-primary" onclick="showBuyModal('50','500')">Add 500 tests</a>
+                                        <a class="btn btn-primary" onclick="showBuyModal('50','500', '500 tests')">Add 500 tests</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -72,7 +72,7 @@
                                     <td>80 €</td>
                                     <td>0.080 €</td>
                                     <td>
-                                        <a class="btn btn-primary" onclick="showBuyModal('80','1000')">Add 1 000 tests</a>
+                                        <a class="btn btn-primary" onclick="showBuyModal('80','1000', '1000 tests')">Add 1 000 tests</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -80,7 +80,7 @@
                                     <td>250 €</td>
                                     <td>0.050 €</td>
                                     <td>
-                                        <a class="btn btn-primary" onclick="showBuyModal('250','5000')">Add 5 000 tests</a>
+                                        <a class="btn btn-primary" onclick="showBuyModal('250','5000', '5000 tests')">Add 5 000 tests</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -88,7 +88,7 @@
                                     <td>700 €</td>
                                     <td>0.035 €</td>
                                     <td>
-                                        <a class="btn btn-primary" onclick="showBuyModal('700','20000')">Add 20 000 tests</a>
+                                        <a class="btn btn-primary" onclick="showBuyModal('700','20000', '20000 tests')">Add 20 000 tests</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -96,7 +96,7 @@
                                     <td>2 500 €</td>
                                     <td>0.025 €</td>
                                     <td>
-                                        <a class="btn btn-primary" onclick="showBuyModal('2500','100000')">Add 100 000 tests</a>
+                                        <a class="btn btn-primary" onclick="showBuyModal('2500','100000', '100000 tests')">Add 100 000 tests</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -104,7 +104,7 @@
                                     <td>20 000 €</td>
                                     <td>0.020 €</td>
                                     <td>
-                                        <a class="btn btn-primary" onclick="showBuyModal('20000','1000000')">Add 1 000 000 tests</a>
+                                        <a class="btn btn-primary" onclick="showBuyModal('20000','1000000', '1000000 testes')">Add 1 000 000 tests</a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -168,11 +168,11 @@
     </form>
 </div>
 <script>
-function showBuyModal(price,qty){
-	window.location.href = "{{route('checkout', 'step1')}}"+('?price='+price); return;
-    $('#mail_price').val(price);
-    $('#mail_qty').val(qty);
-    $('#buyModal').modal('show');
+function showBuyModal(price,qty, goodsname){
+	window.location.href = "{{route('checkout', 'step1')}}"+('?price='+price)+('&qty='+1)+('&name='+goodsname); return;
+    // $('#mail_price').val(price);
+    // $('#mail_qty').val(qty);
+    // $('#buyModal').modal('show');
 }
 </script>
 @endsection

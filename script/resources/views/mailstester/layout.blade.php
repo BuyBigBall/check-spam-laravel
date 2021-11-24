@@ -333,7 +333,7 @@
         <!-- main js -->
         <script src="{{ asset('assets/js/main.js?v1.0') }}"></script>
 
-        <script type="text/javascript" src="{{ asset('assets/js/mailstester.js?v1.0') }}"></script>
+        @yield('mailtesterjs')
         @yield('addressjs')
         @yield('register-script')        
     </body>

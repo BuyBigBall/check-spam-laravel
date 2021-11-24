@@ -301,14 +301,21 @@ class EmailTestController extends Controller
         return implode($pass); //turn the array into a string
     }
 
-    public function temporaryEmailCheck()
+    public static function temporaryEmailCheck($email=null)
     {
-        $email = null;
-        if (Cookie::has('email')) 
+        if($email == null)
         {
-            $email =  Cookie::get('email');
+            if (Cookie::has('email')) 
+            {
+                $email =  Cookie::get('email');
+            }
+        }
+        
+        if( !empty($email))
+        {
             $id = TrashMail::GetLastUnreadMail($email);
         }
+
 
             //print($email); die;
 

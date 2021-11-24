@@ -26,7 +26,8 @@
         "srmklive/paypal": "^3.0",
         "stripe/stripe-php": "^7.72",
         "vinkla/hashids": "^9.1",
-        "voku/anti-xss": "^4.1"
+        "voku/anti-xss": "^4.1",
+        "cboden/ratchet": "0.4.3"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

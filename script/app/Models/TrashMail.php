@@ -365,4 +365,5 @@ class TrashMail extends Model
             \abort(404);
         }
     }
+
 }

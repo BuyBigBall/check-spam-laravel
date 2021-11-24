@@ -31,7 +31,9 @@
     </div>
 </div>
 
-<script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+<?php 
+/*
+<script src="https://js.pusher.com/7.0/pusher.min.js"></script> 
 <script>
 
     // Pusher App name = "mails-tester"
@@ -46,6 +48,11 @@
     channel.bind('my-event', function(data) {
       alert(JSON.stringify(data));
     });
+</script>    
+// */
+?>
+
+<script>
 
     @if(       Session::has('could_not_use_by_paid_user') && 
         !empty(Session::get('could_not_use_by_paid_user')) )
@@ -54,11 +61,20 @@
 
 </script>
 
-
 @if( !empty($css))
     <style>
         {{ $css }}
     </style>
 @endif
 
+@endsection
+
+@section('mailtesterjs')
+<script type="text/javascript" >
+    var WEBSOCKET_PROTOCAL = '{{env('WEBSOCKET_PROTOCAL')}}';
+    var WEBSOCKET_SERVER = '{{env('WEBSOCKET_SERVER')}}';
+    var WEBSOCKET_PORT = '{{env('WEBSOCKET_PORT')}}';
+    var WAIT_TIMEOUT_SECONDS = '{{ env('WAIT_TIMEOUT_SECONDS') }}';
+</script>
+<script type="text/javascript" src="{{ asset('assets/js/mailstester.js?v1.1') }}"></script>
 @endsection

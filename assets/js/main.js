@@ -277,3 +277,43 @@ jQuery('.copy').on('click',function(){
   /* Copy the text inside the text field */
   document.execCommand("copy");
 });
+
+
+
+// ############### ---> from mailtester.js
+jQuery(".menu-responsive .btn").on('click', function() {
+  jQuery('.menu-responsive .btn',jQuery(this).closest('.result')).removeClass('active');
+  jQuery(this).addClass('active');
+  jQuery('iframe',jQuery(this).closest('.result')).css("width",jQuery(this).data('size'));
+});
+
+// Toggles a result details when clicking on div.header
+jQuery( '.test-result .header' ).on('click',function() {
+  jQuery(this).closest('.test-result').toggleClass('open');
+});
+
+
+jQuery('.geniframe').each(function(){
+
+  let content = jQuery(this).data('raw');
+  if(!content) content = jQuery(jQuery(this).data('source')).data('raw');
+
+  if(jQuery(this).data('stripimages')){
+    const regex = /<img([^>]*)\ssrc=("(?!data:)[^"]+"|'(?!data:)[^']+')/gi;
+    content = content.replace( regex, '<img$1 src=""' );
+  }
+
+
+  const blob = new Blob([content], {'type':'text/html'});
+
+  const iframe = document.createElement('iframe');
+  iframe.src = URL.createObjectURL(blob);
+  iframe.style.width = '99%';
+  iframe.style.height = '600px';
+  iframe.style.border = '1px solid #ccc';
+
+  //Replace the current element by the iframe
+  jQuery(this).before(iframe);
+});
+// <--- ###############  from mailtester.js
+

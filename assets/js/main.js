@@ -184,10 +184,10 @@ $(document).ready(function () {
             iLoop++;
             
             // for test --->
-            if(flag_unreadmail==false)
-            {
-              flag_unreadmail = value.id;            $('#hFlag_MessageId').val(value.id);
-            }
+            // if(flag_unreadmail==false)
+            // {
+            //   flag_unreadmail = value.id;            $('#hFlag_MessageId').val(value.id);
+            // }
             //<--- 
 
             var is_seen = "";

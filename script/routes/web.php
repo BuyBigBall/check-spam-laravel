@@ -115,14 +115,22 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
         }
     }
 	
+    // routes/web.php
+    Route::get('/fire', function () {
+        event(new \App\Events\PostCreatedEvent());
+        return 'ok';
+    });
 	Route::get('/curl_test', 'Mailstester\RegisterController@curl_test')->name("curl_test");
 	
+    
+    Route::get('/not-received', 'Mailstester\SiteController@not_received')->name("not-received");
+    Route::get('/dbug-example', 'Mailstester\SiteController@dbug_example')->name("dbug-example");
     Route::get('/', 'TrashMailController@index')->name("home");
     Route::get('/activate', 'Mailstester\RegisterController@active')->name("activate");
     Route::get('/index', 'TrashMailController@index')->name("index");
     Route::get('/messages', 'TrashMailController@messages')->name("messages");
     Route::get('/email', 'TrashMailController@temporaryEmailAddress')->name("email");
-    Route::get('/check_email', 'Mailstester\SpamTestController@temporaryEmailCheck')->name("check_email");
+    Route::get('/check_email', 'Mailstester\EmailTestController@temporaryEmailCheck')->name("check_email");
 
     Route::get('/change', 'TrashMailController@change')->name("change");
     Route::get('/view/{id}', 'TrashMailController@show')->name("view");
@@ -135,8 +143,8 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
     Route::get('/spf-detail/{type}',    'Mailstester\SiteController@spf')->name("spf-detail");
     Route::get('/spf-dkim-check',       'Mailstester\SiteController@dkim_check')->name("spf-dkim-check");
 
-    Route::get('/spamtest',        'Mailstester\SpamTestController@index')->name("go_spamtest");
-    Route::post('/spamtest',        'Mailstester\SpamTestController@index')->name("spamtest");
+    Route::get('/spamtest',        'Mailstester\EmailTestController@index')->name("go_spamtest");
+    Route::post('/spamtest',        'Mailstester\EmailTestController@index')->name("spamtest");
     Route::get('/signup',         'Mailstester\RegisterController@showRegistrationForm')->name("signup");
     Route::post('/save-register',   'Mailstester\RegisterController@save_register')->name("save-register");
 
@@ -155,9 +163,11 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
 
     Route::get('/latest-tests',     'Mailstester\SiteController@latest_tests')->name("latest-tests");
     Route::get('/design',           'Mailstester\SiteController@design')->name("design");
+    Route::post('/design',           'Mailstester\SiteController@design')->name("design");
     Route::get('/micro-payment',    'Mailstester\SiteController@micro_payment')->name("micro-payment");
     Route::get('/terms-of-service', 'Mailstester\SiteController@terms_of_service')->name("terms-of-service");
     Route::get('/testresult',           'Mailstester\SpamTestController@TestResult')->name("testresult");
+    Route::post('/testresult',           'Mailstester\SpamTestController@TestResult')->name("testresult");
     Route::get('/mail_body_html',       'Mailstester\SpamTestController@mail_body_html')->name("mail_body_html");
     Route::get('/mail_body_html_noimg', 'Mailstester\SpamTestController@mail_body_html_noimg')->name("mail_body_html_noimg");
 

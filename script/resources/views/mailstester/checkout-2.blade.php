@@ -62,14 +62,14 @@
                                         <tr class="row0">
                                             <td>
                                                 
-                                                <label class="btn btn-radio btn-primary checked @if( $checkout_payment_mode=='paybox_stripe' ) active @endif" style='width:100px;' for="radio_paybox_stripe" onclick='toggle_check(event, this)'>
+                                                <label class="btn btn-radio btn-primary checked @if( $checkout_payment_mode==='paybox_stripe' ) active @endif" style='width:100px;' for="radio_paybox_stripe" onclick='toggle_check(event, this)'>
                                                     <input
                                                         class="mailtester_cart_checkout_payment_radio"
                                                         id="radio_paybox_stripe"
                                                         type="radio"
                                                         name="mailtester_payment"
                                                         value="paybox_stripe"
-                                                        @if( $checkout_payment_mode=='paybox_stripe' )
+                                                        @if( $checkout_payment_mode==='paybox_stripe' )
                                                         checked="checked" 
                                                         @endif
                                                         onclick='return false;' />
@@ -94,14 +94,14 @@
                                         </tr>
                                         <tr class="row0">
                                             <td onclick="">
-                                                <label class="btn btn-radio  checked @if( $checkout_payment_mode=='paybox_paypal' ) active @endif" for="radio_paybox_paypal" style='width:100px;'  onclick='toggle_check(event, this)'>
+                                                <label class="btn btn-radio  checked @if( $checkout_payment_mode==='paybox_paypal' ) active @endif" for="radio_paybox_paypal" style='width:100px;'  onclick='toggle_check(event, this)'>
                                                     <input
                                                         class="mailtester_cart_checkout_payment_radio"
                                                         id="radio_paybox_paypal"
                                                         type="radio"
                                                         name="mailtester_payment"
                                                         value="paybox_paypal"
-                                                        @if( $checkout_payment_mode=='paybox_paypal' )
+                                                        @if( $checkout_payment_mode==='paybox_paypal' )
                                                         checked="checked" 
                                                         @endif                                                        
                                                         />

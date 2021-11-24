@@ -23,7 +23,7 @@
         <div class="container text-white" id="mail-info">
             <a
                 class="text-white btn btn-transparent btn-sm mr-2"
-                href="{{ route('testresult' , $email) }}"
+                href="{{ route('testresult') . '?message_id='.$mail_id }}"
                 title="Refresh">
                 <i class="icon-refresh"></i>
             </a>
@@ -599,4 +599,10 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
 </div>
 
 </body>
+
+@if( !empty($css))
+    <style>
+        {{ $css }}
+    </style>
+@endif
 @endsection		

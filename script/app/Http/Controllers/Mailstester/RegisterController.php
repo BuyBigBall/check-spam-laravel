@@ -106,32 +106,37 @@ class RegisterController extends Controller
     public function save_register(Request $request)
     {
         try {
-            //$this->validator($request->all())->validate();
+            $this->validator($request->all())->validate();
+
+            //for each conditions validator
             //$this->validator_fields( $request->all() , ['name' => ['required', 'string', 'max:255'] ] );
 			
 			$user_email = $request->input('email');
 			$user_token = Str::random(25);
-			// /* commenting for test
+			
             $user = $this->create($request->all());
 			$user_email = $user->email;
 			$user_token = $user->remember_token;
 			
-            $createdAccount = $request->input('name') . '.' .  $request->input('suffix');
-            $mailTester = new SpamTestController();
-			$ret = $mailTester->createMailAddress($createdAccount); //whether success or not
+            // ###################### --->
+            // we do not need to create a user email when registering.
+            // $createdAccount = $request->input('name') . '.' .  $request->input('suffix');
+            // # $mailTester = new SpamTestController();
+			// # $ret = $mailTester->createMailAddress($createdAccount); //whether success or not
 
-            $account_email = $createdAccount . '@' . env('MAIL_HOST');
-            Cookie::queue('email', $account_email, Settings::selectSettings("email_lifetime") * Settings::selectSettings("email_lifetime_type"));
-            Settings::updateSettings(
-                'total_emails_created',
-                Settings::selectSettings('total_emails_created') + 1
-            );
+            // $account_email = $createdAccount . '@' . env('MAIL_HOST');
+            // Cookie::queue('email', $account_email, Settings::selectSettings("email_lifetime") * Settings::selectSettings("email_lifetime_type"));
+            // Settings::updateSettings(
+            //     'total_emails_created',
+            //     Settings::selectSettings('total_emails_created') + 1
+            // );
 
-            $trashmail = new TrashMail();
-            $trashmail->email = $account_email;
-            $trashmail->user_id = $user->id;
-            $trashmail->save();
-			// */
+            // $trashmail = new TrashMail();
+            // $trashmail->email = $account_email;
+            // $trashmail->user_id = $user->id;
+            // $trashmail->save();
+            //<---#################################
+
             ## Send Suitable Email For New User ##
             $user_register_mode = get_option('user_register_mode');
             if($user_register_mode == 'deactive'){
@@ -183,7 +188,7 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
-            'trash_mailes.email' => ['string', 'email', 'max:255', 'unique:trash_mailes'],
+            //'trash_mailes.email' => ['string', 'email', 'max:255', 'unique:trash_mailes'],
 			//'g-recaptcha-response' => ['required','captcha'],
         ]);
     }

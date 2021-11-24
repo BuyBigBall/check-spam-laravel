@@ -9,6 +9,8 @@ use Ddeboer\Imap\Message;
 use Carbon\Carbon;
 use Ddeboer\Imap\SearchExpression;
 use Ddeboer\Imap\Search\Email\To;
+use Ddeboer\Imap\Search\Email\Cc;
+use Ddeboer\Imap\Search\Email\Bcc;
 use Ddeboer\Imap\Message\Attachment;
 use Exception;
 use App\Models\Settings;
@@ -52,9 +54,9 @@ class TrashMail extends Model
     public static function GetLastUnreadMail($email)
     {
         # look for unread message for me
-        $results = TrashMail::allMessages($email);
+        $results = TrashMail::allMessages($email, true);
 		
-        foreach($results["messages"] as &$last_message)
+        foreach($results["messages"] as $key=>&$last_message)
         {
             if( !empty($last_message['error'])) continue;
 
@@ -62,6 +64,7 @@ class TrashMail extends Model
             {
                 $id = $last_message['id'];
 				$last_message->markAsSeen(); 	//it has setted as read in inbox really.
+                $results["messages"][$key]->markAsSeen();
 				return $id;
             }
             break;
@@ -74,7 +77,7 @@ class TrashMail extends Model
         # look for unread message for me
         $results = TrashMail::allMessages($email);
 		
-        foreach($results["messages"] as &$last_message)
+        foreach($results["messages"] as $key=>&$last_message)
         {
             if( !empty($last_message['error'])) continue;
 
@@ -82,6 +85,7 @@ class TrashMail extends Model
             {
                 $id = $last_message['id'];
 				$last_message->markAsSeen(); 	//it has setted as read in inbox really.
+                $results["messages"][$key]->markAsSeen();
 				return $id;
             }
             break;
@@ -90,15 +94,17 @@ class TrashMail extends Model
     }
   
 
-    public static function allMessages($email)
+    public static function allMessages($email, $asSeenFlag = null)
     {
+        $receive_email = $email;
+        $receive_email = env('MAIL_FROM_ADDRESS');
         $response = [
             'mailbox' => $email,
             'messages' => []
         ];
         
         try {
-            $connection = TrashMail::connection($email);
+            $connection = TrashMail::connection($receive_email);
             if($connection==null)
             {
                 $response['messages'][] = ['error'=>'Server settings Exception'];
@@ -109,6 +115,14 @@ class TrashMail extends Model
             
             $search = new SearchExpression();
             $search->addCondition(new To($email));
+            // $search->addCondition(' OR ');
+            // $search->addCondition(new Cc($email));
+            // $search->addCondition(' OR ');
+            // $search->addCondition(new Bcc($email));
+            // $search->addCondition(new After($date));
+            // $search->addCondition(new Undeleted());
+            // $search->addCondition(new Unseen('UNSEEN'));
+            // $search->addCondition(new To('nope@nope.com'));
             $messages = $mailbox->getMessages($search, \SORTDATE, true);
             //Cache::Flush(); // for test cache clear
             
@@ -116,14 +130,15 @@ class TrashMail extends Model
 
                 $Hashid = Hashids::encode($message->getNumber());
 
-                //deleted 2021.11.20 by yasha
-                // if (!$message->isSeen()) {
-                //     Settings::updateSettings(
-                //         'total_messages_received',
-                //         Settings::selectSettings('total_messages_received') + 1
-                //     );
-                //     $message->markAsSeen(); 
-                // }
+                if (!$message->isSeen()) {
+                    // //deleted 2021.11.20 by yasha
+                    //     Settings::updateSettings(
+                    //         'total_messages_received',
+                    //         Settings::selectSettings('total_messages_received') + 1
+                    //     );
+                    if( $asSeenFlag!=null)
+                        $message->markAsSeen(); 
+                }
                 
                 $cashtime = Settings::selectSettings("email_lifetime") * Settings::selectSettings("email_lifetime_type") * 60;
                 $data = Cache::remember(
@@ -194,11 +209,18 @@ class TrashMail extends Model
 
     public static function DeleteEmail($email)
     {
+        $receive_email = $email;
+        $receive_email = env('MAIL_FROM_ADDRESS');
         try {
-            $connection = TrashMail::connection($email);
+            $connection = TrashMail::connection($receive_email);
             $mailbox = $connection->getMailbox('INBOX');
             $search = new SearchExpression();
             $search->addCondition(new To($email));
+            // $search->addCondition(' OR ');
+            // $search->addCondition(new Cc($email));
+            // $search->addCondition(' OR ');
+            // $search->addCondition(new Bcc($email));
+
             $messages = $mailbox->getMessages($search, \SORTDATE, true);
 
             foreach ($messages as $message) {
@@ -251,7 +273,9 @@ class TrashMail extends Model
     public static function DeleteMessage($email, $id)
     {
         try {
-            $connection = TrashMail::connection($email);
+            $receive_email = $email;
+            $receive_email = env('MAIL_FROM_ADDRESS');            
+            $connection = TrashMail::connection($receive_email);
             $mailbox = $connection->getMailbox('INBOX');
             $mailbox->getMessage($id)->delete();
             $connection->expunge();
@@ -264,10 +288,12 @@ class TrashMail extends Model
     public static function messages($email, $Hashid)
     {
         try {
+            $receive_email = $email;
+            $receive_email = env('MAIL_FROM_ADDRESS');
 
             $id_hash = Hashids::decode($Hashid);
 
-            $connection = TrashMail::connection($email);
+            $connection = TrashMail::connection($receive_email);
             if($connection==null)
             {
                 $response = [

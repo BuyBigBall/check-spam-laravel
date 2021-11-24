@@ -10,6 +10,7 @@ use App\Models\Settings;
 use App\Models\Profile;
 use App\Models\Configure;
 use App\Models\TestResult;
+use App\Models\WhiteLabel;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cache;
 use Vinkla\Hashids\Facades\Hashids;
@@ -263,7 +264,7 @@ class SiteController extends Controller
         }
         else
         {
-            return redirect(route('go_spamtest'));
+            return redirect(route('spamtest'));
         }
         return view('mailstester.latest-tests')
                 ->with('email', $email)
@@ -287,19 +288,46 @@ class SiteController extends Controller
     
     
     // show Iframe css page 
-    public function design()
+    public function design(Request $request)
     {
         $guard = null;
         $userdata = [];
         if (Auth::guard($guard)->check()) {
             $role = Auth::user()->role; 
             $userdata['user_login'] = Auth::user();
+            $user_id = Auth::user()->id;
         }
         else
         {
             return redirect(route('login'));
         }
+
+        $whitelabel = WhiteLabel::where('user_id', $user_id)->get();
+
+        
+        if( isset($_REQUEST['userCss']) || $request->input('userCss')!==null )
+        {
+            if ($request->input('userCss')==null) $css = '';
+            else $css=$request->input('userCss');
+
+            $data = ['user_id'=>$user_id, 'email'=>Auth::user()->email, 'css'=>$css ];
+            if($whitelabel->first()!==null)
+            {
+                $id = $whitelabel->first()->id;
+                WhiteLabel::find($id)->update($data);
+            }
+            else
+            {
+                WhiteLabel::create($data);
+            }
+        }
+
+        $whitelabel = WhiteLabel::where('user_id', $user_id)->get();
+        if($whitelabel->first()==null) $css = null;
+        else $css = $whitelabel->first()->css;
+
         return view('mailstester.design')
+                ->with('css', $css)
                 ->with('userdata' ,$userdata);
     }
     
@@ -339,6 +367,7 @@ class SiteController extends Controller
             $role = Auth::user()->role; 
             $userdata['user_login'] = Auth::user();
         }
+        //print($type.'------------'); die;
         if($type!=null)
             return view('frontend.spf-'.$type)->with('userdata' ,$userdata);
         else
@@ -615,7 +644,7 @@ class SiteController extends Controller
             redirect(route('login'));
         }
 
-        $checkout_payment_mode = 0;
+        $checkout_payment_mode = 'paybox_stripe';
         $checkout_payment_coupon = '';
         $pay_price = 50;
         $pay_qty = 1;
@@ -680,11 +709,17 @@ class SiteController extends Controller
                     ->with('checkout_payment_coupon' ,$checkout_payment_coupon)
                     ->with('userdata' ,$userdata);
     }
-    //public function address(){return null;}
+    public function not_received($user=null){
+        return view('mailstester.not-received' );
+        
+    }
+    public function dbug_example($user=null){
+        return view('mailstester.dbug-example' );
+        
+    }
     
     public function affiliate(){return null;}
     public function check(){return null;}
     public function design_wait($site){return $site;}
     public function design_score($site){return $site;}
-    public function design_not_received($site){return $site;}
 }

@@ -37,7 +37,7 @@ class TrashMailController extends Controller
         OpenGraph::addProperty('type', 'article');
         
         //$this->parsingMailHeader('');
-
+        //Cookie::queue('email', 'vvnavqq798@mail-analyzer.com', 3);	
         return view('frontend.index');
     }
 
@@ -69,8 +69,8 @@ class TrashMailController extends Controller
         if (TrashMail::where('email',  $randomEmail)->exists()) {
             return generateRandomEmail();
         } else {
-			$mailTester = new SpamTestController();
-			$ret = $mailTester->createMailAddress($createdAccount);
+			//$mailTester = new SpamTestController();
+			//$ret = $mailTester->createMailAddress($createdAccount);
             return $randomEmail;
         }
     }

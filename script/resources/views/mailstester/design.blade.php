@@ -6,7 +6,8 @@
 
         <div id="system-message-container"></div>
 
-        <form method="post" name="adminForm" id="adminForm" autocomplete="off">
+        <form method="post" name="designForm" id="designForm" autocomplete="off">
+            @csrf
             <fieldset class="adminform respuserinfogeneral">
                 <h1>iFrame CSS Edition</h1>
                 <hr/>
@@ -43,35 +44,28 @@
                         id="newcss"
                         style="width:98%"
                         rows="20"
-                        placeholder="Add your own CSS here that will be loaded on top of our upcoming stylesheet"></textarea>
-                    <input class="btn btn-primary" type="submit" style="float:right;" value="Save"/>
+                        placeholder="Add your own CSS here that will be loaded on top of our upcoming stylesheet">{{$css}}</textarea>
+                    <input class="btn btn-primary" type="submit" 
+                        style="float:right;margin-right:1rem; margin-top:0.5rem;" value="Save"/>
                 </div>
                 <p>
                     You can test your custom CSS file :
                 </p>
                 <ul>
                     <li>
-                        <a
-                            target="_blank"
-                            href="{{ route('design/wait', $userdata['user_login']['name']) }}">Waiting</a>
+                        <a target="_blank" href='#' onclick="return WaitingPage(event)">Waiting</a>
+                    </li>
+                    <li>
+                        <a target="_blank" href='#' onclick="return ScorePage(event)">Score</a>
                     </li>
                     <li>
                         <a
-                            target="_blank"
-                            href="{{ route('design/score', $userdata['user_login']['name']) }}">Score</a>
-                    </li>
-                    <li>
-                        <a
-                            target="_blank"
-                            href="{{ route('design/not-received', $userdata['user_login']['name']) }}">Not received</a>
+                            target="_blank" 
+                            href="{{ route('not-received') }}">Not received</a>
                     </li>
                 </ul>
 
             </fieldset>
-
-            <input type="hidden" name="option" value="com_mtmanager"/>
-            <input type="hidden" name="task" value="apply"/>
-            <input type="hidden" name="ctrl" value="style"/>
         </form>
         <br/>
         <p>Our users usually want to remove our footer, the "previous results" area and
@@ -79,7 +73,30 @@
         </p>
         <pre>#footer,#oldresults,#share-me{display:none}</pre>
         <p></p>
-
+        <div style='display:none;'> 
+            <form id='displayform' method='post' target='_blank'>
+                @csrf
+                <input type='hidden' name='flag' value='whitelabel'>
+                <textarea name='css' id='UseCss'></textarea>
+            </form>
+        </div>
     </div>
 </div>
+<script>
+    function WaitingPage(e)
+    {
+        e.preventDefault();
+        $('#UseCss').html( $('newcss').html() );
+        $('#displayform').attr('action', "{{ 'spamtest' }}" );
+        $('#displayform').submit();
+        return false;
+    }
+    function ScorePage(e){
+        e.preventDefault();
+        $('#UseCss').html( $('newcss').html() );
+        $('#displayform').attr('action', "{{ 'testresult' }}" );
+        $('#displayform').submit();
+        return false;
+    }
+</script>
 @endsection

@@ -30,4 +30,35 @@
         </div>
     </div>
 </div>
+
+<script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+<script>
+
+    // Pusher App name = "mails-tester"
+    // Enable pusher logging - don't include this in production
+    Pusher.logToConsole = true;
+
+    var pusher = new Pusher('a9e263a2a74e91890e12', {
+      cluster: 'eu'
+    });
+
+    var channel = pusher.subscribe('my-channel');
+    channel.bind('my-event', function(data) {
+      alert(JSON.stringify(data));
+    });
+
+    @if(       Session::has('could_not_use_by_paid_user') && 
+        !empty(Session::get('could_not_use_by_paid_user')) )
+        alert("{{ Session::get('could_not_use_by_paid_user') }}");
+    @endif
+
+</script>
+
+
+@if( !empty($css))
+    <style>
+        {{ $css }}
+    </style>
+@endif
+
 @endsection

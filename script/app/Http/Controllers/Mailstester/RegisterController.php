@@ -142,6 +142,15 @@ class RegisterController extends Controller
             if($user_register_mode == 'deactive'){
                 // $this->guard()->login($user);
                 $success_msg = 'Thanks for registration!';
+				#   -------------> regist active 
+				sendMail([
+                    'recipent'=>['yasha3651@mail.ru'],	//$user_email
+                    'template'=>'welcome',
+                    'subject' =>'Account Activate',
+                    'content' => ['token'=>$user_token],
+                ]);				
+				# <-----------------
+				
                 session()->flash('success', translate($success_msg));
                 return redirect()->back()->with('msg',trans('main.thanks_reg'));
             } else {

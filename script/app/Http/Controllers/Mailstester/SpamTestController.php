@@ -240,6 +240,7 @@ class SpamTestController extends Controller
     function save_test_count_for_free_user($email, $mail_id=0)
     {
         $user_ip = $_SERVER['REMOTE_ADDR'];
+        if($mail_id==0 || $user_ip=='127.0.0.1' || $user_ip=='::1') return;
         $visitor = Visitor::where(['user_ip'=>$user_ip, 'mail_id'=>$mail_id])->first();
         if($visitor!=null)
         {
@@ -319,7 +320,7 @@ class SpamTestController extends Controller
         
         $response = TrashMail::messages($email, $Hashid);
 		
-        if( empty($response['messages'])  && count($respons)>0 )
+        if( empty($response['messages'])  && count($response)>0 )
         {
 			//print_r($response); die;
             $response = $response[0];

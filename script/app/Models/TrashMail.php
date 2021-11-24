@@ -124,7 +124,10 @@ class TrashMail extends Model
             // $search->addCondition(new Unseen('UNSEEN'));
             // $search->addCondition(new To('nope@nope.com'));
             $messages = $mailbox->getMessages($search, \SORTDATE, true);
-            //Cache::Flush(); // for test cache clear
+            
+            // added by yasha for refresh asseenmark
+            if(!empty($asSeenFlag)) Cache::Flush(); 
+            //<---
             
             foreach ($messages as $message) {
 

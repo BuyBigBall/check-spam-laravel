@@ -66,7 +66,8 @@ class EmailTestController extends Controller
             $css = $request->input('css');
         }
 
-        
+        $this->Spamhause_dataquery_api(); die;
+
         if(!empty($id) && 
             (       !Session::has('could_not_use_by_paid_user') 
             || empty(Session::get('could_not_use_by_paid_user')) ))
@@ -77,6 +78,35 @@ class EmailTestController extends Controller
             return view('mailstester.spamtest') 
                     ->with('css', $css)
                     ->with('email', $email);
+    }
+
+    private function Spamhause_dataquery_api()
+    {
+        $ch = curl_init('https://api.spamhaus.org/api/v1/login');
+		curl_setopt($ch, CURLOPT_POST, 1);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, '{"username":"yasha3651@mail.ru", "password":"59lk4YWShXzH", "realm":"intel"}');
+		$response = curl_exec($ch);
+		curl_close($ch);
+		
+        $response_json = json_decode($response);
+		if($response_json->code==200)
+		{
+			$token = $response_json->token;
+			$authorization = "Authorization: Bearer " . $token;
+			$ch = curl_init('https://api.spamhaus.org/api/intel/v1/byobject/cidr/XBL/listed/history/176.122.27.79/24?limit=100');
+			curl_setopt($ch, CURLOPT_POST, 0);
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $authorization ));
+			//curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
+			//curl_setopt($ch, CURLOPT_POSTFIELDS, '{"username":"yasha3651@mail.ru", "password":"59lk4YWShXzH", "realm":"intel"}');
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			$response = curl_exec($ch);
+			curl_close($ch);
+			print($response); die;
+		}
     }
 
     /**

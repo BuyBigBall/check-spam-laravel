@@ -33,7 +33,56 @@ use Vinkla\Hashids\Facades\Hashids;
 class SpamTestController extends Controller
 {
 
-    
+    private function Spamhause_dataquery_api($check_ip)
+    {
+        $check_mark = 0.1;
+        $ch = curl_init(env('SPAMHAUS_GETTOKEN_URL'));
+		curl_setopt($ch, CURLOPT_POST, 1);  //POST
+		curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, '{"username":"'.env('SPAMHAUS_USERNAME').'", "password":"'.env('SPAMHAUS_PASSWORD').'", "realm":"intel"}');
+		$response = curl_exec($ch);
+		curl_close($ch);
+		
+        $response_json = json_decode($response);
+		if($response_json->code==200)
+		{
+			$token = $response_json->token;
+			$authorization = "Authorization: Bearer " . $token;
+            $api_url = sprintf(env('SPAMHAUS_QUERYAPI_URL'), 'XBL', $check_ip);
+            //print($api_url); die;
+			$ch = curl_init( $api_url );
+			curl_setopt($ch, CURLOPT_POST, 0);  //GET
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $authorization ));
+			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			$response = curl_exec($ch);
+			curl_close($ch);
+			
+            
+            $response_json = json_decode($response);
+            if($response_json->code==200)
+		    {
+                foreach($response_json->results as $result_row)
+                {
+                    if($result_row->ipaddress==$check_ip)
+                    {
+                        if($result_row->botname=='unknown')
+                        {
+                            if($result_row->detection!=null)
+                            {
+                                $check_mark = 0;
+                                break;
+                            }
+                        }
+                    }
+                }
+                
+            }
+		}
+        return $check_mark;
+    }
 	function getbody($html) {
 		
         $dom = new DOMDocument;
@@ -294,6 +343,7 @@ class SpamTestController extends Controller
     }
     public function TestResult(Request $request)
     {
+        //print($this->Spamhause_dataquery_api($request->ip)); die;
         $mail_id = 0;
         $email = null; if (Cookie::has('email')) $email =  Cookie::get('email');
         $Hashid = $request->input('message_id');
@@ -305,6 +355,7 @@ class SpamTestController extends Controller
         if( !empty($Hashid))
         {
             $id_hash = Hashids::decode($Hashid);
+            if(empty($id_hash) || !is_array($id_hash) || count($id_hash)==0) abort(419);
             $mail_id     = $id_hash[0];
         }
 
@@ -409,6 +460,13 @@ class SpamTestController extends Controller
             $css = $request->input('css');
         }
 
+        $score = $this->Spamhause_dataquery_api($auth_serverInfo['serverip']);
+        $BL_results['spamhaus_xbl'] = [
+                    'url'   =>'https://www.spamhaus.org/xbl/', 
+                    'classname' => ($score==0) ? 'status-success' : (($score<1) ? 'status-warning' : 'status-failure'),
+                    'label' => ($score==0) ? 'Not listed'     : (($score<1) ? 'warning -0.1'      : 'critical -1.0'),
+                    'score' =>$score ];
+        $score_report['score'] += $score;
         return view('mailstester.testresult')
             ->with('mail_id',       $Hashid)
             ->with('css',           $css)
@@ -422,6 +480,7 @@ class SpamTestController extends Controller
 			->with('dmarc_auth',    $auth_DMARCInfo )
 			->with('rdns_auth',     $auth_rDnsInfo )
 			->with('spf_check',     $auth_SPDcheck )
+            ->with('BL_results',    $BL_results )
 			->with('message',       $response );
 		
 		

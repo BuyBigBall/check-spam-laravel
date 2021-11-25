@@ -1,0 +1,3 @@
+ALTER TABLE `transactions` ADD COLUMN `amount` FLOAT DEFAULT 0 NULL AFTER `qty`, ADD COLUMN `transaction_id` VARCHAR(40) CHARSET ASCII NULL AFTER `amount`; 
+ALTER TABLE `transactions` CHANGE `transaction_id` `deal_id` VARCHAR(40) CHARSET ASCII COLLATE ascii_general_ci NULL, ADD COLUMN `pay_id` VARCHAR(40) CHARSET ASCII NULL AFTER `deal_id`; 
+ALTER TABLE `transactions` CHANGE `deal_id` `deal_id` VARCHAR(100) CHARSET ASCII COLLATE ascii_general_ci NULL; 

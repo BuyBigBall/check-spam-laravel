@@ -153,18 +153,20 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
     // Route::post('/profile-save',    'Mailstester\LoginController@profile_save')->name("profile_save");
 
     # payment interface
-    Route::get('/prices',           'Mailstester\SiteController@index')->name("prices");
+    Route::get('/prices',           'Mailstester\PaymentController@index')->name("prices");
     #payment url request
-    Route::post('/buy_mail_test', 'Mailstester\SiteController@buy_mail_test')->name('buy_mail_test');
+    Route::post('/buy_mail_test',   'Mailstester\PaymentController@buy_mail_test')->name('buy_mail_test');
     #payment return url
-    Route::get('/payment_status', 'Mailstester\SiteController@payment_status')->name('payment_status');
+    Route::get('/payment_status',   'Mailstester\PaymentController@payment_status')->name('payment_status');
+    #payment notify url
+    Route::get('/paypal_notify',    'Mailstester\PaymentController@paypal_notify')->name('paypal_notify');
+    Route::get('/micro-payment',    'Mailstester\PaymentController@micro_payment')->name("micro-payment");
 
     Route::get('/json-api',         'Mailstester\SiteController@json_api')->name("json-api");
 
     Route::get('/latest-tests',     'Mailstester\SiteController@latest_tests')->name("latest-tests");
     Route::get('/design',           'Mailstester\SiteController@design')->name("design");
     Route::post('/design',           'Mailstester\SiteController@design')->name("design");
-    Route::get('/micro-payment',    'Mailstester\SiteController@micro_payment')->name("micro-payment");
     Route::get('/terms-of-service', 'Mailstester\SiteController@terms_of_service')->name("terms-of-service");
     Route::get('/testresult',           'Mailstester\SpamTestController@TestResult')->name("testresult");
     Route::post('/testresult',           'Mailstester\SpamTestController@TestResult')->name("testresult");
@@ -180,10 +182,12 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
         Route::get('/account',          'Mailstester\SiteController@account')->name("account");
         Route::get('/get-started',      'Mailstester\SiteController@started')->name("get-started");
         Route::post('/save-configure',        'Mailstester\SiteController@save_configure')->name("save-configure");
-        Route::get('/payment/{price}', 'Mailstester\SiteController@checkout')->name("payment");
+        
+        // redirect checkoutpage or loginpage
+        Route::get('/payment/{price}', 'Mailstester\PaymentController@checkout')->name("payment");
 
-        Route::get('/checkout/{step}', 'Mailstester\SiteController@checkout_step')->name("checkout");
-        Route::post('/checkout/{step}', 'Mailstester\SiteController@checkout_step')->name("checkout");
+        Route::get('/checkout/{step}', 'Mailstester\PaymentController@checkout_step')->name("checkout");
+        Route::post('/checkout/{step}', 'Mailstester\PaymentController@checkout_step')->name("checkout");
 
         Route::get('/profile/{type}',   'Mailstester\SiteController@profile')->name("profile");
         //Route::get('/address',          'Mailstester\SiteController@address')->name("address");

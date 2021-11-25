@@ -120,21 +120,21 @@ class RegisterController extends Controller
 			
             // ###################### --->
             // we do not need to create a user email when registering.
-            // $createdAccount = $request->input('name') . '.' .  $request->input('suffix');
+            $createdAccount = $request->input('name') . '.' .  $request->input('suffix');
             // # $mailTester = new SpamTestController();
 			// # $ret = $mailTester->createMailAddress($createdAccount); //whether success or not
 
-            // $account_email = $createdAccount . '@' . env('MAIL_HOST');
-            // Cookie::queue('email', $account_email, Settings::selectSettings("email_lifetime") * Settings::selectSettings("email_lifetime_type"));
+            $account_email = $createdAccount . '@' . env('MAIL_HOST');
+            Cookie::queue('email', $account_email, Settings::selectSettings("email_lifetime") * Settings::selectSettings("email_lifetime_type"));
             // Settings::updateSettings(
             //     'total_emails_created',
             //     Settings::selectSettings('total_emails_created') + 1
             // );
 
-            // $trashmail = new TrashMail();
-            // $trashmail->email = $account_email;
-            // $trashmail->user_id = $user->id;
-            // $trashmail->save();
+            $trashmail = new TrashMail();
+            $trashmail->email = $account_email;
+            $trashmail->user_id = $user->id;
+            $trashmail->save();
             //<---#################################
 
             ## Send Suitable Email For New User ##

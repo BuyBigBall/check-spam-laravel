@@ -104,7 +104,7 @@ $(function() {
 	if(progress.length){
 		var elapsedTime = 0,
 			refreshRate = 1,
-			reloadTime = WAIT_TIMEOUT_SECONDS,
+			reloadTime = WAIT_TIMEOUT_SECONDS-0,
 			countdown = jQuery('.countdown');
 
 		// Show the remaining time before reloading the page

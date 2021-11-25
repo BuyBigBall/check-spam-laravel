@@ -66,8 +66,6 @@ class EmailTestController extends Controller
             $css = $request->input('css');
         }
 
-        $this->Spamhause_dataquery_api(); die;
-
         if(!empty($id) && 
             (       !Session::has('could_not_use_by_paid_user') 
             || empty(Session::get('could_not_use_by_paid_user')) ))
@@ -80,96 +78,6 @@ class EmailTestController extends Controller
                     ->with('email', $email);
     }
 
-    private function Spamhause_dataquery_api()
-    {
-        $ch = curl_init('https://api.spamhaus.org/api/v1/login');
-		curl_setopt($ch, CURLOPT_POST, 1);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, '{"username":"yasha3651@mail.ru", "password":"59lk4YWShXzH", "realm":"intel"}');
-		$response = curl_exec($ch);
-		curl_close($ch);
-		
-        $response_json = json_decode($response);
-		if($response_json->code==200)
-		{
-			$token = $response_json->token;
-			$authorization = "Authorization: Bearer " . $token;
-			$ch = curl_init('https://api.spamhaus.org/api/intel/v1/byobject/cidr/XBL/listed/history/176.122.27.79/24?limit=100');
-			curl_setopt($ch, CURLOPT_POST, 0);
-			curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $authorization ));
-			//curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
-			//curl_setopt($ch, CURLOPT_POSTFIELDS, '{"username":"yasha3651@mail.ru", "password":"59lk4YWShXzH", "realm":"intel"}');
-			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-			$response = curl_exec($ch);
-			curl_close($ch);
-			print($response); die;
-		}
-    }
-
-    /**
-     * Returns DOM object representing request for information about all available domains
-     * @return DOMDocument
-     */
-    
-    function domainsInfoRequest()
-    {
-        /*
-        <?xml version="1.0" encoding="UTF-8" ?>
-        <packet version="1.4.1.2">
-        <domain>
-        <get>
-              <filter/>
-              <dataset>
-                     <limits/>
-                     <prefs/>
-                     <user/>
-                     <hosting/>
-                     <stat/>
-                     <gen_info/>
-              </dataset>
-        </get>
-        </domain>
-        </packet>        
-        */
-        $xmldoc = new DomDocument('1.0', 'UTF-8');
-        $xmldoc->formatOutput = true;
-    
-        // <packet>
-        $packet = $xmldoc->createElement('packet');
-        $packet->setAttribute('version', '1.4.1.2');
-        $xmldoc->appendChild($packet);
-    
-        // <packet/domain>
-        $domain = $xmldoc->createElement('domain');
-        $packet->appendChild($domain);
-    
-        // <packet/domain/get>
-        $get = $xmldoc->createElement('get');
-        $domain->appendChild($get);
-    
-        // <packet/domain/get/filter>
-        $filter = $xmldoc->createElement('filter');
-        $get->appendChild($filter);
-    
-        // <packet/domain/get/dataset>
-        $dataset = $xmldoc->createElement('dataset');
-        $get->appendChild($dataset);
-    
-        // dataset elements
-        $dataset->appendChild($xmldoc->createElement('limits'));
-        $dataset->appendChild($xmldoc->createElement('prefs'));
-        $dataset->appendChild($xmldoc->createElement('user'));
-        $dataset->appendChild($xmldoc->createElement('hosting'));
-        $dataset->appendChild($xmldoc->createElement('stat'));
-        $dataset->appendChild($xmldoc->createElement('gen_info'));
-    
-        return $xmldoc;
-    }
-
-    
     /**
      * Prepares CURL to perform Plesk API request
      * @return resource
@@ -345,23 +253,6 @@ class EmailTestController extends Controller
         {
             $id = TrashMail::GetLastUnreadMail($email);
         }
-
-
-            //print($email); die;
-
-        # get unread message details
-        // if(!empty($id))
-        // {
-        //     $response = TrashMail::messages($email, $id);
-		// 	//print_r($response); die;
-        //     if( empty($response['messages']['error']) && count($response)>0 )
-        //     {
-        //         $message_idnum = $response[0]['id'];
-        //     }
-        // }
-        // else
-        //     $message_idnum = 0;
-        #<-----
 
         if(!empty($id))
             return json_encode(['result'=>'ok', 'message_id'=>$id, 'email'=>$email] );

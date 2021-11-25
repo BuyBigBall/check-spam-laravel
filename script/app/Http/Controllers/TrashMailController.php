@@ -43,7 +43,7 @@ class TrashMailController extends Controller
 
 
     // generat email and check if unique  
-    private function generateRandomEmail($length = 7, $num = 3)
+    public static function generateRandomEmail($length = 7, $num = 3)
     {
         $characters = 'abcdefghijklmnopqrstuvwxyz';
         $numbers = '013456789';

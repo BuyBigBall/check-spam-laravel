@@ -8,9 +8,6 @@ use Illuminate\Support\Str;
 use File as fle;
 
 
-
-
-
 //We use this to convert date to new format
 
 function ToDate($date)

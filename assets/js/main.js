@@ -262,11 +262,6 @@ function show_error_msg(msg)
     }, 3000);
 }
 
-// Toggles a result details when clicking on div.header
-jQuery( '.test-result .header' ).on('click',function() {
-  jQuery(this).closest('.test-result').toggleClass('open');
-});
-
 jQuery('.copy').on('click',function(){
   const copyText = document.getElementById(jQuery(this).data('target'));
 
@@ -300,7 +295,15 @@ jQuery('.geniframe').each(function(){
 
   if(jQuery(this).data('stripimages')){
     const regex = /<img([^>]*)\ssrc=("(?!data:)[^"]+"|'(?!data:)[^']+')/gi;
-    content = content.replace( regex, '<img$1 src=""' );
+	  try
+	  {
+		  content = content.replace( regex, '<img$1 src=""' );
+	  }
+	  catch(ee)
+	  {
+		  console.log(ee);
+	  }
+    
   }
 
 

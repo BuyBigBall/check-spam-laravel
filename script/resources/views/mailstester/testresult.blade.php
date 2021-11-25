@@ -38,7 +38,7 @@
         <div class="container py-3">
 
             <!-- Content -->
-            <div class="test-result message-content my-3 opened">
+            <div class="test-result message-content my-3">
                 <div class="header clearfix">
                     <div class="status success icon-check"></div>
                     <h2 class="title">
@@ -59,7 +59,7 @@
                     </div>
 
                     <!-- HTML (with images) -->
-                    <div class="test-result html-version opened">
+                    <div class="test-result html-version">
                         <div class="header clearfix">
                             <h3 class="title">
                                 <i class="icon-down"></i>HTML version</h3>
@@ -85,7 +85,7 @@
                     </div>
 
                     <!-- HTML (without images) -->
-                    <div class="test-result html-version-imageless opened">
+                    <div class="test-result html-version-imageless">
                         <div class="header clearfix">
                             <h3 class="title">
                                 <i class="icon-down"></i>
@@ -117,7 +117,7 @@
                     </div>
 
                     <!-- Text -->
-                    <div class="test-result text-version opened">
+                    <div class="test-result text-version">
                         <div class="header clearfix">
                             <h3 class="title">
                                 <i class="icon-down"></i>
@@ -129,7 +129,7 @@
                     </div>
 
                     <!-- Raw -->
-                    <div class="test-result raw-version opened">
+                    <div class="test-result raw-version">
                         <div class="header clearfix">
                             <h3 class="title">
                                 <i class="icon-down"></i>
@@ -150,7 +150,7 @@ X-Spam-Report:
 			</div>
 			
 			<!-- SpamAssassin -->
-			<div class="test-result spamassassin opened">
+			<div class="test-result spamassassin">
 				<div class="header clearfix">
 					<div class="status warning">
 						-{{10-$score}}					</div>
@@ -195,7 +195,7 @@ X-Spam-Report:
 			</div>
 
 			<!-- Signature -->
-			<div class="test-result signature opened">
+			<div class="test-result signature">
 				<div class="header clearfix">
 					<div class="status success icon-check">
 											</div>
@@ -253,7 +253,7 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                 </div>
 
                 <!-- DMARC -->
-                <div class="test-result dmarc opened">
+                <div class="test-result dmarc">
                     <div class="header clearfix">
                         <div class="status success icon-check"></div>
                         <h3 class="title">
@@ -278,7 +278,7 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                 </div>
 
                 <!-- Reverse DNS -->
-                <div class="test-result reverse-dns opened">
+                <div class="test-result reverse-dns">
                     <div class="header clearfix">
                         <div class="status success icon-check"></div>
                         <h3 class="title">
@@ -302,7 +302,7 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                     </div>
                 </div>
                 <!-- A Record Bounce DNS-->
-                <div class="test-result mxrecord-dns opened">
+                <div class="test-result mxrecord-dns">
                     <div class="header clearfix">
                         <div class="status success icon-check"></div>
                         <h3 class="title">
@@ -321,7 +321,7 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                     </div>
                 </div>
                 <!-- A Record DNS-->
-                <div class="test-result arecord-dns opened">
+                <div class="test-result arecord-dns">
                     <div class="header clearfix">
                         <div class="status success icon-check"></div>
                         <h3 class="title">
@@ -343,7 +343,7 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
         </div>
 
         <!-- Structure and Content -->
-        <div class="test-result structure-and-content opened">
+        <div class="test-result structure-and-content">
             <div class="header clearfix">
                 <div class="h-100 status warning icon-check"></div>
                 <h2 class="title">
@@ -360,7 +360,7 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                 </div>
 
                 <!-- Alt attribute -->
-                <div class="test-result alt-attribute opened">
+                <div class="test-result alt-attribute">
                     <div class="header clearfix">
                         <div class="status success icon-check"></div>
                         <h3 class="title">
@@ -376,7 +376,7 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                 </div>
 
                 <!-- Forbidden tags -->
-                <div class="test-result forbidden-tags opened">
+                <div class="test-result forbidden-tags">
                     <div class="header clearfix">
                         <div class="status success icon-check"></div>
                         <h3 class="title">
@@ -391,7 +391,7 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                 </div>
 
                 <!-- Short LINK -->
-                <div class="test-result short-links opened">
+                <div class="test-result short-links">
                     <div class="header clearfix">
                         <div class="status success icon-check"></div>
                         <h3 class="title">
@@ -408,7 +408,7 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                 </div>
 
                 <!-- List-unsubscribe -->
-                <div class="test-result list-unsubscribe opened">
+                <div class="test-result list-unsubscribe">
                     <div class="header clearfix">
                         <div class="status warning icon-check"></div>
                         <h3 class="title">
@@ -429,7 +429,7 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
         </div>
 
         <!-- Blacklists -->
-        <div class="test-result blacklists opened">
+        <div class="test-result blacklists">
             <div class="header clearfix">
                 <div class="h-100 status success icon-check"></div>
                 <h2 class="title">
@@ -449,11 +449,13 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                             in
                             <a target="_blank" href="https://www.spamhaus.org/css/">Spamhaus CSS Advisory</a>
                         </div>
+                        @foreach($BL_results as $key=>$row)
                         <div class="col-sm-6 col-md-4 bl-result">
-                            <span class="status-success">Not listed</span>
+                            <span class="{{$row['classname']}}">{{$row['label']}}</span>
                             in
-                            <a target="_blank" href="https://www.spamhaus.org/xbl/">Spamhaus XBL Advisory</a>
+                            <a target="_blank" href="{{ $row['url'] }}">Spamhaus XBL Advisory</a>
                         </div>
+                        @endforeach
                         <div class="col-sm-6 col-md-4 bl-result">
                             <span class="status-success">Not listed</span>
                             in
@@ -565,7 +567,7 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
         </div>
 
         <!-- Broken links -->
-        <div class="test-result broken-links opened">
+        <div class="test-result broken-links">
             <div class="header clearfix">
                 <div class="status success icon-check"></div>
                 <h2 class="title">

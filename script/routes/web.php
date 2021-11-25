@@ -191,8 +191,8 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
 
         Route::get('/profile/{type}',   'Mailstester\SiteController@profile')->name("profile");
         //Route::get('/address',          'Mailstester\SiteController@address')->name("address");
-        Route::get('/order',            'Mailstester\SiteController@order')->name("order");
-        Route::get('/orderdetail/{orderid}', 'Mailstester\SiteController@order_detail')->name("orderdetail");
+        Route::get('/order',            'Mailstester\PaymentController@order')->name("order");
+        Route::get('/orderdetail/{orderid}', 'Mailstester\PaymentController@order_detail')->name("orderdetail");
         
         Route::get('/cart-type-cart',   'Mailstester\SiteController@cart_type_cart')->name("cart-type-cart");
         Route::get('/affiliate',        'Mailstester\SiteController@affiliate')->name("affiliate");

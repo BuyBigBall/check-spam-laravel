@@ -46,7 +46,7 @@
                 </ul>
             </div>
             <form
-            action="{!! route('buy_mail_test') !!}"
+                action="{!! URL::route('buy_mail_test') !!}"
                 method="post"
                 name="mailtester_cart_checkout_form"
                 id="mailtester_checkout_form"

@@ -32,6 +32,89 @@ use Vinkla\Hashids\Facades\Hashids;
  
 class SpamTestController extends Controller
 {
+    private $bl_score_unit = 0.5;
+	private $burl_score_unit = 0.1;
+    private $dnsbl_lookup = [
+		'Spamhaus PBL'      =>"pbl.spamhaus.org",
+		'Spamhaus SBL'      =>"sbl.spamhaus.org",
+        'Barracuda'         => "b.barracudacentral.org",
+        'SORBS (Relay)'     => "dnsbl.sorbs.net",
+        'SORBS (last 48 hrs)'   => "dul.dnsbl.sorbs.net",
+        'SORBS (last 28 days)'  => "aspews.ext.sorbs.net",
+        'SPAMCOP'           =>"bl.spamcop.net",
+        'IMP-SPAM'          =>"spamrbl.imp.ch",
+        'SEM-BLACK'         => "backscatter.spameatingmonkey.net",
+        'SEM-BACKSCATTERER' =>"badnets.spameatingmonkey.net",
+        'China Anti-Spam'   => "cbl.anti-spam.org.cn",
+        'LashBack'          => "ubl.unsubscore.com", // This the lashback on mail-tester.com
+        'RATS-ALL'          => "all.spamrats.com",
+		'RATS-Dyna-Spam'    => "dyna.spamrats.com",
+        'PSBL'              => "psbl.surriel.com",
+        'SWINOG'            => "dnsrbl.swinog.ch",
+        'GBUdb Truncate'    => "truncate.gbudb.net",
+        'Weighted Private Block List'  => "db.wpbl.info",
+        'RBL page'          =>"all.s5h.net",		
+		'Spam-RBL in Franch'=> "all.spam-rbl.fr",
+		'RBL in Japan'      => "all.rbl.jp",
+        'DroneBL'           => "dnsbl.dronebl.org",
+        'DSBL'              => "list.dsbl.org",
+		'Redhawk'           => "access.redhawk.org",
+		'Fusionzero'        => "0spam-killlist.fusionzero.com",
+		'Fusionzero Spam'        => "0spam.fusionzero.com",
+		
+        //"dnsbl-1.uceprotect.net",
+        //"dnsbl-2.uceprotect.net",
+        //"dnsbl-3.uceprotect.net",
+        //"zen.spamhaus.org",
+		//"aspews.ext.sorbs.net","b.barracudacentral.org","bb.barracudacentral.org","bl.drmx.org","bl.konstant.no","bl.nszones.com","bl.spamcannibal.org","bl.spameatingmonkey.net","bl.spamstinks.com","black.junkemailfilter.com","blackholes.five-ten-sg.com","blacklist.sci.kun.nl","blacklist.woody.ch","bogons.cymru.com","bsb.empty.us","bsb.spamlookup.net","cbl.abuseat.org","cblless.anti-spam.org.cn","cblplus.anti-spam.org.cn","cdl.anti-spam.org.cn","cidr.bl.mcafee.com","combined.rbl.msrbl.net","db.wpbl.info","dev.null.dk","dialups.visi.com","dnsbl-0.uceprotect.net","dnsbl-1.uceprotect.net","dnsbl-2.uceprotect.net","dnsbl-3.uceprotect.net","dnsbl.anticaptcha.net","dnsbl.aspnet.hu","dnsbl.inps.de","dnsbl.justspam.org","dnsbl.kempt.net","dnsbl.madavi.de","dnsbl.rizon.net","dnsbl.rv-soft.info","dnsbl.rymsho.ru","dnsbl.zapbl.net","dnsrbl.swinog.ch","dul.pacifier.net","dyn.nszones.com","fnrbl.fast.net","fresh.spameatingmonkey.net","hostkarma.junkemailfilter.com","images.rbl.msrbl.net","ips.backscatterer.org","ix.dnsbl.manitu.net","korea.services.net","l2.bbfh.ext.sorbs.net","l3.bbfh.ext.sorbs.net","l4.bbfh.ext.sorbs.net","list.bbfh.org","list.blogspambl.com","mail-abuse.blacklist.jippg.org","netbl.spameatingmonkey.net","netscan.rbl.blockedservers.com","no-more-funn.moensted.dk","noptr.spamrats.com","orvedb.aupads.org","phishing.rbl.msrbl.net","pofon.foobar.hu","cart00ney.surriel.com","rbl.abuse.ro","rbl.blockedservers.com","rbl.dns-servicios.com","rbl.efnet.org","rbl.efnetrbl.org","rbl.iprange.net","rbl.schulte.org","rbl.talkactive.net","rbl2.triumf.ca","rsbl.aupads.org","sbl-xbl.spamhaus.org","sbl.nszones.com","short.rbl.jp","spam.dnsbl.anonmails.de","spam.pedantic.org","spam.rbl.blockedservers.com","spam.rbl.msrbl.net","spam.spamrats.com","spamsources.fabel.dk","st.technovision.dk","tor.dan.me.uk","tor.dnsbl.sectoor.de","tor.efnet.org","torexit.dan.me.uk","truncate.gbudb.net","uribl.spameatingmonkey.net","urired.spameatingmonkey.net","virbl.dnsbl.bit.nl","virus.rbl.jp","virus.rbl.msrbl.net","vote.drbl.caravan.ru","vote.drbl.gremlin.ru","web.rbl.msrbl.net","work.drbl.caravan.ru","work.drbl.gremlin.ru","wormrbl.imp.ch","xbl.spamhaus.org","zen.spamhaus.org"
+    ];
+	
+	private function check_broken_links( $content )
+    {
+		//print_r($content); die;
+        //<a href='https://mail-analyzer.com.'></a>
+        $matches = [];
+		$regexp = "<a\s[^>]*href=(\"??)([^\" >]*?)\\1[^>]*>(.*)<\/a>";
+		preg_match_all("/$regexp/siU", $content, $matches, PREG_SET_ORDER);
+		
+        $results = [];
+        foreach($matches as $url)
+        {
+			//$url[0] = tag, $url[1]=?, $url[3]=text
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url[2]);
+            curl_setopt($ch, CURLOPT_HEADER, 1);
+            curl_setopt($ch , CURLOPT_RETURNTRANSFER, 1);
+            $data = curl_exec($ch);
+            $headers = curl_getinfo($ch);
+            curl_close($ch);
+            if($headers['http_code']!=200)
+            {
+                $results[] = [
+                    'url' => $url[2],
+                    'score'=> $this->burl_score_unit,
+                ];
+            }
+        }
+        return $results;
+    }
+	
+    private function cheking_blacklist($check_ip)
+    {
+		//print($check_ip); die;
+        $listed = [];
+        if ($check_ip) {
+            $reverse_ip = implode(".", array_reverse(explode(".", $check_ip)));
+            foreach ($this->dnsbl_lookup as $keyname    =>  $host_url) 
+            {
+                if (checkdnsrr($reverse_ip . "." . $host_url . ".", "A")) 
+                    $listed[$keyname] = $this->bl_score_unit;
+                else 
+                    $listed[$keyname] = 0;
+            }
+        }
+    	return $listed;
+    }
 
     private function Spamhause_dataquery_api($check_ip)
     {
@@ -100,11 +183,18 @@ class SpamTestController extends Controller
     }
 	function getserverauth($header) 
 	{
+		//        print($header); die;
+        $offset = strlen('X-PM-IP');
 		$posend = $i = $pos = stripos( $header, 'X-PM-IP', 0);
-		
+		if($pos===false)
+        {
+            $offset = strlen('client-ip=');
+            $posend = $i = $pos = stripos( $header, 'client-ip=', 0);
+        }
+
 		if($pos!==false)
 		{
-			$i=$pos= ($pos+8);
+			$i=$pos= ($pos + $offset );
 			while($i<strlen($header))
 			{
 				$ch = substr($header, $i, 1);
@@ -125,7 +215,7 @@ class SpamTestController extends Controller
 		$server_ip = substr($header, $pos, $posend - $pos);
 		if( stripos($header, 'spf=pass', 0)!==false )
 			$result = 'auth';
-		
+		//print($server_ip); die;
 		return ['auth_result'=>$result, 'serverip'=>$server_ip];
 	}
 	
@@ -405,7 +495,16 @@ class SpamTestController extends Controller
 		Session::put('mail_body_html', $response['content']);
         $score_report = $score->getScore( '<header>'.$response['header'].'</header>' .'<subject>'.$response['subject'].'</subject>'  .'<body>'.$this->getbody($response['content']).'</body>');
 
-		
+        if($score_report['success'])
+        {
+            $score_report['score'] = 0;
+            foreach($score_report['rules'] as &$check_rule)
+            {
+                if($check_rule['score']<0)  $check_rule['score'] = '-0.0';
+                $score_report['score'] += $check_rule['score'];
+            }
+        }
+
 		$auth_serverInfo = $this->getserverauth( $response['header'] );
 		$auth_rDnsInfo   = $this->getRDNSsign($response['header'], $auth_serverInfo );
         $auth_DMARCInfo  = $this->getDMARCsign($response['header'] );
@@ -445,7 +544,7 @@ class SpamTestController extends Controller
             $auth_SPDcheck   = ['auth_result'=>'', 'spf_record'=>'', 'spf_issues'=>''];
 
 
-        
+        ################# whitelabel style ################
         $css = '';$guard = null;
         if (Auth::guard($guard)->check()) {
             $user_id = Auth::user()->id;
@@ -455,26 +554,59 @@ class SpamTestController extends Controller
                 $css = $whitelabel->first()->css;
             }
         }
+		
+		##### whitelabel style preview
         if($request->input('flag')!==null && $request->input('flag')=='whitelabel' )
         {
             $css = $request->input('css');
         }
 
-        $score = $this->Spamhause_dataquery_api($auth_serverInfo['serverip']);
-        $BL_results['spamhaus_xbl'] = [
-                    'url'   =>'https://www.spamhaus.org/xbl/', 
-                    'classname' => ($score==0) ? 'status-success' : (($score<1) ? 'status-warning' : 'status-failure'),
-                    'label' => ($score==0) ? 'Not listed'     : (($score<1) ? 'warning -0.1'      : 'critical -1.0'),
-                    'score' =>$score ];
-        $score_report['score'] += $score;
+		##################  blacklist ip cheking #################
+        //$score = $this->Spamhause_dataquery_api($auth_serverInfo['serverip']);
+        $bl_score_list = $this->cheking_blacklist($auth_serverInfo['serverip']);	//'95.19.4.3');//
+		
+        $black_list_score = array_sum($bl_score_list);
+        $total_score = $score_report['score'];
+		$total_score += $black_list_score;
+		
+        foreach($bl_score_list as $keyname=>$check_score)
+        {
+            $BL_results[ $keyname ] = [
+                'url'   =>  $this->dnsbl_lookup[$keyname] , 
+                'classname' => ($check_score==0) ? 'status-success' : (($check_score<1) ? 'status-warning' : 'status-failure'),
+                'label' => ($check_score==0) ? 'Not Listed'     : (($check_score<1) ? 'Listed -0.1'      : 'Critical -1.0'),
+                'score' => $check_score ];
+        }
+
+        ################### broken url cheking ###################
+        esult_array = $this->check_broken_links( $response['content'] );	//"
+		/*
+		$broken_urls = $this->check_broken_links( '<a href="https://example1.com">Test 1</a>
+													<a class="foo" id="bar" href="http://example2.com">Test 2</a>
+													<a onclick="foo();" id="bar" href="http://example3.com">Test 3</a>' );
+		// */
+        $broken_score = 0;
+        foreach($broken_urls as $row)
+        {
+            $broken_score += $row['score'];
+        }
+		$total_score += $broken_score;
+
+		//print_r(broken_urls); die;
+        ################### return view ##################
         return view('mailstester.testresult')
             ->with('mail_id',       $Hashid)
+            ->with('broken_urls',   $broken_urls)
+            ->with('broken_score',  $broken_score)
             ->with('css',           $css)
             ->with('email',         $email )
 			->with('ago_time',		$ago_time)
             ->with('report', 	    $score_report['report'])
 			->with('rules', 	    $score_report['rules'])
 			->with('score', 	    10 - $score_report['score'])
+			->with('total_score', 	10 - $total_score)
+            ->with('black_list_score', $black_list_score)
+            ->with('bl_score_unit', $this->bl_score_unit)
 			->with('server_auth',   $auth_serverInfo )
             ->with('dkim_auth',     $auth_DKIMInfo )
 			->with('dmarc_auth',    $auth_DMARCInfo )

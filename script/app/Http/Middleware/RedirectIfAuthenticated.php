@@ -21,22 +21,19 @@ class RedirectIfAuthenticated
     public function handle($request, Closure $next, $guard = null) {
         if (Auth::guard($guard)->check()) {
             $role = Auth::user()->role; 
-        
+        	// this handler is called when it already logined and then call login page.
             switch ($role) {
             case 'admin':
                 return redirect('/admin/dashboard');
                 break;
             case 'user':
-                //return redirect('/');
-                return '/get-started';  
-                // this is no working , please reference LoginController->redirectTo()
+                return redirect('get-started');  
                 break; 
-        
             default:
                 return redirect('/'); 
                 break;
             }
         }
         return $next($request);
-        }
+    }
 }

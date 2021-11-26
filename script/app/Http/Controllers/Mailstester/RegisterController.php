@@ -57,10 +57,13 @@ class RegisterController extends Controller
 		{
 			User::find($user->id)->update([
 						'remember_token' => '',
+                        'email_verified_at'=>date('Y-n-d H:i:s'),
 						'mode' => 'active',
 					]);
             $this->guard()->login($user);
-			return redirect(route('login'));
+            $success_msg = 'Completed your account registration!';
+            session()->put('msg', translate($success_msg));
+            return redirect(route('login'))->with('msg', translate($success_msg));            
 		}
 		return null;
 	}
@@ -138,32 +141,27 @@ class RegisterController extends Controller
             //<---#################################
 
             ## Send Suitable Email For New User ##
-            $user_register_mode = get_option('user_register_mode');
+            $user_register_mode = env('user_register_mode');
             if($user_register_mode == 'deactive'){
                 // $this->guard()->login($user);
                 $success_msg = 'Thanks for registration!';
-				#   -------------> regist active 
-				sendMail([
-                    'recipent'=>['yasha3651@mail.ru'],	//$user_email
-                    'template'=>'welcome',
-                    'subject' =>'Account Activate',
-                    'content' => ['token'=>$user_token],
-                ]);				
-				# <-----------------
-				
                 session()->flash('success', translate($success_msg));
-                return redirect()->back()->with('msg',trans('main.thanks_reg'));
+                //return redirect()->back()->with('msg',trans('main.thanks_reg'));
+                session()->put('msg', translate($success_msg));
+                return redirect(route('login'))->with('msg', translate($success_msg));
             } else {
 				
                 sendMail([
-                    'recipent'=>['yasha3651@mail.ru'],	//$user_email
+                    'recipent'=>[$user_email],	
                     'template'=>'welcome',
                     'subject' =>'Account Activate',
                     'content' => ['token'=>$user_token],
                 ]);
                 $success_msg = 'Thanks for registration, Please check your email and follow activation link to active your account.';
                 session()->flash('success', translate($success_msg));
-                return redirect()->back()->with('msg',trans('main.active_account_alert'));
+                session()->put('msg', translate($success_msg));
+                //return redirect()->back()->with('msg',trans('main.active_account_alert'));
+                return redirect(route('login'))->with('msg',translate($success_msg) );
             }
 
         } catch (ValidationException $e) {
@@ -215,18 +213,23 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        $flag =  User::create([
+        if(env('user_register_mode')=='deactive')	
+			$active_status = 'active';
+		else
+			$active_status = 'inactive';
+		
+		$user_info = [
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'role' => 'user',
-            'mode' => 'inactive',
-            'remember_token' => Str::random(25)
-            // 'created_at' => time(),
-            //'category_id' => get_option('user_default_category', 0),
-            //'username' => $data['username'],
-        ]);
+            'mode' => $active_status,
+            'remember_token' => Str::random(64)
+        ];
+        $flag =  User::create( $user_info );
 
+
+        
         return $flag;
     }
 	

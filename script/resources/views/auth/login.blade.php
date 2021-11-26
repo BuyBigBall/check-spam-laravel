@@ -25,16 +25,19 @@
                         </div>
                     </div>
                 </div>
+                -->
+                @if( Session::has('msg'))
                 <div class="alert alert-message">
                     <a class="close" data-dismiss="alert">×</a>
                     <h4 class="alert-heading">Message</h4>
                     <div>
                         <div class="alert-message">
-                            Please login first
+                            {{ Session::get('msg') }}
                         </div>
                     </div>
                 </div>
-                -->
+                @endif
+                
 
             </div>
         </div>

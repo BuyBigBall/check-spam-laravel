@@ -1,0 +1,1 @@
+ALTER TABLE `users` CHANGE `created_at` `created_at` DATETIME DEFAULT NOW() NULL, CHANGE `updated_at` `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NULL; 

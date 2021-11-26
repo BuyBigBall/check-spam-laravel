@@ -190,7 +190,9 @@
                         <div class="control-group">
                             <div class="controls">
                                 <input
+                                    @if( !empty($RECAPTCHA_SITE_KEY) )
 									disabled
+                                    @endif
                                     type="submit"
                                     class="btn button mailtester_cart_cart_input_button btn btn-primary p-3"
                                     name="register"

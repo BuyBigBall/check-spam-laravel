@@ -16,7 +16,7 @@
         style='background-color: var(--main-color);'>
         <h1 class="title py-5 m-0 text-white">Wow! Perfect, you can send</h1>
         <div class="subtitle text-white my-3" id="score-label">Score :</div>
-        <span class="score">{{$score}}/10</span>
+        <span class="score">{{$total_score}}/10</span>
     </div>
 
     <div id="separator" class="bg-primary py-2 clearfix">
@@ -138,9 +138,9 @@
                         <div class="content">
                             <pre class="result">Received: by {{ env('MAIL_HOST') }} ; {{date('l d M Y H:i:s P (T)', strtotime($message['receivedAt']))}} 
 X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on {{ env('MAIL_HOST') }}
-X-Spam-Level: 
+<!-- X-Spam-Level: 
 X-Spam-Report: 
-{{ str_replace('\n', '*       ', $report) }}
+{{ str_replace('\n', '*       ', $report) }} -->
 {{ $message['header'] }}
 							</pre>
 						</div>
@@ -431,15 +431,29 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
         <!-- Blacklists -->
         <div class="test-result blacklists">
             <div class="header clearfix">
-                <div class="h-100 status success icon-check"></div>
+                <div class="h-100 status @if($black_list_score==0) success icon-check @else failure @endif">@if($black_list_score!=0) {{-$black_list_score}} @endif</div>
                 <h2 class="title">
-                    <i class="icon-down"></i>You're not blacklisted</h2>
+                    <i class="icon-down"></i>
+                        @if($black_list_score==0)
+                            You're not blacklisted
+                        @else
+                            You're listed in {{ $black_list_score/$bl_score_unit }} blacklist
+                        @endif
+                    </h2>
             </div>
             <div class="content">
-                <div class="about">Matches your server IP address (<b>{{$server_auth['serverip']}}</b>) against 24 of the most common IPv4 blacklists.</div>
+                <div class="about">Matches your server IP address (<b>{{$server_auth['serverip']}}</b>) against {{ count($BL_results) }} of the most common IPv4 blacklists.</div>
                 <div class="result">
                     <div class="row">
+                        @foreach($BL_results as $key=>$row)
                         <div class="col-sm-6 col-md-4 bl-result">
+                            <span class="{{$row['classname']}}">{{$row['label']}}</span>
+                            in
+                            <a target="_blank" href="https://{{ $row['url'] }}">{{ $key }}</a>
+                        </div>
+                        @endforeach
+                    <!--
+                         <div class="col-sm-6 col-md-4 bl-result">
                             <span class="status-success">Not listed</span>
                             in
                             <a target="_blank" href="https://www.spamhaus.org/sbl/">Spamhaus SBL Advisory</a>
@@ -449,13 +463,6 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                             in
                             <a target="_blank" href="https://www.spamhaus.org/css/">Spamhaus CSS Advisory</a>
                         </div>
-                        @foreach($BL_results as $key=>$row)
-                        <div class="col-sm-6 col-md-4 bl-result">
-                            <span class="{{$row['classname']}}">{{$row['label']}}</span>
-                            in
-                            <a target="_blank" href="{{ $row['url'] }}">Spamhaus XBL Advisory</a>
-                        </div>
-                        @endforeach
                         <div class="col-sm-6 col-md-4 bl-result">
                             <span class="status-success">Not listed</span>
                             in
@@ -560,7 +567,8 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                             <span class="status-success">Not listed</span>
                             in
                             <a target="_blank" href="http://wpbl.pc9.org/">Weighted Private Block List</a>
-                        </div>
+                        </div> 
+                    -->
                     </div>
                 </div>
             </div>
@@ -569,17 +577,31 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
         <!-- Broken links -->
         <div class="test-result broken-links">
             <div class="header clearfix">
-                <div class="status success icon-check"></div>
+                <div class="status @if(count($broken_urls)>0) warning @else success icon-check @endif">@if(count($broken_urls)>0) 
+                        {{ -$broken_score }}
+                     @endif</div>
                 <h2 class="title">
-                    <i class="icon-down"></i>No broken links</h2>
+                    <i class="icon-down"></i>@if(count($broken_urls)>0) You have {{count($broken_urls)}} broken links @else No broken links @endif</h2>
             </div>
             <div class="content">
                 <div class="about">Checks if your newsletter contains broken links.</div>
-                <div class="result">No links found.</div>
+                <div class="result">@if(count($broken_urls)==0) No links found. @else 
+                    <ul>
+						@foreach($broken_urls as $broken)
+                        <li>
+							<div class="col-sm-6 col-md-4 bl-result">
+								<span class="status-success">broken link</span> :
+								<a target="_blank" href="<?php echo $broken['url']; ?>">{{$broken['url']}}</a>
+							</div>
+						</li>
+						@endforeach
+                    </ul>
+                    @endif</div>
             </div>
         </div>
 
-        <div class="total text-right subtitle">Your lovely total: {{$score}}/10</div>
+
+        <div class="total text-right subtitle">Your lovely total: {{$total_score}}/10</div>
     </div>
 </div>
 

@@ -126,7 +126,6 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
     Route::get('/not-received', 'Mailstester\SiteController@not_received')->name("not-received");
     Route::get('/dbug-example', 'Mailstester\SiteController@dbug_example')->name("dbug-example");
     Route::get('/', 'TrashMailController@index')->name("home");
-    Route::get('/activate', 'Mailstester\RegisterController@active')->name("activate");
     Route::get('/index', 'TrashMailController@index')->name("index");
     Route::get('/messages', 'TrashMailController@messages')->name("messages");
     Route::get('/email', 'TrashMailController@temporaryEmailAddress')->name("email");
@@ -145,10 +144,8 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
 
     Route::get('/spamtest',        'Mailstester\EmailTestController@index')->name("go_spamtest");
     Route::post('/spamtest',        'Mailstester\EmailTestController@index')->name("spamtest");
-    Route::get('/signup',         'Mailstester\RegisterController@showRegistrationForm')->name("signup");
-    Route::post('/save-register',   'Mailstester\RegisterController@save_register')->name("save-register");
-
-    Route::get('/forgot/{type}',    'Auth\ForgotPasswordController@forgot')->name("forgot");
+   
+    
     // Route::post('/profile',         'Mailstester\LoginController@profile_view')->name("profile_view");
     // Route::post('/profile-save',    'Mailstester\LoginController@profile_save')->name("profile_save");
 
@@ -173,12 +170,27 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
     Route::get('/mail_body_html',       'Mailstester\SpamTestController@mail_body_html')->name("mail_body_html");
     Route::get('/mail_body_html_noimg', 'Mailstester\SpamTestController@mail_body_html_noimg')->name("mail_body_html_noimg");
 
-    
+    Route::group(['namespace' => 'Auth'], function () {
+        // Web Auth Routes
+        Route::get('/login', 'LoginController@showLoginForm')->name("login");
+        Route::post('/login', 'LoginController@login');
+ 
+        //Route::get('/logout', 'LoginController@logout');
+        // Route::get('/register', 'RegisterController@showRegistrationForm');
+        // Route::post('/registerUser', 'RegisterController@register');
+    });
+    Route::get('/activate', 'Mailstester\RegisterController@active')->name("activate");
+    Route::get('/signup',         'Mailstester\RegisterController@showRegistrationForm')->name("signup");
+    Route::post('/save-register',   'Mailstester\RegisterController@save_register')->name("save-register");
+    Route::get('/forgot/{type}',    'Auth\ForgotPasswordController@forgot')->name("forgot");
+
     # --> never necessory call these, but for test using
     // Route::get('/login', 'Mailstester\LoginController@index')->name("login");
     // Route::post('/login', 'Mailstester\LoginController@loginchk')->name("loginchk");
     # <------------------
     Route::group(['middleware' => ['auth']], function () {
+
+
         Route::get('/account',          'Mailstester\SiteController@account')->name("account");
         Route::get('/get-started',      'Mailstester\SiteController@started')->name("get-started");
         Route::post('/save-configure',        'Mailstester\SiteController@save_configure')->name("save-configure");

@@ -151,6 +151,7 @@ function getSupportedLocales()
     // template : template keyname
     function sendMail(array $request) //[recipent, title, content, template]
     {
+        $templatename = '';
         $recipent   = $request['recipent'];
         $content    = $request['content'];
         if ( empty($request['subject']))                $request['subject'] = '';
@@ -161,19 +162,19 @@ function getSupportedLocales()
                 $url = route('activate');
                 $activate_link = $url . '?token='.$content['token'];
             }
-            $template = $request['template'];
+            $templatename = $request['template'];
         }
         $success_count = 0;
         foreach ($recipent as $to) {
-            if(!empty($template)) {
+            if(!empty($templatename)) {
                 $user = \App\Models\User::where('email', $to)->first();
-                $template = view('emails.' . $request['template'])
+                $template_view = view('emails.' .    $templatename)
                             ->with('email',     $user->email )
                             ->with('name',      $user->name )
                             ->with('subject',   $request['subject'] )
                             ->with('activate',  $activate_link );
-
-                Mail::send('emails.content', ['content' => $template ], 
+                
+                Mail::send('emails.content', ['content' => $template_view ], 
                     function ($mail) use ($user, $request) 
                     {
                         $mail->to($user->email, $user->name);

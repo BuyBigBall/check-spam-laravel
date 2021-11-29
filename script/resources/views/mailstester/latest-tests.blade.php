@@ -12,6 +12,7 @@
                 method="get"
                 target="_blank"
                 action="{{ route('spamtest') }}">
+                @csrf
                 Send your message to :
                 <input
                     placeholder="{{$userdata['user_login']['name']}}-whateveryouwant{{ '@'.env('MAIL_HOST') }}"
@@ -28,6 +29,7 @@
             <h1>Latest Tests</h1>
             <hr/>
             <form name="search" method="post">
+                @csrf
                 <!-- <input
                     class="inputbox required"
                     placeholder="Search for a test..."

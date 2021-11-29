@@ -193,7 +193,7 @@ $(document).ready(function () {
             var is_seen = "";
             if (!value.is_seen) {
               is_seen = '<span class="badge badge-success" >new</span>';
-              //if(iLoop==1)
+              if(iLoop==1)
               {
                 flag_unreadmail = value.id;
                 $('#hFlag_MessageId').val(value.id);

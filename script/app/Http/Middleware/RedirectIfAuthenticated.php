@@ -28,7 +28,10 @@ class RedirectIfAuthenticated
                 break;
             case 'user':
                 return redirect('get-started');  
+                // this is no working , please reference LoginController->redirectTo()
+                // look the Auth/LoginController@redirectTo
                 break; 
+        
             default:
                 return redirect('/'); 
                 break;

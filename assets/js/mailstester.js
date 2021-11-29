@@ -118,6 +118,26 @@ $(function() {
 				window.location.reload();
 				return;
 			}
+			else if(elapsedTime == reloadTime - 1 ){
+				$.ajax({
+					url: wait_url,
+					dataType: "text",
+					cache: false,
+					contentType: false,
+					processData: false,
+					type: "get",
+					success: function (data) {
+						
+					  var d = JSON.parse(data);
+					  if(d.result=='ok')
+					  {
+						if(waitingTimeout!=null)clearInterval(waitingTimeout);
+						window.location.href = result_url + '?message_id='+d.message_id;
+			
+					  }
+					},
+				  });
+			}
 			else
 			{
 				/*
@@ -146,6 +166,7 @@ $(function() {
 		}
 
 		showRemainingTime();
+		
 	}
 
 	function isMine(received_message){

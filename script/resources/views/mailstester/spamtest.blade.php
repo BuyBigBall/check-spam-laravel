@@ -76,5 +76,5 @@
     var WEBSOCKET_PORT = '{{env('WEBSOCKET_PORT')}}';
     var WAIT_TIMEOUT_SECONDS = '{{ env('WAIT_TIMEOUT_SECONDS') }}';
 </script>
-<script type="text/javascript" src="{{ asset('assets/js/mailstester.js?v1.1') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/js/mailstester.js?v1.2.0') }}"></script>
 @endsection

@@ -54,7 +54,7 @@ class TrashMail extends Model
     public static function GetLastUnreadMail($email)
     {
         # look for unread message for me
-        $results = TrashMail::allMessages($email, true);
+        $results = TrashMail::allMessages($email, false);
 		
         foreach($results["messages"] as $key=>&$last_message)
         {
@@ -63,8 +63,6 @@ class TrashMail extends Model
             if(!$last_message['is_seen'])
             {
                 $id = $last_message['id'];
-				$last_message->markAsSeen(); 	//it has setted as read in inbox really.
-                $results["messages"][$key]->markAsSeen();
 				return $id;
             }
             break;
@@ -84,8 +82,6 @@ class TrashMail extends Model
             if($last_message['is_seen'])
             {
                 $id = $last_message['id'];
-				$last_message->markAsSeen(); 	//it has setted as read in inbox really.
-                $results["messages"][$key]->markAsSeen();
 				return $id;
             }
             break;
@@ -360,6 +356,7 @@ class TrashMail extends Model
             }
             array_push($response, $data);
             $message->markAsSeen();
+			Cache::Flush();
             return $response;
         } catch (Exception $e) {
             \abort(404);

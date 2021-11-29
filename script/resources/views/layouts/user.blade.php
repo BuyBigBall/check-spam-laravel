@@ -265,7 +265,7 @@
     copied = "{{translate('Copied!')}}" ;
   </script>
   <!-- main js -->
-  <script src="{{ asset('assets/js/main.js?v1.2.5') }}"></script>
+  <script src="{{ asset('assets/js/main.js?v1.2.7') }}"></script>
   <script src="{{ asset('assets/js/cookieconsent.min.js') }}"></script>
 
 </body>

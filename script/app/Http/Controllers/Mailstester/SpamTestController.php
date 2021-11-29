@@ -33,7 +33,7 @@ use Vinkla\Hashids\Facades\Hashids;
 class SpamTestController extends Controller
 {
     private $bl_score_unit = 0.5;
-	private $burl_score_unit = 0.1;
+	private $burl_score_unit = 0.5;
     private $dnsbl_lookup = [
 		'Spamhaus PBL'      =>"pbl.spamhaus.org",
 		'Spamhaus SBL'      =>"sbl.spamhaus.org",
@@ -258,7 +258,7 @@ class SpamTestController extends Controller
 		
 		return ['auth_result'=>$result, 'dkim_sign'=>$dkim_sign];
 	}
-	function getDMARCsign($header) 
+	function getDMARCsign($header, $mail_server_domain) 
 	{
 		$start = false;
 		$posend = $i = 0;
@@ -282,7 +282,7 @@ class SpamTestController extends Controller
 					$i++;$pos++; continue;
 				}
 				
-				if(($wd1)==$word1 || ($wd2)==$word2) //strtolower
+				if(($wd1)==$word1 || ($wd2)==$word2) //strtolower 
 				{
 					$posend = $i;
 					break;
@@ -290,14 +290,56 @@ class SpamTestController extends Controller
 				$i++;
 			}
 		}
-		$result = 'fail';
+		$result = 'fail'; $dmarc_rows = [];
 		$dmarc_sign = substr($header, $pos, $posend - $pos);
-		if( stripos($header, 'dmarc=pass', 0)!==false )
+		if( ($dmarcpos = stripos($header, 'dmarc=pass', 0))!==false )
+		{
+			$dmarcpos_end	= stripos($header, ';', $dmarcpos);
+			$dmarc_rows[] = substr($header, $dmarcpos,$dmarcpos_end-$dmarcpos+1 );
 			$result = 'pass';
+		}
+		if( ($dmarcpos = stripos($header, 'dkim=pass', 0))!==false )
+		{
+			$dmarcpos_end	= stripos($header, ';', $dmarcpos);
+			$dmarc_rows[] = substr($header, $dmarcpos,$dmarcpos_end-$dmarcpos+1 );
+		}
+		if( ($dmarcpos = stripos($header, 'dkim=pass', $dmarcpos_end))!==false )
+		{
+			$dmarcpos_end	= stripos($header, ';', $dmarcpos);
+			$dmarc_rows[] = substr($header, $dmarcpos,$dmarcpos_end-$dmarcpos+1 );
+		}
 		
-		return ['auth_result'=>$result, 'dmarc_sign'=>$dmarc_sign];
+		$dmarc_result = dns_get_record("_dmarc." .$mail_server_domain,DNS_TXT);
+		$dmarc_entries = [];
+		if(count($dmarc_result)>0) $dmarc_entries = $dmarc_result[0]['entries'];
+		return ['auth_result'=>$result, 'dmarc_sign'=>$dmarc_sign, 'dmarc_entries'=>$dmarc_entries, 'dmarc_rows'=>$dmarc_rows ];
 	}
 
+	// support windows platforms
+    // if (!function_exists ('getmxrr') ) {
+    //     function getmxrr($hostname, &$mxhosts, &$mxweight) {
+    //         if (!is_array ($mxhosts) ) {
+    //             $mxhosts = array ();
+    //         }
+        
+    //         if (!empty ($hostname) ) {
+    //             $output = "";
+    //             @exec ("nslookup.exe -type=MX $hostname.", $output);
+    //             $imx=-1;
+        
+    //             foreach ($output as $line) {
+    //             $imx++;
+    //             $parts = "";
+    //             if (preg_match ("/^$hostname\tMX preference = ([0-9]+), mail exchanger = (.*)$/", $line, $parts) ) {
+    //                 $mxweight[$imx] = $parts[1];
+    //                 $mxhosts[$imx] = $parts[2];
+    //             }
+    //             }
+    //             return ($imx!=-1);
+    //         }
+    //         return false;
+    //     }
+    // }
 	function getRDNSsign($header, $server) 
 	{
 		$start = false;
@@ -366,14 +408,51 @@ class SpamTestController extends Controller
 		$issue_strings = '';
 		foreach ($issues as $issue) {$issue_strings .= ((string) $issue. "\n");}
 		
-        /*
-		print_r($checkResult->getMatchedMechanism());	//object (spf.mtasv.net)
-		print('<br>');
-        print_r($checkResult); die;
-		*/
+		$spf_record = [];
+		$SPF_result = dns_get_record($email_domain,DNS_TXT);
+		// print_r($SPF_result); die;
+		if(count($SPF_result)>0)		
+			foreach($SPF_result as $entry) 
+			{
+				if( substr($entry['txt'],0,6) != 'v=spf1') continue;
+				$spf_record[] = ($entry['txt']);
+			}
+		
+		$print_command = "dig +short TXT ".$email_domain;
+		$print_result  = shell_exec( $print_command );
+		$pos = stripos( $print_result, 'redirect=_spf.', 0);
+		$spf_domain = substr($print_result, $pos+strlen('redirect=_spf.') );
+		$pos = stripos( $spf_domain, '"', 0);
+		$spf_domain = substr($spf_domain, 0, $pos);
+		$ary = explode('"', $print_result); $print_result = [];
+		foreach($ary as $item)
+		{
+			if( strlen(str_replace(" " , "", $item))>10)	$print_result[] = '"'.$item.'"';
+		}
+		$spf_detail[] =  ['cmd'=>$print_command, 'details'=> $print_result ];
+		
+		$print_command = "dig +short TXT @ns1." . $spf_domain . ". ".$email_domain;
+		$print_result  = shell_exec($print_command);
+		$ary = explode('"', $print_result); $print_result = [];
+		foreach($ary as $item)
+		{
+			if( strlen(str_replace(" " , "", $item))>10)	$print_result[] = '"'.$item.'"';
+		}
+		$spf_detail[] =  ['cmd'=>$print_command, 'details'=>$print_result ];
 
-		//print_r(['auth_result'=>$auth_result, 'spf_record'=>$spf_record, 'spf_issues'=>$issue_strings]); die;
-		return ['auth_result'=>$auth_result, 'spf_record'=>$spf_record, 'spf_issues'=>$issue_strings];
+		//spfquery --scope mfrom --id yasha3651@mail.ru --ip 185.5.136.54 --helo-id f383.i.mail.ru
+		$print_command = "spfquery --scope mfrom --id " . $from_email . 
+					" --ip " . $server_Helo_info['server_ip'] . 
+					" --helo-id ".$server_Helo_info['helo_domain'];
+		$print_result  = shell_exec($print_command);
+		$ary = explode('"', $print_result); $print_result = [];
+		foreach($ary as $item)
+		{
+			if( strlen(str_replace(" " , "", $item))>10)	$print_result[] = '"'.$item.'"';
+		}
+		$spf_detail[] =  ['cmd'=>$print_command, 'details'=>$print_result];
+		//print_r($spf_detail); die;
+		return ['auth_result'=>$auth_result, 'spf_record'=>$spf_record, 'spf_issues'=>$issue_strings, 'dig-query'=>$spf_detail];
 	}
 
     function save_test_count_for_free_user($email, $mail_id=0)
@@ -431,6 +510,23 @@ class SpamTestController extends Controller
 
         return $could_not_use;
     }
+	
+	private function GetSpamAssassinScore($header)
+    {
+        $pos = stripos( $header, "X-Spam-Status:", 0);
+        $pos = stripos( $header, "score=", $pos);
+        $posend = stripos( $header, " ", $pos+strlen("score="));
+        $score = substr($header, $pos+strlen("score="), ($posend-$pos-strlen("score=")));
+        $score = abs(floatval($score));
+		/*
+		print($posend.'<br>');
+		print($pos.'<br>');
+		print(substr($header, $pos+strlen("score="), ($posend-$pos-strlen("score=")))); 
+		die;
+		*/
+        return $score;
+    }
+	
     public function TestResult(Request $request)
     {
         //print($this->Spamhause_dataquery_api($request->ip)); die;
@@ -504,10 +600,15 @@ class SpamTestController extends Controller
                 $score_report['score'] += $check_rule['score'];
             }
         }
+		$score_report['score'] = $this->GetSpamAssassinScore($response['header']);
+		
+		$mail_server_domain = explode('@', $response['from_email'])[1];
+		//To check DMARC
+		$dmark_results = dns_get_record("_dmarc.".$mail_server_domain,DNS_TXT);
 
 		$auth_serverInfo = $this->getserverauth( $response['header'] );
 		$auth_rDnsInfo   = $this->getRDNSsign($response['header'], $auth_serverInfo );
-        $auth_DMARCInfo  = $this->getDMARCsign($response['header'] );
+        $auth_DMARCInfo  = $this->getDMARCsign($response['header'], $mail_server_domain );
         $auth_DKIMInfo   = $this->getDKIMsign($response['header'] );
         if($request->input('flag')!='whitelabel' )
         {
@@ -541,7 +642,7 @@ class SpamTestController extends Controller
             }
         }
         else
-            $auth_SPDcheck   = ['auth_result'=>'', 'spf_record'=>'', 'spf_issues'=>''];
+            $auth_SPDcheck   = ['auth_result'=>'', 'spf_record'=>'', 'spf_issues'=>'', 'dig-query'=>[] ];
 
 
         ################# whitelabel style ################
@@ -579,7 +680,7 @@ class SpamTestController extends Controller
         }
 
         ################### broken url cheking ###################
-        esult_array = $this->check_broken_links( $response['content'] );	//"
+        $broken_urls = $this->check_broken_links( $response['content'] );	//"
 		/*
 		$broken_urls = $this->check_broken_links( '<a href="https://example1.com">Test 1</a>
 													<a class="foo" id="bar" href="http://example2.com">Test 2</a>
@@ -634,7 +735,8 @@ class SpamTestController extends Controller
         $email_body = '';
         if (Session::has('mail_body_html')) 
         {
-		$email_body = preg_replace("/<img[^>]+\>/i", "(image) ", Session::get('mail_body_html') ); 
+		// $email_body = preg_replace("/<img[^>]+\>/i", "(image) ", Session::get('mail_body_html') ); 
+		$email_body = preg_replace("/<img[^>]+>/", "", Session::get('mail_body_html') ); 
         }
         print($email_body);die;
     }

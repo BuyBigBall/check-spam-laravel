@@ -79,7 +79,7 @@
                                 </div>
 
                                 <iframe src="{{ route('mail_body_html') }}" style="width: 99%;
-                                height: 600px; border: 1px solid rgb(204, 204, 204);"></iframe>
+                               min-height: 200px;  height: 600px; border: 1px solid rgb(204, 204, 204);"></iframe>
                             </div>
                         </div>
                     </div>
@@ -107,7 +107,7 @@
                                 </div>
 
                                 <iframe src="{{ route('mail_body_html_noimg') }}" style="width: 99%;
-                                height: 600px; border: 1px solid rgb(204, 204, 204);"></iframe>
+                                min-height: 200px;  height: 600px; border: 1px solid rgb(204, 204, 204);"></iframe>
 
 								<div id='mailtext_without_external_images' style='width:100%;'></div>
 
@@ -124,7 +124,7 @@
                                 Text version</h3>
                         </div>
                         <div class="content">
-                            {{  str_get_html($message['content'])->plaintext }}
+							<pre>{{  \Soundasleep\Html2Text::convert( $message['content'] ) }}</pre>
                         </div>
                     </div>
 
@@ -137,10 +137,6 @@
                         </div>
                         <div class="content">
                             <pre class="result">Received: by {{ env('MAIL_HOST') }} ; {{date('l d M Y H:i:s P (T)', strtotime($message['receivedAt']))}} 
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on {{ env('MAIL_HOST') }}
-<!-- X-Spam-Level: 
-X-Spam-Report: 
-{{ str_replace('\n', '*       ', $report) }} -->
 {{ $message['header'] }}
 							</pre>
 						</div>
@@ -193,7 +189,7 @@ X-Spam-Report:
 							</tbody></table>					</div>
 				</div>
 			</div>
-
+			<?php $mail_server_domain = explode('@', $message['from_email'])[1]; ?>
 			<!-- Signature -->
 			<div class="test-result signature">
 				<div class="header clearfix">
@@ -219,9 +215,21 @@ X-Spam-Report:
 						</div>
 						<div class="content">
 							<div class="about">Sender Policy Framework (SPF) is an email validation system designed to prevent email spam by detecting email spoofing, a common vulnerability, by verifying sender IP addresses.</div>
-							<div class="result"><p>What we retained as your current SPF record is:</p><pre>{{$spf_check['spf_record']}}</pre><br/><br/>
+							<div class="result"><p>What we retained as your current SPF record is:</p>
+								@foreach( $spf_check['spf_record']  as $entry)
+								<pre>{{$entry}}</pre>
+								@endforeach
+								<br/>
                             <p>Verification details:</p>
-                            <pre>{{$spf_check['spf_issues']}}</pre>
+							<pre>
+@foreach( $spf_check['dig-query'] as  $entry) {{ $entry['cmd'].' :' }} 
+@foreach( $entry['details'] as $line)
+    {{$line}}
+@endforeach
+
+@endforeach
+							</pre>
+							
                         </div>
                     </div>
                 </div>
@@ -266,13 +274,16 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                             authentication methods passes. Please be sure you have a DKIM and SPF set before
                             using DMARC.</div>
                         <div class="result">Your DMARC record is @if($dmarc_auth['auth_result']!='auth') not @endif set correctly and your message passed the DMARC test
-								<p>DMARC DNS entry found for the domain <b>_dmarc.{{env('MAIL_HOST')}}</b>:</p>
-							<!--
-                            <pre>"v=DMARC1;p=reject;rua=mailto:d@rua.agari.com,mai" "lto:dmarc_rua@corp.mail.ru"</pre>
+								<p>DMARC DNS entry found for the domain <b>_dmarc.{{$mail_server_domain}}</b>:</p>
+							@foreach($dmarc_auth['dmarc_entries'] as $entry)
+                            <pre>{{$entry}}</pre>
+							@endforeach
                             <p></p>
                             <p>Verification details:</p>
-                            <pre><ul><li>{{ env('MAIL_HOST') }}; dmarc=pass header.from=mail.ru</li><li>{{ env('MAIL_HOST') }}; dkim=pass (1024-bit key; unprotected) header.d=mail.ru header.i=@mail.ru header.b=RJs3khbV; dkim-atps=neutral</li><li>f383.i.mail.ru; auth=pass smtp.auth=yasha3651@mail.ru smtp.mailfrom=yasha3651@mail.ru</li><li>From Domain: mail.ru</li><li>DKIM Domain: mail.ru</li></ul></pre>
-							-->
+                            <pre><ul>
+								@foreach($dmarc_auth['dmarc_rows'] as $entry) <li>{{ env('MAIL_HOST') }}; {{$entry}}</li> @endforeach <li>From Domain: {{$mail_server_domain}}</li> <li>DKIM Domain: {{$mail_server_domain}}</li>								
+								</ul></pre>
+							
                         </div>
                     </div>
                 </div>
@@ -302,22 +313,30 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                     </div>
                 </div>
                 <!-- A Record Bounce DNS-->
+                <?php 
+                            
+                            getmxrr($mail_server_domain,$mxhosts,$mxweight); $ii = 0;
+                            ?>
                 <div class="test-result mxrecord-dns">
                     <div class="header clearfix">
                         <div class="status success icon-check"></div>
                         <h3 class="title">
                             <i class="icon-down"></i>
                             Your domain name
-                            <strong>{{explode('@', $message['from_email'])[1]}}</strong>
+                            <strong>{{$mail_server_domain}}</strong>
                             is assigned to a mail server.</h3>
                     </div>
                     <div class="content">
                         <div class="about">We check if there is a mail server (MX Record) behind your domain name
-                            <strong>{{explode('@', $message['from_email'])[1]}}</strong>.</div>
+                            <strong>{{$mail_server_domain}}</strong>.</div>
                         <div class="result">
                             <p></p>
                         </div>
-                        <pre class="result">MX records ({{explode('@', $message['from_email'])[1]}}) : <ul><li>10 mxs.{{explode('@', $message['from_email'])[1]}}.</li></ul></pre>
+                        <pre class="result">MX records ({{$mail_server_domain}}) : <ul>
+                            @foreach( $mxhosts as $host_domain)
+                            <li> {{ $mxweight[$ii++] }} {{$host_domain}}.</li>
+                            @endforeach
+                        </ul></pre>
                     </div>
                 </div>
                 <!-- A Record DNS-->
@@ -354,9 +373,9 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                 <div class="about">Checks whether your message is well formatted or not.</div>
                 <div class="result">
                     <p class="message-weight">Weight of the HTML version of your message:
-                        <b>{{  strlen(str_get_html($message['content'])->plaintext) }}B</b>.</p>
+                        <b>{{  strlen($message['content'] ) }}B</b>.</p>
                     <p>Your message contains
-                        <b>{{ strlen($message['content'])==0 ? '&nbsp;' : round(strlen(str_get_html($message['content'])->plaintext) / strlen($message['content']) * 100) }}</b>% of text.</p>
+                        <b>{{ strlen($message['content'])==0 ? '&nbsp;' : round(strlen( \Soundasleep\Html2Text::convert( $message['content'] ) ) / strlen($message['content'])  * 100) }}</b>% of text.</p>
                 </div>
 
                 <!-- Alt attribute -->
@@ -577,7 +596,7 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
         <!-- Broken links -->
         <div class="test-result broken-links">
             <div class="header clearfix">
-                <div class="status @if(count($broken_urls)>0) warning @else success icon-check @endif">@if(count($broken_urls)>0) 
+            <div class="status @if($broken_score>=0.5) failure @elseif($broken_score>0) warning @else success icon-check @endif">@if(count($broken_urls)>0) 
                         {{ -$broken_score }}
                      @endif</div>
                 <h2 class="title">

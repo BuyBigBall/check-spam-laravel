@@ -116,7 +116,7 @@ class SiteController extends Controller
             $role = Auth::user()->role; 
             $userdata['user_login'] = Auth::user();
             $user_id    = $userdata['user_login']->id;
-            $email      = $userdata['user_login']->email;
+            //$email      = $userdata['user_login']->email;
             $db_hist    = TestResult::where('user_id', $user_id)->get();
         }
         else

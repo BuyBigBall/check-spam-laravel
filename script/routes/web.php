@@ -185,6 +185,11 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
 	Route::post('/save-register',   'Mailstester\RegisterController@save_register')->name("save-register");
 
 	Route::get('/forgot/{type}',    'Auth\ForgotPasswordController@forgot')->name("forgot");
+    
+    Route::resource('/users', 'UserController');
+    // Route::group(['prefix' => 'user'], function () {
+    //     Route::get('/index',          'UserController@dashboard')->name("users");
+    // });
 
     # --> never necessory call these, but for test using
     // Route::get('/login', 'Mailstester\LoginController@index')->name("login");

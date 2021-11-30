@@ -237,14 +237,14 @@ class RegisterController extends Controller
 	{
 		    $campaignOptions = [
 				'from_name' => 'tona',
-				'from_email' => 'tona@test.com',
+				'from_email' => 'edgybrains@gmail.com',
 				'reply_to' => 'edgybrains@gmail.com',
 				'title' => 'Campaign Test',
 				'subject' => 'Campaign Test',
 				'list_ids' => 'Z763w7631uvsujw7BokSL9EskA,Bwg9oJDFE5k3lJS8B892cFvw',    //'1,2,3', // comma-separated, optional
 				'brand_id' => 1,    //1,
 				'query_string' => 'utm_source=sendy&utm_medium=email&utm_content=email%20newsletter&utm_campaign=email%20newsletter',
-				'send_campaign' => 0,
+				'send_campaign' => true,
 			];
 			$campaignContent = [
 				'plain_text' => 'My Campaign',

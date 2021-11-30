@@ -40,7 +40,7 @@
           <a href="{{$setdata['site_url']}}">{{Str::limit($setdata['name'], 16)}}</a>
         </div>
         <div class="footer-right">
-          1.2.1v
+          1.2.2v
         </div>
       </footer>
     </div>

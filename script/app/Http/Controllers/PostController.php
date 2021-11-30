@@ -161,7 +161,7 @@ class PostController extends Controller
 
         if ($request->has('thumbnail')) {
 
-            $post->image = FileUpload($request->thumbnail, "uploads/" , $post->image , 'omar' );
+            $post->image = FileUpload($request->thumbnail, "uploads/" , $post->image);
         }
 
         $antiXss = new AntiXSS();

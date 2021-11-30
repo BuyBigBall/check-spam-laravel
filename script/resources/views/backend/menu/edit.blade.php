@@ -83,7 +83,7 @@
                             </div>
 
                             <div class="form-group row mb-4">
-                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">{{__('Postion')}} :</label>
+                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">{{__('Open In New Tab')}} :</label>
                                 <div class="col-sm-12 col-md-7">
                                     <label class="custom-switch ">
                                         <input type="checkbox" name="target" class="custom-switch-input" value="1" @if($menu->target) checked @endif>

@@ -61,42 +61,42 @@ $(function() {
 
 	// start for socket =============================================>
 	
-	var conn = new WebSocket(WEBSOCKET_PROTOCAL+WEBSOCKET_SERVER+":"+WEBSOCKET_PORT);
-	var connected = false;
-	var received_state = 0;
-	var received_message = null;
-    var message_state = function(string, cname) {
-        console.log(WEBSOCKET_PROTOCAL+WEBSOCKET_SERVER+":"+WEBSOCKET_PORT+" Status:",string);
-    }
-    // let us know we are live
-    conn.onopen = function(e) {
-		connected = true;
-        message_state("Connection established!", 'success');
-		received_state = 1; //pending
+	// var conn = new WebSocket(WEBSOCKET_PROTOCAL+WEBSOCKET_SERVER+":"+WEBSOCKET_PORT);
+	// var connected = false;
+	// var received_state = 0;
+	// var received_message = null;
+    // var message_state = function(string, cname) {
+    //     console.log(WEBSOCKET_PROTOCAL+WEBSOCKET_SERVER+":"+WEBSOCKET_PORT+" Status:",string);
+    // }
+    // // let us know we are live
+    // conn.onopen = function(e) {
+	// 	connected = true;
+    //     message_state("Connection established!", 'success');
+	// 	received_state = 1; //pending
 		
 
-		var data = {email: $('.mailbox').html(), time: elapsedTime};
-		conn.send(JSON.stringify(data));
-    };
+	// 	var data = {email: $('.mailbox').html(), time: elapsedTime};
+	// 	conn.send(JSON.stringify(data));
+    // };
 
-    conn.onclose = function(e) {
-        message_state("Connection closed!", 'error');
-        connected = false;
-    };
-    // when a new message is created
-    conn.onmessage = function(e) {
-        received_state = 2; //success
+    // conn.onclose = function(e) {
+    //     message_state("Connection closed!", 'error');
+    //     connected = false;
+    // };
+    // // when a new message is created
+    // conn.onmessage = function(e) {
+    //     received_state = 2; //success
 
-        received_message = JSON.parse(e.data);
-        console.log(WEBSOCKET_PROTOCAL+WEBSOCKET_SERVER+":"+WEBSOCKET_PORT+" got message:", received_message);
-		if(isMine(received_message))
-		{
-			// ?? received_message ??							
-			// if(waitingTimeout!=null)clearInterval(waitingTimeout);
-			// conn.close();
-			// window.location.href = result_url + '?message_id=' + received_message.message_id;
-		}		
-    };
+    //     received_message = JSON.parse(e.data);
+    //     console.log(WEBSOCKET_PROTOCAL+WEBSOCKET_SERVER+":"+WEBSOCKET_PORT+" got message:", received_message);
+	// 	if(isMine(received_message))
+	// 	{
+	// 		// ?? received_message ??							
+	// 		// if(waitingTimeout!=null)clearInterval(waitingTimeout);
+	// 		// conn.close();
+	// 		// window.location.href = result_url + '?message_id=' + received_message.message_id;
+	// 	}		
+    // };
     // end for socket <==============================================
 
 	var waitingTimeout = null;

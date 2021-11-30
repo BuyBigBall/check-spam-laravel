@@ -10,7 +10,11 @@
   {!! Twitter::generate() !!}
   <link rel="alternate" hreflang="x-default" href="{{ Str::replace('/'. $lang_locale, '', url()->current()) }}" />
   @foreach (\App\Models\Language::all() as $lang)
+  @if(empty(request()->segment(2)))
+  <link rel="alternate" hreflang="{{$lang->code}}" href="{{ Str::replace('/'. $lang_locale, '/'. $lang->code, url()->current()) }}" /> 
+  @else
   <link rel="alternate" hreflang="{{$lang->code}}" href="{{ Str::replace('/'. $lang_locale .'/', '/'. $lang->code .'/', url()->current()) }}" /> 
+  @endif
   @endforeach
   {!! $setdata['custom_tags'] !!}
   <!-- font awesome icons -->
@@ -23,7 +27,7 @@
 
   <link rel="stylesheet" href="{{ asset('assets/css/main.css') }}">
 
-  <link rel="stylesheet" href="{{ asset('assets/css/cookieconsent.min.css') }}">
+<!--  <link rel="stylesheet" href="{{ asset('assets/css/cookieconsent.min.css') }}"> -->
 
   @if(\App\Models\Language::where('code', $lang_locale)->first()->rtl == 1)
   <link rel="stylesheet" href="{{ asset('assets/css/rtl.css') }}">
@@ -69,6 +73,7 @@
   <!-- Custom Code -->
   {!! $setdata['head_ad'] !!}
 
+<?php /*
 <script>
       window.addEventListener("load", function(){
         window.cookieconsent.initialise({
@@ -85,6 +90,7 @@
           }
         })});
     </script>
+    */ ?>
 </head>
 
 <body>
@@ -136,7 +142,8 @@
           @foreach ($links as $link)
             @if($link->postion == 0)
               <li class="nav-item">
-                <a class="nav-link" @if($link->target) target="_self"  rel="noreferrer" @endif  href="{{$link->url}}">{!! $link->icon !!} {{$link->title}}</a>
+                <a class="nav-link" @if($link->target) target="_blank"  rel="noreferrer" @endif  
+                    href="{{$link->url}}">{!! $link->icon !!} {{ translate($link->title) }}</a>
               </li>
             @endif
           @endforeach

@@ -12,9 +12,16 @@
 
     <div
         id="header"
-        class="text-center pb-5 mh-33 mark-4"
+        class="text-center pb-5 mh-33 @if($total_score>=7) mark-4 @elseif($total_score>=5) mark-3 @elseif($total_score>=4) mark-2 @elseif($total_score>=3) mark-1 @else mark-0 @endif"
         style='background-color: var(--main-color);'>
-        <h1 class="title py-5 m-0 text-white">Wow! Perfect, you can send</h1>
+        <h1 class="title py-5 m-0 text-white">
+            @if    ($total_score>=7) {{ translate('Wow! Perfect, you can send') }}
+            @elseif($total_score>=5) {{ translate('Good! you can send the mail')}}
+            @elseif($total_score>=4) {{ translate('Warning! you cannot send the mail, but you can improve mail's content.')}}
+            @elseif($total_score>=3) {{ translate('carefully! don't sen the mail.')}} 
+            @else                    {{ translate('critical! This is a special spam mail.')}}
+            @endif
+            </h1>
         <div class="subtitle text-white my-3" id="score-label">Score :</div>
         <span class="score">{{$total_score}}/10</span>
     </div>
@@ -27,7 +34,7 @@
                 title="Refresh">
                 <i class="icon-refresh"></i>
             </a>
-            Subject :
+            {{ translate('Subject')}} :
             {{ $message['subject'] }}
             <div class="float-right date-received" title="{{date( 'l d M Y H:i:s P (T)', strtotime($message['receivedAt']) )}}">
                 <i class="icon-clock"></i>Received {{$ago_time}}</div>
@@ -42,18 +49,18 @@
                 <div class="header clearfix">
                     <div class="status success icon-check"></div>
                     <h2 class="title">
-                        <i class="icon-down"></i>Click here to view your message</h2>
+                        <i class="icon-down"></i>{{ translate('Click here to view your message')}}</h2>
                 </div>
                 <div class="content">
                     <div class="result">
-                        <b>From :</b>
+                        <b>{{ translate('From :')}}</b>
                         {{ $message['from'] }}
                         &lt;{{ $message['from_email'] }}&gt;
                         <br/>
-                        <b>Bounce address :
+                        <b>{{ translate('Bounce address :')}}
                         </b>{{ $message['from_email'] }}
                         <br/>
-                        <b>Reply-To :</b>
+                        <b>{{ translate('Reply-To :')}}</b>
                         {{ $message['from'] }}
                         &lt;{{ $message['from_email'] }}&gt;
                     </div>
@@ -62,7 +69,7 @@
                     <div class="test-result html-version">
                         <div class="header clearfix">
                             <h3 class="title">
-                                <i class="icon-down"></i>HTML version</h3>
+                                <i class="icon-down"></i>{{ translate('HTML version')}}</h3>
                         </div>
                         <div class="content">
                             <div class="result">
@@ -89,7 +96,7 @@
                         <div class="header clearfix">
                             <h3 class="title">
                                 <i class="icon-down"></i>
-                                HTML version (without external images)
+                                {{ translate('HTML version (without external images)')}}
                             </h3>
                         </div>
                         <div class="content">
@@ -136,7 +143,7 @@
                                 Source</h3>
                         </div>
                         <div class="content">
-                            <pre class="result">Received: by {{ env('MAIL_HOST') }} ; {{date('l d M Y H:i:s P (T)', strtotime($message['receivedAt']))}} 
+                            <pre class="result">{{ translate('Received: by')}} {{ env('MAIL_HOST') }} ; {{date('l d M Y H:i:s P (T)', strtotime($message['receivedAt']))}} 
 {{ $message['header'] }}
 							</pre>
 						</div>
@@ -150,42 +157,22 @@
 				<div class="header clearfix">
 					<div class="status warning">
 						-{{10-$score}}					</div>
-					<h2 class="title"><i class="icon-down"></i>SpamAssassin thinks you can improve</h2>
+					<h2 class="title"><i class="icon-down"></i>{{ translate('SpamAssassin thinks you can improve')}}</h2>
 				</div>
 				<div class="content">
-					<div class="about">The famous spam filter 
-							<a href="http://spamassassin.apache.org/" target="_blank">SpamAssassin</a>. Score: -{{10-$score}}.
-						<br />A score below -5 is considered spam.</div>
+					<div class="about">{{ translate('The famous spam filter ')}}
+							<a href="http://spamassassin.apache.org/" target="_blank">SpamAssassin</a>. {{ translate('Score :')}} -{{10-$score}}.
+						<br />{{ translate('A score below -5 is considered spam.')}}</div>
 					<div class="result">
 						<table class="table"><tbody>
 							<tr class="sa-test">
-								@foreach ($rules as $rule)
-								<td class="text-center sa-test-score @if($rule['score']-0>=1) status-warning @else status-success @endif">{{$rule['score']}}</td>
+								@foreach ($score_rules as $rule)
+								<td class="text-center sa-test-score @if($rule['score']-0<0) status-warning @else status-success @endif">{{$rule['score']}}</td>
 								<!-- <td class="sa-test-name"><samp>DKIM_SIGNED</samp></td> -->
 								<td class="sa-test-description">{{$rule['description']}}</td>
 								</tr>
 								@endforeach
-							<!--
-							<tr class="sa-test">			<td class="text-center sa-test-score status-success">0.1</td>			<td class="sa-test-name"><samp>DKIM_VALID</samp></td>			<td class="sa-test-description">Message has at least one valid DKIM or DK signature<br /><b>Great! Your signature is valid</b></td></tr> 	
 							
-							<tr class="sa-test">			<td class="text-center sa-test-score status-success">0.1</td>			<td class="sa-test-name"><samp>DKIM_VALID_AU</samp></td>			<td class="sa-test-description">Message has a valid DKIM or DK signature from author's domain<br /><b>Great! Your signature is valid and it's coming from your domain name</b></td></tr> 	
-							
-							<tr class="sa-test">			<td class="text-center sa-test-score status-success">0.1</td>			<td class="sa-test-name"><samp>DKIM_VALID_EF</samp></td>			<td class="sa-test-description">Message has a valid DKIM or DK signature from envelope-from domain</td></tr> 	
-							
-							<tr class="sa-test">			<td class="text-center sa-test-score status-warning">-0.25</td>			<td class="sa-test-name"><samp>FREEMAIL_ENVFROM_END_DIGIT</samp></td>			<td class="sa-test-description">Envelope-from freemail username ends in digit</td></tr> 	
-							
-							<tr class="sa-test">			<td class="text-center sa-test-score status-warning">-0.001</td>			<td class="sa-test-name"><samp>FREEMAIL_FROM</samp></td>			<td class="sa-test-description">Sender email is freemail<br /><b>You're sending from a free email account</b></td></tr> 	
-							
-							<tr class="sa-test">			<td class="text-center sa-test-score status-warning">-0.25</td>			<td class="sa-test-name"><samp>FREEMAIL_REPLYTO_END_DIGIT</samp></td>			<td class="sa-test-description">Reply-To freemail username ends in digit</td></tr> 	
-							
-							<tr class="sa-test">			<td class="text-center sa-test-score status-warning">-0.001</td>			<td class="sa-test-name"><samp>FROM_EXCESS_BASE64</samp></td>			<td class="sa-test-description">From: base64 encoded unnecessarily</td></tr> 	
-							
-							<tr class="sa-test">			<td class="text-center sa-test-score status-warning">-0.001</td>			<td class="sa-test-name"><samp>HTML_MESSAGE</samp></td>			<td class="sa-test-description">HTML included in message<br /><b>No worry, that's expected if you send HTML emails</b></td></tr> 	
-							
-							<tr class="sa-test">			<td class="text-center sa-test-score status-success">0.001</td>			<td class="sa-test-name"><samp>SPF_HELO_PASS</samp></td>			<td class="sa-test-description">SPF: HELO matches SPF record</td></tr> 	
-							
-							<tr class="sa-test">			<td class="text-center sa-test-score status-success">0.001</td>			<td class="sa-test-name"><samp>SPF_PASS</samp></td>			<td class="sa-test-description">SPF: sender matches SPF record<br /><b>Great! Your SPF is valid</b></td></tr>
-							-->
 							</tbody></table>					</div>
 				</div>
 			</div>
@@ -201,8 +188,9 @@
 				</div>
 				<div class="content">
 					<div class="about">
-						@if ($server_auth['auth_result']=='auth') We check if the server you are sending from is authenticated
-						@else We could not check if the server you are sending from is authenticated.  @endif
+						@if ($server_auth['auth_result']=='auth') 
+                        {{ translate('We check if the server you are sending from is authenticated')}}
+						@else {{ translate('We could not check if the server you are sending from is authenticated.')}}  @endif
 						</div>
 
 					<!-- SPF -->
@@ -214,13 +202,13 @@
 								[SPF] Your server <b>{{$server_auth['serverip']}}</b> is @if($spf_check['auth_result']!='pass') not @endif authorized to use <b>{{$message['from_email']}}</b></h3>
 						</div>
 						<div class="content">
-							<div class="about">Sender Policy Framework (SPF) is an email validation system designed to prevent email spam by detecting email spoofing, a common vulnerability, by verifying sender IP addresses.</div>
-							<div class="result"><p>What we retained as your current SPF record is:</p>
+							<div class="about">{{ translate('Sender Policy Framework (SPF) is an email validation system designed to prevent email spam by detecting email spoofing, a common vulnerability, by verifying sender IP addresses.')}}</div>
+							<div class="result"><p>{{ translate('What we retained as your current SPF record is:')}}</p>
 								@foreach( $spf_check['spf_record']  as $entry)
 								<pre>{{$entry}}</pre>
 								@endforeach
 								<br/>
-                            <p>Verification details:</p>
+                            <p>{{ translate('Verification details:')}}</p>
 							<pre>
 @foreach( $spf_check['dig-query'] as  $entry) {{ $entry['cmd'].' :' }} 
 @foreach( $entry['details'] as $line)
@@ -240,14 +228,14 @@
                         <div class="status success icon-check"></div>
                         <h3 class="title">
                             <i class="icon-down"></i>
-                            Your DKIM signature is valid</h3>
+                            {{ translate('Your DKIM signature is valid')}}</h3>
                     </div>
                     <div class="content">
-                        <div class="about">DomainKeys Identified Mail (DKIM) is a method for associating
+                        <div class="about">{{ translate('DomainKeys Identified Mail (DKIM) is a method for associating
                             a domain name to an email message, thereby allowing a person, role, or
-                            organization to claim some responsibility for the message.</div>
+                            organization to claim some responsibility for the message.')}}</div>
                         <div class="result">
-                            <p>The DKIM signature of your message is:</p>
+                            <p>{{ translate('The DKIM signature of your message is:')}}</p>
                             <pre>{{$dkim_auth['dkim_sign']}}</pre>
 							<!--
                             <p>Your public key is:</p>
@@ -266,20 +254,20 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                         <div class="status success icon-check"></div>
                         <h3 class="title">
                             <i class="icon-down"></i>
-                            Your message passed the DMARC test</h3>
+                            {{ translate('Your message passed the DMARC test')}}</h3>
                     </div>
                     <div class="content">
-                        <div class="about">A DMARC policy allows a sender to indicate that their emails
+                        <div class="about">{{ translate('A DMARC policy allows a sender to indicate that their emails
                             are protected by SPF and/or DKIM, and give instruction if neither of those
                             authentication methods passes. Please be sure you have a DKIM and SPF set before
-                            using DMARC.</div>
+                            using DMARC.')}}</div>
                         <div class="result">Your DMARC record is @if($dmarc_auth['auth_result']!='auth') not @endif set correctly and your message passed the DMARC test
 								<p>DMARC DNS entry found for the domain <b>_dmarc.{{$mail_server_domain}}</b>:</p>
 							@foreach($dmarc_auth['dmarc_entries'] as $entry)
                             <pre>{{$entry}}</pre>
 							@endforeach
                             <p></p>
-                            <p>Verification details:</p>
+                            <p>{{ translate('Verification details:')}}</p>
                             <pre><ul>
 								@foreach($dmarc_auth['dmarc_rows'] as $entry) <li>{{ env('MAIL_HOST') }}; {{$entry}}</li> @endforeach <li>From Domain: {{$mail_server_domain}}</li> <li>DKIM Domain: {{$mail_server_domain}}</li>								
 								</ul></pre>
@@ -301,14 +289,14 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                         </h3>
                     </div>
                     <div class="content">
-                        <div class="about">Reverse DNS lookup or reverse DNS resolution (rDNS) is the
+                        <div class="about">{{ translate('Reverse DNS lookup or reverse DNS resolution (rDNS) is the
                             determination of a domain name that is associated with a given IP address.<br/>Some
                             companies such as AOL will reject any message sent from a server without rDNS,
-                            so you must ensure that you have one.<br/>You cannot associate more than one domain name with a single IP address.</div>
+                            so you must ensure that you have one.<br/>You cannot associate more than one domain name with a single IP address.')}}</div>
                         <div class="result">
                             <p></p>
                         </div>
-                        <pre class="result">Here are the tested values for this check:<br /><ul>
+                        <pre class="result">{{ translate('Here are the tested values for this check:')}}<br /><ul>
 							<li>IP: {{$rdns_auth['server_ip']}}</li><li>HELO: {{$rdns_auth['helo_domain']}}</li><li>rDNS: {{$rdns_auth['rdns_domain']}}</li></ul></pre>
                     </div>
                 </div>
@@ -366,13 +354,13 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
             <div class="header clearfix">
                 <div class="h-100 status warning icon-check"></div>
                 <h2 class="title">
-                    <i class="icon-down"></i>Your message could be improved</h2>
+                    <i class="icon-down"></i>{{ translate('Your message could be improved')}}</h2>
             </div>
             <div class="content">
 
-                <div class="about">Checks whether your message is well formatted or not.</div>
+                <div class="about">{{ translate('Checks whether your message is well formatted or not.')}}</div>
                 <div class="result">
-                    <p class="message-weight">Weight of the HTML version of your message:
+                    <p class="message-weight">{{ translate('Weight of the HTML version of your message:')}}
                         <b>{{  strlen($message['content'] ) }}B</b>.</p>
                     <p>Your message contains
                         <b>{{ strlen($message['content'])==0 ? '&nbsp;' : round(strlen( \Soundasleep\Html2Text::convert( $message['content'] ) ) / strlen($message['content'])  * 100) }}</b>% of text.</p>
@@ -384,12 +372,12 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                         <div class="status success icon-check"></div>
                         <h3 class="title">
                             <i class="icon-down"></i>
-                            You have no images in your message</h3>
+                            {{ translate('You have no images in your message')}}</h3>
                     </div>
                     <div class="content">
-                        <div class="about">ALT attributes provide a textual alternative to your images.<br/>It
+                        <div class="about">{{ translate('ALT attributes provide a textual alternative to your images.<br/>It
                             is a useful fallback for people who are blind or visually impaired and for cases
-                            where your images cannot be displayed.</div>
+                            where your images cannot be displayed.')}}</div>
                         <div class="result"></div>
                     </div>
                 </div>
@@ -400,11 +388,10 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                         <div class="status success icon-check"></div>
                         <h3 class="title">
                             <i class="icon-down"></i>
-                            Your content is safe</h3>
+                            {{ translate('Your content is safe')}}</h3>
                     </div>
                     <div class="content">
-                        <div class="about">Checks whether your message contains dangerous html elements
-                            such as javascript, iframes, embed content or applet.</div>
+                        <div class="about">{{ translate('Checks whether your message contains dangerous html elements such as javascript, iframes, embed content or applet.')}}</div>
                         <div class="result"></div>
                     </div>
                 </div>
@@ -415,10 +402,10 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                         <div class="status success icon-check"></div>
                         <h3 class="title">
                             <i class="icon-down"></i>
-                            We didn't find short URLs</h3>
+                            {{ translate('We didn't find short URLs')}}</h3>
                     </div>
                     <div class="content">
-                        <div class="about">Checks whether your message uses URL shortener systems.</div>
+                        <div class="about">{{ translate('Checks whether your message uses URL shortener systems.')}}</div>
                         <div class="result"></div>
                         <div class="result">
                             <pre></pre>
@@ -432,12 +419,11 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                         <div class="status warning icon-check"></div>
                         <h3 class="title">
                             <i class="icon-down"></i>
-                            Your message does not contain a List-Unsubscribe header</h3>
+                            {{ translate('Your message does not contain a List-Unsubscribe header')}}</h3>
                     </div>
                     <div class="content">
-                        <div class="about">The List-Unsubscribe header is required if you send mass
-                            emails, it enables the user to easily unsubscribe from your mailing list.</div>
-                        <div class="result">Your message does not contain a List-Unsubscribe header</div>
+                        <div class="about"> {{ translate('The List-Unsubscribe header is required if you send mass emails, it enables the user to easily unsubscribe from your mailing list.')}}</div>
+                        <div class="result">{{ translate('Your message does not contain a List-Unsubscribe header')}}</div>
                         <div class="result">
                             <pre></pre>
                         </div>
@@ -454,14 +440,14 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                 <h2 class="title">
                     <i class="icon-down"></i>
                         @if($black_list_score==0)
-                            You're not blacklisted
+                            {{ translate('You're not blacklisted')}}
                         @else
-                            You're listed in {{ $black_list_score/$bl_score_unit }} blacklist
+                            {{ translate('You're listed in blacklist')}} {{ $black_list_score/$bl_score_unit }} 
                         @endif
                     </h2>
             </div>
             <div class="content">
-                <div class="about">Matches your server IP address (<b>{{$server_auth['serverip']}}</b>) against {{ count($BL_results) }} of the most common IPv4 blacklists.</div>
+                <div class="about">{{ translate('Matches your server IP address')}} (<b>{{$server_auth['serverip']}}</b>) against {{ count($BL_results) }} of the most common IPv4 blacklists.</div>
                 <div class="result">
                     <div class="row">
                         @foreach($BL_results as $key=>$row)
@@ -603,24 +589,26 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                     <i class="icon-down"></i>@if(count($broken_urls)>0) You have {{count($broken_urls)}} broken links @else No broken links @endif</h2>
             </div>
             <div class="content">
-                <div class="about">Checks if your newsletter contains broken links.</div>
-                <div class="result">@if(count($broken_urls)==0) No links found. @else 
-                    <ul>
-						@foreach($broken_urls as $broken)
-                        <li>
-							<div class="col-sm-6 col-md-4 bl-result">
-								<span class="status-success">broken link</span> :
-								<a target="_blank" href="<?php echo $broken['url']; ?>">{{$broken['url']}}</a>
-							</div>
-						</li>
-						@endforeach
-                    </ul>
+                <div class="about">{{ translate('Checks if your newsletter contains broken links.')}}</div>
+                <div class="result">
+                        @if(count($broken_urls)==0) {{ translate('No links found.')}} 
+                        @else 
+                        <ul>
+                            @foreach($broken_urls as $broken)
+                            <li>
+                                <div class="col-sm-6 col-md-4 bl-result">
+                                    <span class="status-success">{{ translate('broken link')}}</span> :
+                                    <a target="_blank" href="<?php echo $broken['url']; ?>">{{$broken['url']}}</a>
+                                </div>
+                            </li>
+                            @endforeach
+                        </ul>
                     @endif</div>
             </div>
         </div>
 
 
-        <div class="total text-right subtitle">Your lovely total: {{$total_score}}/10</div>
+        <div class="total text-right subtitle">{{ translate('Your lovely total:')}} {{$total_score}}/10</div>
     </div>
 </div>
 

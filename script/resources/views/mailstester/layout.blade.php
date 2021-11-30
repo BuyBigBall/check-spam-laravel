@@ -148,13 +148,14 @@
                         <div class="header_login">
 
                             @if (!empty($userdata['user_login']))
-                            <form action="{{ route('logout') }}" method="post" id="login-form" class="form-vertical">
+                            <form action="{{ route('logout') }}" method="post" 
+                                    id="login-form" class="form-vertical">
                                 @csrf
                                 <div class="login-greeting">
                                     {{ $userdata['user_login']['name'] }}
                                 </div>
                                 <div class="logout-button">
-                                    <input type="submit" class="btn btn-primary" value="Log out">
+                                    <input type="submit" class="btn btn-primary" value="{{translate('Log out')}}">
                                     <!-- <input type="hidden" name="option" value="com_users"> <input type="hidden"
                                     name="task" value="user.logout"> <input type="hidden" name="return"
                                     value="aW5kZXgucGhwP0l0ZW1pZD0xNjk="> <input type="hidden"
@@ -242,10 +243,10 @@
                                                 Forgot your password?</a>
                                         </li>
                                     </ul>
-                                    <input type="hidden" name="option" value="com_users">
+                                    <!-- <input type="hidden" name="option" value="com_users">
                                     <input type="hidden" name="task" value="user.login">
                                     <input type="hidden" name="return" value="aW5kZXgucGhwP0l0ZW1pZD0xMTE=">
-                                    <input type="hidden" name="2387cd0cd1462cbda6de0436ed1ff1c1" value="1">
+                                    <input type="hidden" name="2387cd0cd1462cbda6de0436ed1ff1c1" value="1"> -->
                                 </div>
                             </form>
                             @endif

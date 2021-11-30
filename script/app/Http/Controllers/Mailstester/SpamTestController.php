@@ -90,6 +90,16 @@ class SpamTestController extends Controller
             curl_close($ch);
             if($headers['http_code']!=200)
             {
+				$bExist = false;
+				foreach($results as $lst)
+				{
+					if($lst['url']==$url[2])
+					{
+						$bExist = true; break;
+					}
+				}
+				
+				if(!$bExist && stripos($url[2], 'http', 0)!==false)
                 $results[] = [
                     'url' => $url[2],
                     'score'=> $this->burl_score_unit,
@@ -116,56 +126,7 @@ class SpamTestController extends Controller
     	return $listed;
     }
 
-    private function Spamhause_dataquery_api($check_ip)
-    {
-        $check_mark = 0.1;
-        $ch = curl_init(env('SPAMHAUS_GETTOKEN_URL'));
-		curl_setopt($ch, CURLOPT_POST, 1);  //POST
-		curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, '{"username":"'.env('SPAMHAUS_USERNAME').'", "password":"'.env('SPAMHAUS_PASSWORD').'", "realm":"intel"}');
-		$response = curl_exec($ch);
-		curl_close($ch);
-		
-        $response_json = json_decode($response);
-		if($response_json->code==200)
-		{
-			$token = $response_json->token;
-			$authorization = "Authorization: Bearer " . $token;
-            $api_url = sprintf(env('SPAMHAUS_QUERYAPI_URL'), 'XBL', $check_ip);
-            //print($api_url); die;
-			$ch = curl_init( $api_url );
-			curl_setopt($ch, CURLOPT_POST, 0);  //GET
-			curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json' , $authorization ));
-			curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-			$response = curl_exec($ch);
-			curl_close($ch);
-			
-            
-            $response_json = json_decode($response);
-            if($response_json->code==200)
-		    {
-                foreach($response_json->results as $result_row)
-                {
-                    if($result_row->ipaddress==$check_ip)
-                    {
-                        if($result_row->botname=='unknown')
-                        {
-                            if($result_row->detection!=null)
-                            {
-                                $check_mark = 0;
-                                break;
-                            }
-                        }
-                    }
-                }
-                
-            }
-		}
-        return $check_mark;
-    }
+    
 	function getbody($html) {
 		
         $dom = new DOMDocument;
@@ -451,7 +412,6 @@ class SpamTestController extends Controller
 			if( strlen(str_replace(" " , "", $item))>10)	$print_result[] = '"'.$item.'"';
 		}
 		$spf_detail[] =  ['cmd'=>$print_command, 'details'=>$print_result];
-		//print_r($spf_detail); die;
 		return ['auth_result'=>$auth_result, 'spf_record'=>$spf_record, 'spf_issues'=>$issue_strings, 'dig-query'=>$spf_detail];
 	}
 
@@ -498,7 +458,7 @@ class SpamTestController extends Controller
                             ->get();
             if( $test_total!=null && 
                 $test_total->first()!=null && 
-                $test_total->first()->total >= env('MAX_FREETEST_COUNT') )
+                $test_total->first()->total >= env('MAX_FREETEST_COUNT') && env('MAX_FREETEST_COUNT')>0 )
             {
                 $could_not_use = true;
             }
@@ -510,7 +470,46 @@ class SpamTestController extends Controller
 
         return $could_not_use;
     }
-	
+	private function GetSpamAssassinRules($header)
+    {
+        $pos = stripos( $header, "X-Spam-Report:", 0);
+        $pos += strlen("X-Spam-Report:");
+        $posend = stripos( $header, "X-Original-To:", $pos);
+        $reports = substr($header, $pos, $posend - $pos);
+		$rules_array = explode('*', $reports);
+		$rules = [];
+		$marks = 0;
+		$explain = '';
+		foreach($rules_array as $line)
+		{
+			if(strlen($line)<3) continue;
+			if(is_numeric (substr($line, 2,1)) || substr($line, 1,1)=='-')
+			{
+				if(strlen($explain)>5)
+				{
+					//print(strlen($explain)); die;
+					$rules[] = ['score'=>$marks, 'description'=>$explain];
+					$explain = '';
+					$marks = 0;
+				}
+				$pos = stripos( $line, ' ', 2);
+				$marks = substr(  $line, 1, $pos-1 );
+				$explain .= substr($line, $pos );
+			}
+			else
+			{
+				$explain .= $line;
+			}
+		}
+		if($explain!='')
+		{
+			$rules[] = ['score'=>$marks, 'description'=>$explain];
+			$explain = '';
+			$marks = 0;
+		}
+		//print_r($rules); die;
+        return $rules;
+    }
 	private function GetSpamAssassinScore($header)
     {
         $pos = stripos( $header, "X-Spam-Status:", 0);
@@ -529,7 +528,6 @@ class SpamTestController extends Controller
 	
     public function TestResult(Request $request)
     {
-        //print($this->Spamhause_dataquery_api($request->ip)); die;
         $mail_id = 0;
         $email = null; if (Cookie::has('email')) $email =  Cookie::get('email');
         $Hashid = $request->input('message_id');
@@ -601,7 +599,7 @@ class SpamTestController extends Controller
             }
         }
 		$score_report['score'] = $this->GetSpamAssassinScore($response['header']);
-		
+		$score_rules = $this->GetSpamAssassinRules($response['header']);
 		$mail_server_domain = explode('@', $response['from_email'])[1];
 		//To check DMARC
 		$dmark_results = dns_get_record("_dmarc.".$mail_server_domain,DNS_TXT);
@@ -663,7 +661,6 @@ class SpamTestController extends Controller
         }
 
 		##################  blacklist ip cheking #################
-        //$score = $this->Spamhause_dataquery_api($auth_serverInfo['serverip']);
         $bl_score_list = $this->cheking_blacklist($auth_serverInfo['serverip']);	//'95.19.4.3');//
 		
         $black_list_score = array_sum($bl_score_list);
@@ -704,6 +701,7 @@ class SpamTestController extends Controller
 			->with('ago_time',		$ago_time)
             ->with('report', 	    $score_report['report'])
 			->with('rules', 	    $score_report['rules'])
+			->with('score_rules',   $score_rules)
 			->with('score', 	    10 - $score_report['score'])
 			->with('total_score', 	10 - $total_score)
             ->with('black_list_score', $black_list_score)

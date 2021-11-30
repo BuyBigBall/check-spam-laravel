@@ -32,12 +32,12 @@ function translate($key, $coll = 'general' ,  $lang = null){
     // if Translate = 0 create new one
     $translation = Translate::where('lang', env('DEFAULT_LANGUAGE', 'en'))->where('key', $key)->where('collection', $coll)->first();
     if($translation == null){
-        
-        foreach(Language::all() as $lang){
+        if($key!=null)
+        foreach(Language::all() as $lang_locale){
             $translation = new Translate;
-            $translation->lang = $lang['code'];
+            $translation->lang = $lang_locale['code'];
             $translation->key = $key;
-            $translation->value = null;
+            $translation->value = $lang_locale['code']=='en' ? $key : null;
             $translation->collection = $coll;
             $translation->save();
         }
@@ -47,9 +47,9 @@ function translate($key, $coll = 'general' ,  $lang = null){
     if($translation_locale != null && $translation_locale->value != null){
         return $translation_locale->value;
     }
-    elseif($translation->value != null){
-        return $translation->value;
-    }
+    // elseif($translation->value != null){
+    //     return $translation->value;
+    // }
     else{
         return $key;
     }

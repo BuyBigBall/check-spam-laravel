@@ -12,7 +12,7 @@
         <div class="home-text">
           <form method="POST" action="{{ route('spamtest') }}">
           @csrf
-          <h1>{{as_it_is('First, send your email to:')}}</h1>
+          <h1>{{translate('First, send your email to:')}}</h1>
           <div class="custom-email">
             <input type="text" class="custom-email-input" id="trsh_mail" name="trsh_mail" readonly>
             <input type="hidden" id="hFlag_MessageId" name="message_id" value=''>
@@ -36,7 +36,7 @@
           </div>
           
           <div class="counter">
-            <button type="submit" class="btn btn-2"><b>{{as_it_is('Then check your score')}}</b></button>
+            <button type="submit" class="btn btn-2"><b>{{translate('Then check your score')}}</b></button>
             <!-- 
             <span class=" count_ mail_count">
               <b>{{translate('Emails Created')}}</b>

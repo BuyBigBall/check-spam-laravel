@@ -67,6 +67,7 @@ class LanguageController extends Controller
             $new_translate = new Translate();
             $new_translate->lang = $request->code;
             $new_translate->key = $translate->key;
+            $new_translate->collection = $translate->collection;
             $new_translate->value = "";
             $new_translate->save();
         }

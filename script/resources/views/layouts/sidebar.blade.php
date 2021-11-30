@@ -21,6 +21,12 @@
         </a>
       </li>
 
+      <li {{request()->segment(2) == "users" ? 'class=active' : ""}}>
+        <a class="nav-link" href="{{ route('users.index') }}">
+          <i class="fas fa-user"></i><span>{{Translate('Users')}}</span>
+        </a>
+      </li>
+
       <li {{request()->segment(2) == "posts" ? 'class=active' : ""}}>
         <a class="nav-link" href="{{ route('posts.index') }}">
           <i class="fas fa-newspaper"></i> <span>{{__('Posts')}}</span>

@@ -26,6 +26,10 @@ class TrashMail extends Model
 
     protected $fillable = ['delete_in', 'email', 'user_id'];
 
+    public function user() {
+        return $this->belongsTo('App\Models\User', 'user_id');
+    }
+    
     public static function connection($email = null)
     {
         

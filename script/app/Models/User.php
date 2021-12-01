@@ -50,4 +50,10 @@ class User extends Authenticatable
     public function TestResults() {
         return $this->hasMany('App\Models\TestResult');
     }
+    public function profile() {
+        return $this->hasMany('App\Models\Profile');
+    }
+    public function default() {
+        return $this->hasOne('App\Models\Profile')->where('default_address','=', 1);
+    }
 }

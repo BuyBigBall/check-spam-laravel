@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         
         \App\Console\Commands\DeleteEmails::class,
         \App\Console\Commands\Statistics::class,
+        \App\Console\Commands\WebSocketServer::class,   
 
     ];
 

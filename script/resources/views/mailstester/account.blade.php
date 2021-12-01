@@ -86,7 +86,7 @@
                         </table>
                     </a>
                 </div>
-                <div
+                <div style='display:none;'
                     onclick="document.location.href='{{ route('cart-type-cart') }}';"
                     class="icon mailtester_cart_cpanel_icon_div icon mailtester_cart_cpanel_icon_div_cart">
                     <a

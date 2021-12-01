@@ -27,6 +27,24 @@
         </a>
       </li>
 
+      <li {{request()->segment(2) == "coupons" ? 'class=active' : ""}}>
+        <a class="nav-link" href="{{ route('coupons.index') }}">
+          <i class="fas fa-percentage"></i><span>{{Translate('Coupons')}}</span>
+        </a>
+      </li>
+
+      <li {{request()->segment(2) == "transactions" ? 'class=active' : ""}}>
+        <a class="nav-link" href="{{ route('transactions.index') }}">
+          <i class="fas fa-money-bill-alt"></i><span>{{Translate('Transactions')}}</span>
+        </a>
+      </li>
+
+      <li {{request()->segment(2) == "testhistories" ? 'class=active' : ""}}>
+        <a class="nav-link" href="{{ route('testhistories.index') }}">
+          <i class="fas fa-mail-bulk"></i><span>{{Translate('Test History')}}</span>
+        </a>
+      </li>
+
       <li {{request()->segment(2) == "posts" ? 'class=active' : ""}}>
         <a class="nav-link" href="{{ route('posts.index') }}">
           <i class="fas fa-newspaper"></i> <span>{{__('Posts')}}</span>

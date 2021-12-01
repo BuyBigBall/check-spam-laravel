@@ -45,7 +45,31 @@ $(document).ready(function () {
       }, 1000);
     });
 
+    setTimeout(function() {
+      $(".coupon_error").fadeOut();
+    }, 5000);
 
+  // if(typeof dataTable!=undefined && DataTable) {
+    //dataTable =
+     $('#order_list').DataTable({
+          "destroy": false, 
+          "searching": true, 
+          "info": true,  
+          "pagingType": "full_numbers",
+          "bLengthChange": true,
+          columns: [
+              { name: 'no', data: 'no' , searchable: false , visible: true, "orderable": false, },
+              { name: 'OrderNumber', data: 'ordernum' , searchable: true , visible: true,
+                     width:'20%', "orderable": true },
+              { name: 'date', data: 'date' , searchable: true , visible: true  },
+              { name: 'status', data: 'status' , searchable: true , visible: true ,},
+              { name: 'total', data: 'total' , searchable: true , visible: true },
+              { name: 'count', data: 'count' , searchable: false , visible: true },
+              { name: 'used', data: 'used' , searchable: false , visible: true }
+              ]
+      });
+  // }else dataTable.fnClearTable();
+  
   $(".lang_dropdown").niceScroll({
     cursorcolor: color,
     zindex: 10000000000000,
@@ -225,8 +249,12 @@ $(document).ready(function () {
     }
 
     //messages();
-    ajax_email();
-    setInterval(messages, fetch_time * 1000);
+    if(firstpage_flag!==undefined)
+    {
+      ajax_email();
+      setInterval(messages, fetch_time * 1000);
+    }
+
   } catch (error) {}
 
   var flag_unreadmail = false;

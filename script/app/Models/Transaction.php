@@ -22,4 +22,22 @@ class Transaction extends Model
             //]
         ];
     }
+    
+    public function balance()
+    {
+        return $this->hasOne('App\Models\Balance','id','balance_id');
+    }
+    public function profile()
+    {
+        return $this->hasOne('App\Models\Profile','id','user_id');
+    }
+    
+    public function buyer() {
+        return $this->belongsTo('App\Models\Profile','user_id');
+    }
+
+    public function trash_mail() {
+        return $this->belongsTo('App\Models\TrashMail','email_id');
+    }
+
 }

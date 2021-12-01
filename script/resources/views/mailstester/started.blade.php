@@ -158,7 +158,7 @@
                             name="pkey"/><br/>
                         So your tests should be sent to
                         <b>
-                            <span class="testingEmail">{{ $userdata['user_login']['name'] }}-clientID-currenttimestamp</span>@{{ ($request=Request::capture())->gethttphost() }}</b>
+                            <span class="testingEmail">{{ $userdata['user_login']['name'] }}-clientID-currenttimestamp</span>{{ '@'.($request=Request::capture())->gethttphost() }}</b>
                     </li>
                     <li>Only accept tests sent from the following mail server IPs (separate your IPs
                         with a comma):<br/>
@@ -200,6 +200,7 @@
                         id="micropayment"
                         name="micropayment"
                         size="1"
+                        onchange='changemicropay(event, this);'
                         style="width:auto;">
                         <option value="0" @if( $conf['micropayment']==0 ) selected @endif >Disabled - your users can see their result for free</option>
                         <option value="1" @if( $conf['micropayment']==1 ) selected @endif >Enabled - your users will have to pay a small fee to see their result</option>
@@ -337,4 +338,13 @@
 
     </div>
 </div>
+<script>
+    function changemicropay(evt, obj)
+    {
+        if($(obj).val()==1)
+            $('#micropaymentpacks').show();
+        else
+            $('#micropaymentpacks').hide();
+    }
+</script>
 @endsection

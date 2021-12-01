@@ -552,7 +552,7 @@ class SpamTestController extends Controller
             if(empty($id_hash) || !is_array($id_hash) || count($id_hash)==0) abort(419);
             $mail_id     = $id_hash[0];
         }
-
+        
         if( ($could_not_use=$this->check_test_count_for_free_user() ))
         {
             Session::put('could_not_use_by_paid_user', 'You have exceeded the free user limit.');
@@ -562,7 +562,7 @@ class SpamTestController extends Controller
         
         $score = new \palPalani\SpamassassinScore\SpamassassinScore();
 		
-        
+        $to_email = $email;
         $response = TrashMail::messages($email, $Hashid);
 		
         if( empty($response['messages'])  && count($response)>0 )
@@ -635,12 +635,13 @@ class SpamTestController extends Controller
                         'user_id' => $user_id,
                         'name' => $user_name ,
                         'email' => $email,
+                        'receiver'=>$to_email,
+                        'sender' => $response['from_email'],
                         'tested_at' => date('Y-n-d H:i:s', time()),
                         'received_at' => $response['receivedAt'],
                         'subject' => $response['subject'],
                         'header' => $response['header'],
                         'content' => $response['content'],
-                        'sender' => $response['from_email'],
                         'score' => $score_report['score'],
                         // 'created_at' => time(),
                     ];

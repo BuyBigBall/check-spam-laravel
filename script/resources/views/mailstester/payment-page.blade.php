@@ -2,203 +2,315 @@
 
 @section('content')
 <style>
-    .required{
-        color : red;
+
+    #order_review td{
+        height:2.5rem;
+    }
+    .coupon_error .red{
+        color:red;
+        font-size:0.8rem;
+    }
+    .couponrow{
+        padding-left:15rem;
     }
     .btn-third
     {
-        line-height : 1rem;
+        font-size:0.8rem;
+    }
+
+    .mailtester_cart_checkout_page_step0 h1
+    {
+        border-bottom:none !important;
+    }
+    .product-total.amount
+    {
+        text-align : right;
+        padding-right:2rem;
+    }
+    .maz-Price-amount.amount
+    {
+        font-size:0.9rem;
+    }
+    .maz-Price-amount.amount.total{
+        font-size:1rem;
+    }
+    .required{
+        color : red;
+    }
+    #payment_container label, #payment_container p
+    {
+        font-size:13px;
+    }
+    #payment_container select,
+    #payment_container textarea,
+    #payment_container input[type="text"],
+    #payment_container input[type="password"],
+    #payment_container input[type="datetime"],
+    #payment_container input[type="datetime-local"],
+    #payment_container input[type="date"],
+    #payment_container input[type="month"],
+    #payment_container input[type="time"],
+    #payment_container input[type="week"],
+    #payment_container input[type="number"],
+    #payment_container input[type="email"],
+    #payment_container input[type="url"],
+    #payment_container input[type="search"],
+    #payment_container input[type="tel"],
+    #payment_container input[type="color"],
+    #payment_container .uneditable-input {
+        height: calc(1.5em + 0.75rem + 2px);
+        color:#333;
+    }
+
+    #mailtester_cart_checkout_page_coupon
+    {
+        margin-top:0.8rem;
+    }
+
+    .maz-checkout-payment
+    {
+        margin-top:1rem;
     }
     </style>
-<div id="content_container" style="width:100%">
+
+
+<div id="payment_container" style="width:100%">
     <div class="row-fluid contentsize container ">
 
         <div id="system-message-container" class='row'></div>
+        
+        <div class="mailtester_cart_cpanel_title" id="mailtester_cart_cpanel_title">
+                <fieldset>
+                    <div class="header mailtester_cart_header_title">
+                        <h3>CHECKOUT</h3>
+                    </div>
+                </fieldset>
+            </div>
 
         <form class="checkout_coupon woocommerce-form-coupon" method="post" style="">
+            @csrf
             <div
                 id="mailtester_cart_checkout_page_coupon"
-                class="mailtester_cart_checkout_page mailtester_cart_checkout_page_step0 row justify-content-center">    
-                <p>If you have a coupon code, please apply it below.</p>
-                <p class="form-row form-row-first">
-                    <input type="text" name="coupon_code" class="input-text" placeholder="Coupon code" id="coupon_code" value="">
-                </p>
-                <p class="form-row form-row-last">
+                class="row justify-content-center">    
+                <div class="col-sm-12 col-md-12 left pt-1 couponrow">If you have a coupon code, please apply it below.</div>
+                <div class="col-sm-12 col-md-6 left  pt-1 couponrow" >
+                    <input type="text" name="coupon_code" class="input-text" 
+                        placeholder="Coupon code" id="coupon_code" value="{{$checkout_payment_coupon}}">
+                </div>
+                <div class="col-sm-12 col-md-6" >
                     <button type="submit" class="button btn btn-secondary btn-third" 
-                        style='padding:1px; margin-left:1rem;'
+                        style='margin-left:1rem;'
                         name="apply_coupon" value="Apply coupon">Apply coupon</button>
-                </p>
+                </div>
                 <div class="clear"></div>
             </div>
+            @if( !empty($error_message['coupon']) )
+            <div class="row justify-content-center coupon_error couponrow">
+                <div class="col-sm-12 col-md-12">
+                    <span class='red'>{{$error_message['coupon']}}</span>
+                </div>
+            </div>
+            @endif
         </form>
 
-        <form>
+        <form class="form-horizontal" method="POST" id="payment-form" role="form" 
+            action="{!! URL::route('buy_mail_test') !!}" >
                 @csrf
         <div
             id="mailtester_cart_checkout_page"
             class="mailtester_cart_checkout_page mailtester_cart_checkout_page_step0 row">
-<div class="col-sm-6 col-md-7">
+<div class="col-sm-6 col-md-1"></div>
+<div class="col-sm-6 col-md-6">
+    <h1>Billing details</h1>
     <div class="maz-billing-fields">
         <div class="maz-billing-fields__field-wrapper">
+            
             <div class="form-group row mb-4">
                 <label
                     for="firstname"
-                    class="col-form-label text-md-right col-12 col-md-3 col-lg-3">
+                    class="col-form-label text-md-right col-12 col-md-4 col-lg-4">
                     First name
                     <span class="required">*</span>
                     :</label>
-                <div class="col-sm-12 col-md-7">
+                <div class="col-sm-12 col-md-6">
                     <input
                         type="text"
                         id="firstname"
                         class="form-control "
                         name="firstname"
-                        value=""
-                        required=""
+                        @if( !empty($userdata['user_profile']) )
+                        value="{{$userdata['user_profile']['firstname']}}"
+                        @endif
+                        required
                         placeholder="First Name"/>
                 </div>
             </div>
             <div class="form-group row mb-4">
                 <label
-                    class="col-form-label text-md-right col-12 col-md-3 col-lg-3"
+                    class="col-form-label text-md-right col-12 col-md-4 col-lg-4"
                     for="lastname">Last name
                     <span class="required">*</span>
                     :</label>
-                <div class="col-sm-12 col-md-7">
+                <div class="col-sm-12 col-md-6">
                     <input
                         type="text"
                         id="lastname"
                         class="form-control "
                         name="lastname"
-                        value=""
-                        required=""
+                        @if( !empty($userdata['user_profile']) )
+                        value="{{$userdata['user_profile']['lastname']}}"
+                        @endif
+                        required
                         placeholder="Last Name"/>
                 </div>
             </div>
             <div class="form-group row mb-4">
                 <label
-                    class="col-form-label text-md-right col-12 col-md-3 col-lg-3"
+                    class="col-form-label text-md-right col-12 col-md-4 col-lg-4"
                     for="company">Company name :</label>
-                <div class="col-sm-12 col-md-7">
+                <div class="col-sm-12 col-md-6">
                     <input
                         type="text"
                         id="company"
                         class="form-control "
                         name="company"
-                        value=""
+                        @if( !empty($userdata['user_profile']['company'] ) )
+                        value="{{$userdata['user_profile']['company']}}"
+                        @endif
                         placeholder="Company Name"/>
                 </div>
             </div>
 
             <div class="form-group row mb-4">
                 <label
-                    class="col-form-label text-md-right col-12 col-md-3 col-lg-3"
+                    class="col-form-label text-md-right col-12 col-md-4 col-lg-4"
                     for="country">Country / Region
                     <span class="required">*</span>
                     :</label>
-                <div class="col-sm-12 col-md-7">
+                <div class="col-sm-12 col-md-6">
                     <input
                         type="text"
                         id="country"
                         class="form-control "
                         name="country"
-                        value=""
+                        @if( !empty($userdata['user_profile'] ) )
+                        value="{{$userdata['user_profile']['country']}}"
+                        @endif
+                        required
                         placeholder="Country"/>
                 </div>
             </div>
 
             <div class="form-group row mb-4">
                 <label
-                    class="col-form-label text-md-right col-12 col-md-3 col-lg-3"
+                    class="col-form-label text-md-right col-12 col-md-4 col-lg-4"
                     for="street">Street address
                     <span class="required">*</span>
                     :</label>
-                <div class="col-sm-12 col-md-7">
+                <div class="col-sm-12 col-md-6">
                     <input
                         type="text"
                         id="street"
                         class="form-control "
                         name="address"
-                        value=""
+                        @if( !empty($userdata['user_profile'] ) )
+                        value="{{$userdata['user_profile']['address']}}"
+                        @endif
+                        required
                         placeholder="Street"/>
                 </div>
             </div>
 
             <div class="form-group row mb-4">
-                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3" for="city">City
+                <label class="col-form-label text-md-right col-12 col-md-4 col-lg-4" for="city">City
                     <span class="required">*</span>
                     :</label>
-                <div class="col-sm-12 col-md-7">
+                <div class="col-sm-12 col-md-6">
                     <input
                         type="text"
                         id="city"
                         class="form-control "
                         name="city"
-                        value=""
+                        @if( !empty($userdata['user_profile'] ) )
+                        value="{{$userdata['user_profile']['city']}}"
+                        @endif
+                        required
                         placeholder="City"/>
                 </div>
             </div>
             <div class="form-group row mb-4">
                 <label
-                    class="col-form-label text-md-right col-12 col-md-3 col-lg-3"
+                    class="col-form-label text-md-right col-12 col-md-4 col-lg-4"
                     for="state">State
                     <span class="required">*</span>
                     :</label>
-                <div class="col-sm-12 col-md-7">
+                <div class="col-sm-12 col-md-6">
                     <input
                         type="text"
                         id="state"
                         class="form-control "
                         name="state"
-                        value=""
+                        @if( !empty($userdata['user_profile'] ) )
+                        value="{{$userdata['user_profile']['state']}}"
+                        @endif
+                        required
                         placeholder="State"/>
                 </div>
             </div>
             <div class="form-group row mb-4">
                 <label
-                    class="col-form-label text-md-right col-12 col-md-3 col-lg-3"
+                    class="col-form-label text-md-right col-12 col-md-4 col-lg-4"
                     for="email">Email Address
                     <span class="required">*</span>
                     :</label>
-                <div class="col-sm-12 col-md-7">
+                <div class="col-sm-12 col-md-6">
                     <input
                         type="email"
                         id="email"
                         class="form-control "
                         name="mail_addr"
-                        value=""
+                        @if( !empty($userdata['user_profile'] ) )
+                        value="{{$userdata['user_profile']['mail_addr']}}"
+                        @endif
+                        required
                         placeholder="Email Address"/>
                 </div>
             </div>
             <div class="form-group row mb-4">
                 <label
-                    class="col-form-label text-md-right col-12 col-md-3 col-lg-3"
+                    class="col-form-label text-md-right col-12 col-md-4 col-lg-4"
                     for="phone">Phone Number
                     <span class="required">*</span>
                     :</label>
-                <div class="col-sm-12 col-md-7">
+                <div class="col-sm-12 col-md-6">
                     <input
                         type="text"
                         id="phone"
                         class="form-control "
                         name="telephone"
-                        value=""
+                        @if( !empty($userdata['user_profile'] ) )
+                        value="{{$userdata['user_profile']['telephone']}}"
+                        @endif
+                        required
                         placeholder="Phone Number"/>
                 </div>
             </div>
             <div class="form-group row mb-4">
                 <label
-                    class="col-form-label text-md-right col-12 col-md-3 col-lg-3"
+                    class="col-form-label text-md-right col-12 col-md-4 col-lg-4"
                     for="postcode">Post Code
                     <span class="required">*</span>
                     :</label>
-                <div class="col-sm-12 col-md-7">
+                <div class="col-sm-12 col-md-6">
                     <input
                         type="text"
                         id="postcode"
                         class="form-control "
                         name="postcode"
-                        value=""
+                        @if( !empty($userdata['user_profile'] ) )
+                        value="{{$userdata['user_profile']['postcode']}}"
+                        @endif
+                        required
                         placeholder="Post Code"/>
 
                 </div>
@@ -227,48 +339,74 @@
         </div>
     </div>
 </div>            
-<div class="col-sm-6 col-md-5">
+<div class="col-sm-6 col-md-4">
+    <h1>Your order</h1>
     <div id="order_review" class="maz-checkout-review-order">
         <table class="shop_table maz-checkout-review-order-table" width='90%'>
             <thead>
                 <tr>
                     <th class="product-name">Product</th>
-                    <th class="product-total">Subtotal</th>
+                    <th class="product-total" style='padding-left:2rem;'>Subtotal</th>
                 </tr>
             </thead>
             <tbody>
                 <tr class="cart_item">
-                    <td class="product-name">
-                        Avanti Shirt Orange&nbsp;
-                        <strong class="product-quantity">×&nbsp;2</strong>
+                    <td class="product-name" style='padding-left:1rem;'>
+                        {{$pay_name}}&nbsp;
+                        <strong class="product-quantity">×&nbsp;1</strong>
                     </td>
-                    <td class="product-total">
+                    <td class="product-total amount">
                         <span class="maz-Price-amount amount">
-                            <bdi>
-                                <span class="maz-Price-currencySymbol">$</span>39.90</bdi>
+                            <bdi >
+                            <span class="maz-Price-currencySymbol"> € </span>{{$pay_price}}</bdi>
+                            <input type='hidden' name='pay_price' value='{{$pay_price}}' />    
+                            <input type='hidden' name='pay_qty' value='1' />    
                         </span>
                     </td>
                 </tr>
+                @if( !empty( $coupon ))
+                <tr class="cart_item">
+                    <td class="product-name" style='padding-left:1rem;'>
+                        coupon : {{$checkout_payment_coupon }}&nbsp;
+                    </td>
+                    <td class="product-total amount">
+                        <span class="maz-Price-amount amount">
+                            <bdi>
+                            <span class="maz-Price-currencySymbol"> - € </span>{{$coupon}}</bdi>
+                            <input type='hidden' name='pay_coupon' value='{{$coupon}}' />    
+                            <input type='hidden' name='coupon_code' value='{{$checkout_payment_coupon}}' />    
+                        </span>
+                    </td>
+                </tr>
+                @endif
             </tbody>
             <tfoot>
 
                 <tr class="cart-subtotal">
                     <th>Subtotal</th>
-                    <td>
+                    <td class="product-total amount">
                         <span class="maz-Price-amount amount">
                             <bdi>
-                                <span class="maz-Price-currencySymbol">$</span>39.90</bdi>
+                            <span class="maz-Price-currencySymbol">€ </span>{{$pay_price-$coupon}}</bdi>
                         </span>
                     </td>
                 </tr>
-
+                <tr class="cart-subtotal">
+                    <td style='padding-left:1rem;'>fee</td>
+                    <td class="product-total amount">
+                        <span class="maz-Price-amount amount">
+                            <bdi>
+                            <span class="maz-Price-currencySymbol">€ </span>{{$pay_amount - $pay_price + $coupon}}</bdi>
+                        </span>
+                    </td>
+                </tr>
                 <tr class="order-total">
                     <th>Total</th>
-                    <td>
+                    <td class="product-total amount">
                         <strong>
-                            <span class="maz-Price-amount amount">
+                            <span class="maz-Price-amount amount total">
                                 <bdi>
-                                    <span class="maz-Price-currencySymbol">$</span>39.90</bdi>
+                                <span class="maz-Price-currencySymbol Total">€ </span>{{$pay_amount}}</bdi>
                             </span>
                         </strong>
                     </td>
@@ -284,14 +422,15 @@
                         id="payment_method_bacs"
                         type="radio"
                         class="input-radio"
+                        onclick="chenge_method(event, this)"
                         name="payment_method"
-                        value="bacs"
-                        data-order_button_text=""/>
+                        value="paybox_stripe"
+                        data-order_button_text="Proceed to Stripe"/>
 
                     <label for="payment_method_bacs">
-                        Stripe
+                        Stripe&nbsp;
                         <img src="{{asset('/assets/images/stripe_bar.png')}}" 
-                            style='margin-left:2rem;width:220px;'
+                            style='margin-left:2rem;width:200px;'
                             alt="Stripe acceptance mark" />
                     </label>
                     <div class="payment_box payment_method_bacs" style="display:none;">
@@ -305,8 +444,9 @@
                         id="payment_method_paypal"
                         type="radio"
                         class="input-radio"
+                        onclick="chenge_method(event, this)"
                         name="payment_method"
-                        value="paypal"
+                        value="paybox_paypal"
                         checked="checked"
                         data-order_button_text="Proceed to PayPal"/>
 <script>
@@ -316,11 +456,11 @@
                     <label for="payment_method_paypal">
                         PayPal
                         <img src="{{asset('/assets/images/paypal_bar.png')}}" 
-                                style='margin-left:2rem;width:220px;'
+                                style='margin-left:2rem;width:200px;'
                                 alt="PayPal acceptance mark" />
                     </label>
                     <div class="payment_box payment_method_paypal">
-                        <p>Pay via <a
+                        <p style='padding-left:3rem;'>Pay via <a
                             href="https://www.paypal.com/us/webapps/mpp/paypal-popup"
                             class="about_paypal"
                             onclick="window.open(winurl,'WIPaypal',winstyle); return false;">
@@ -349,14 +489,14 @@
                     <div class="maz-privacy-policy-text">
                         <p>Your personal data will be used to process your order, support your
                             experience throughout this website, and for other purposes described in our
-                            <a href="" class="maz-privacy-policy-link" target="_blank">privacy policy</a>.</p>
+                            <a href="{{route('page', 'privacy-policy#pageview')}}" class="maz-privacy-policy-link" target="_blank">privacy policy</a>.</p>
                     </div>
                 </div>
 
                 <button
+                    id='submitButton'
                     type="submit"
-                    class="button alt  btn btn-secondary"
-                    name="woocommerce_checkout_place_order"
+                    class="button alt  btn btn-primary"
                     id="place_order"
                     value="Place order"
                     data-value="Place order">Proceed to PayPal</button>
@@ -381,7 +521,10 @@
 </div>
 
 <script>
-
+    function chenge_method(evt, obj)
+    {
+        $('#submitButton').html($(obj).attr('data-order_button_text'));
+    }
 </script>
 
 <style>

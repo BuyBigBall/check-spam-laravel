@@ -32,11 +32,9 @@
                 <li class="item-108 @if ($userdata['uri']=='json-api') {{ 'current active' }} @endif">
                     <a href="{{ route('json-api') }}">{{translate('JSON API')}}</a>
                 </li>
-                @if (!empty($userdata['user_login']))
                 <li class="item-181 @if ($userdata['uri']=='micro-payment') {{ 'current active' }} @endif">
                     <a href="{{ route('micro-payment') }}">{{translate('Micro-payment')}}</a>
                 </li>
-                @endif
                 <li class="item-170 @if ($userdata['uri']=='terms-of-service') {{ 'current active' }} @endif">
                     <a href="{{ route('terms-of-service') }}">{{translate('Terms of service')}}</a>
                 </li>

@@ -114,7 +114,7 @@ $(function() {
 
 			if(elapsedTime > (reloadTime+(refreshRate*5))){
 				//MMMmmm safe guard to force to refresh the page... but only once!
-				conn.close();
+				//conn.close();
 				window.location.reload();
 				return;
 			}

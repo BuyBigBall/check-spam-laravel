@@ -271,10 +271,12 @@
     click_to_copy = "{{translate('Click To Copy!')}}",
     copied = "{{translate('Copied!')}}" ;
   </script>
-  <!-- main js -->
-  <script src="{{ asset('assets/js/main.js?v1.2.7') }}"></script>
-  <script src="{{ asset('assets/js/cookieconsent.min.js') }}"></script>
 
+  <script src="{{ asset('assets/js/vendor/jquery.dataTables.min.js') }}"></script>
+  <!-- main js -->
+  <script src="{{ asset('assets/js/main.js?v1.2.9') }}"></script>
+  <script src="{{ asset('assets/js/cookieconsent.min.js') }}"></script>
+  
 </body>
 
 </html>

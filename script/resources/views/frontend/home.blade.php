@@ -1,4 +1,5 @@
 <!-- Home Section Start -->
+<script> var firstpage_flag = 'firstpage'; </script>
 <section class="home d-flex align-items-center">
   <div class="effect-wrap">
     <i class="fas fa-plus effect effect-1"></i>

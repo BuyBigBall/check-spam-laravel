@@ -10,7 +10,7 @@
             <fieldset>
                 <div class="header mailtester_cart_header_title">
                     <h1>
-                        Order: MT202140746
+                        Order: {{ $details->pay_id }}
                     </h1>
                 </div>
                 <div class="toolbar mailtester_cart_header_buttons" id="toolbar">
@@ -40,11 +40,19 @@
                         <tr>
                             <td>
                                 <div id="mailtester_cart_order_right_part" class="mailtester_cart_order_right_part">
-                                    Date: 2021-11-11
+                                    Date: {{ date('Y-n-d', strtotime($details->created_at)) }}
                                     <br/>
-                                    Order: MT202140746
+                                    Order: {{ $details->pay_id }}
                                 </div>
-                                <div id="mailtester_cart_order_left_part" class="mailtester_cart_order_left_part">Woobeo<br/>110 av. Barthelemy Buyer<br/>69009 Lyon<br/>France<br/><br/>VAT (TVA) : FR 52 809161177<br/>SIRET : 809 161 177 00013</div>
+                                <div id="mailtester_cart_order_left_part" class="mailtester_cart_order_left_part">
+                                    @if( $details->profile!=null && $details->profile->user!=null)
+                                    {{ $details->profile->user->name }}
+                                    <br/>{{ $details->profile->user->email }}
+                                    <br/>VAT (TVA) : {{ $details->profile->vatnum }}
+                                    <br/>{{$details->profile->country}}
+                                    </div>
+                                    @endif
+                                    
                             </td>
                         </tr>
                         <tr>
@@ -55,10 +63,14 @@
                                             <td>
                                                 <fieldset class="adminform" id="htmlfieldset_billing">
                                                     <legend style="background-color: #FFFFFF;">Billing address</legend>
-                                                    Samir Chakouri<br/>
-                                                    Calle julio colomer 29<br/>
-                                                    46910 Alfafar Valencia<br/>
-                                                    Spain
+                                                    @if( $details->profile!=null)
+                                                    {{ $details->profile->firstname }} {{ $details->profile->lastname }}
+                                                    <br/>{{ $details->profile->address }} , post code:{{ $details->profile->postcode }}
+                                                    <br/>{{ $details->profile->company }}
+                                                    <br/>VAT (TVA) : {{ $details->profile->vatnum }}
+                                                    <br/>{{$details->profile->city}} {{$details->profile->state}} {{$details->profile->country}}
+                                                    </div>
+                                                    @endif
                                                 </fieldset>
                                             </td>
                                         </tr>
@@ -84,35 +96,35 @@
                                                 <td class="mailtester_cart_order_item_name_value">
                                                     <a class="mailtester_cart_order_product_link" href="{{ route('prices') }}">
                                                         <p class="mailtester_cart_order_product_name">
-                                                            500 tests
+                                                            {{ $details->price_type }} tests
                                                         </p>
                                                     </a>
                                                     <p class="mailtester_cart_order_product_custom_item_fields"></p>
                                                 </td>
-                                                <td class="mailtester_cart_order_item_price_value">50,00 €</td>
-                                                <td class="mailtester_cart_order_item_quantity_value">1</td>
-                                                <td class="mailtester_cart_order_item_total_value">50,00 €</td>
+                                                <td class="mailtester_cart_order_item_price_value">{{ $details->price }} €</td>
+                                                <td class="mailtester_cart_order_item_quantity_value">{{ $details->qty }}</td>
+                                                <td class="mailtester_cart_order_item_total_value">{{ $details->price }} €</td>
                                             </tr>
                                             <tr>
                                                 <td style="border-top:2px solid #B8B8B8;" colspan="2"></td>
                                                 <td class="mailtester_cart_order_subtotal_title" style="border-top:2px solid #B8B8B8;">
                                                     <label>Subtotal</label>
                                                 </td>
-                                                <td class="mailtester_cart_order_subtotal_value" style="border-top:2px solid #B8B8B8;">50,00 €</td>
+                                                <td class="mailtester_cart_order_subtotal_value" style="border-top:2px solid #B8B8B8;">{{ $details->price * $details->qty }} €</td>
                                             </tr>
                                             <tr>
                                                 <td colspan="2"></td>
                                                 <td class="mailtester_cart_order_tax_title key">
                                                     <label>VAT (ES)</label>
                                                 </td>
-                                                <td class="mailtester_cart_order_tax_value">10,50 €</td>
+                                                <td class="mailtester_cart_order_tax_value">{{ $details->amount -$details->income }} €</td>
                                             </tr>
                                             <tr>
                                                 <td colspan="2"></td>
                                                 <td class="mailtester_cart_order_total_title key">
                                                     <label>Total</label>
                                                 </td>
-                                                <td class="mailtester_cart_order_total_value">60,50 €</td>
+                                                <td class="mailtester_cart_order_total_value">{{ $details->amount }} €</td>
                                             </tr>
                                         </tbody>
                                     </table>

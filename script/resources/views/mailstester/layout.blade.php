@@ -101,8 +101,10 @@
         {!! $setdata['head_ad'] !!}
 
         <link href="/assets/css/frontend_default.css" rel="stylesheet" type="text/css">
-        <link href="/assets/css/template.css" rel="stylesheet" type="text/css">
         <link href="/assets/css/spamtest.css" rel="stylesheet" type="text/css">
+        <link href="/assets/css/template.css" rel="stylesheet" type="text/css">
+        <link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
+        
 
     </head>
 
@@ -332,8 +334,8 @@
                 copied = "{{translate('Copied!')}}";
         </script>
         <!-- main js -->
-        <script src="{{ asset('assets/js/main.js?v1.0') }}"></script>
-
+        <script src="{{ asset('assets/js/vendor/jquery.dataTables.min.js') }}"></script>
+        <script src="{{ asset('assets/js/main.js?v1.1') }}"></script>
         @yield('mailtesterjs')
         @yield('addressjs')
         @yield('register-script')        

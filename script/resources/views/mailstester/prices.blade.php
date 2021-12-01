@@ -43,7 +43,9 @@
                 </ul>
                 <div>
                     <div class="moduletable">
-
+                        @if( !empty($left_count))
+                        <h1 style="text-align:center;">You have {{ $left_count }} tests left on your account</h1>
+                        @endif
                         <table class="pricelist" style="width:760px;">
                             <thead>
                                 <tr>
@@ -72,7 +74,7 @@
                                     <td>50 €</td>
                                     <td>0.100 €</td>
                                     <td>
-                                        <a class="btn btn-primary" onclick="showBuyModal('50','500', '500 tests')">Add 500 tests</a>
+                                        <a class="btn btn-primary" onclick="showPayOnePage('50','500', '500 tests')">Add 500 tests</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -80,7 +82,7 @@
                                     <td>80 €</td>
                                     <td>0.080 €</td>
                                     <td>
-                                        <a class="btn btn-primary" onclick="showBuyModal('80','1000', '1000 tests')">Add 1 000 tests</a>
+                                        <a class="btn btn-primary" onclick="showPayOnePage('80','1000', '1000 tests')">Add 1 000 tests</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -88,7 +90,7 @@
                                     <td>250 €</td>
                                     <td>0.050 €</td>
                                     <td>
-                                        <a class="btn btn-primary" onclick="showBuyModal('250','5000', '5000 tests')">Add 5 000 tests</a>
+                                        <a class="btn btn-primary" onclick="showPayOnePage('250','5000', '5000 tests')">Add 5 000 tests</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -96,7 +98,7 @@
                                     <td>700 €</td>
                                     <td>0.035 €</td>
                                     <td>
-                                        <a class="btn btn-primary" onclick="showBuyModal('700','20000', '20000 tests')">Add 20 000 tests</a>
+                                        <a class="btn btn-primary" onclick="showPayOnePage('700','20000', '20000 tests')">Add 20 000 tests</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -104,7 +106,7 @@
                                     <td>2 500 €</td>
                                     <td>0.025 €</td>
                                     <td>
-                                        <a class="btn btn-primary" onclick="showBuyModal('2500','100000', '100000 tests')">Add 100 000 tests</a>
+                                        <a class="btn btn-primary" onclick="showPayOnePage('2500','100000', '100000 tests')">Add 100 000 tests</a>
                                     </td>
                                 </tr>
                                 <tr>
@@ -112,7 +114,7 @@
                                     <td>20 000 €</td>
                                     <td>0.020 €</td>
                                     <td>
-                                        <a class="btn btn-primary" onclick="showBuyModal('20000','1000000', '1000000 testes')">Add 1 000 000 tests</a>
+                                        <a class="btn btn-primary" onclick="showPayOnePage('20000','1000000', '1000000 testes')">Add 1 000 000 tests</a>
                                     </td>
                                 </tr>
                             </tbody>
@@ -148,8 +150,9 @@
 }
 </style>
 <div class="modal fade" id="buyModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <form class="form-horizontal" method="POST" id="payment-form" role="form" 
+    <form class="form-horizontal" method="POST" id="micro-payment-form" role="form" 
         action="{!! URL::route('buy_mail_test') !!}" >
+        @csrf
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -175,12 +178,29 @@
         </div>
     </form>
 </div>
+<div class='hidden'>
+<form class="form-horizontal" method="POST" id="onepage-payment-form" role="form" 
+        action="{!! URL::route('checkout') !!}" >
+        @csrf
+    <input type="hidden" id="pay_price" name="price" value="0">
+    <input type="hidden" id="buy_qty" name="buy_qty" value="0">
+    <input type="hidden" id="pay_qty" name="qty" value="1">
+    <input type="hidden" id="pay_name" name="name" value="0">
+    <input type="hidden" id="pay_paymethod" name="payment_method" value="paybox_paypal">
+</form>
+</div>
 <script>
 function showBuyModal(price,qty, goodsname){
-	window.location.href = "{{route('checkout', 'step1')}}"+('?price='+price)+('&qty='+1)+('&name='+goodsname); return;
-    // $('#mail_price').val(price);
-    // $('#mail_qty').val(qty);
-    // $('#buyModal').modal('show');
+    $('#mail_price').val(price);
+    $('#mail_qty').val(qty);
+    $('#buyModal').modal('show');
+}
+
+function showPayOnePage(price,qty, goodsname){
+    $('#pay_price').val(price);
+    $('#buy_qty').val(qty);
+    $('#pay_name').val(goodsname);
+    $('#onepage-payment-form').submit();
 }
 </script>
 @endsection

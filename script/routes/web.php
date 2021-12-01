@@ -81,6 +81,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin', 'check
     Route::resource('/features', 'FeatureController');
     Route::resource('/menu', 'MenuController');
     Route::resource('/users', 'UserController');
+    Route::resource('/transactions', 'TransactionController');
+    Route::resource('/testhistories', 'TesthistoryController');
+    Route::resource('/coupons', 'CouponController');
 
     Route::get('/clear-cache', 'DashboardController@clear')->name('clear.cache');
 });

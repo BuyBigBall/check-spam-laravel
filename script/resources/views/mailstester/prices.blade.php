@@ -1,6 +1,14 @@
 @extends('mailstester.layout')
 
 @section('content')
+<style>
+    td a.btn{
+        font-size:0.8rem;
+    }
+    .pricelist td{
+        font-size:0.8rem;
+    }
+</style>
 <div id="content_container" style="width:100%">
     <div class="row-fluid contentsize">
         <div id="system-message-container"></div>
@@ -48,7 +56,7 @@
                             <tbody>
                                 @if (empty($userdata['user_login'])) 
                                 <tr>
-                                    <td colspan="3">Micro-payment mode<br/>
+                                    <td colspan="3" style='text-align:left;'>Micro-payment mode<br/>
                                         <span style="font-size:10px">So your users will pay for the tests they perform
                                             and you get a commission... you don't need credits on your account</span>
                                     </td>

@@ -17,7 +17,7 @@
     <div class="section-body">
         <h2 class="section-title">{{__('Edit Category')}}</h2>
         <p class="section-lead">
-            {{__('On this page you can edir category and fill in all fields.')}}
+            {{__('On this page you can edit category and fill in all fields.')}}
         </p>
 
         <div class="row">

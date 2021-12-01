@@ -12,7 +12,16 @@ use File as fle;
 
 function ToDate($date)
 {
-    return $date->format('Y-m-d');
+    if($date==null) return '';
+
+    if(gettype($date)=='string') return $date;
+    try{
+        return $date->format('Y-m-d');
+    }
+    catch(Exception $e)
+    {
+        return '';
+    }
 };
 
 

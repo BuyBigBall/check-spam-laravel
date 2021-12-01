@@ -86,6 +86,7 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
+        //print_r($category); die;
         return view('backend.categories.edit')->with('category', $category);
     }
 

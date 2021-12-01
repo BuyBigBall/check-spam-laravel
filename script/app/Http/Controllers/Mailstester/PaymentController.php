@@ -491,4 +491,9 @@ class PaymentController extends Controller
 
         return $tranc->id;
     }
+
+    public function onepage(Request $request)
+    {
+        return view('mailstester.payment-page' );       
+    }
 }

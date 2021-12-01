@@ -17,7 +17,7 @@
 <div class="section-body">
     <h2 class="section-title">{{__('Edit Language')}}</h2>
     <p class="section-lead">
-        {{__('On this page you can edir language and fill in all fields.')}}
+        {{__('On this page you can edit language and fill in all fields.')}}
     </p>
 
     <div class="row">

@@ -70,13 +70,17 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin', 'check
     Route::get('/pages/checkslug', 'PageController@checkSlug')->name('pages.checkslug');
     
     Route::post('ckeditor/image_upload', 'PageController@upload')->name('ckeditor.upload');
-
+    
+    
+    Route::get('/users/profile/{id}', 'UserController@profile')->name('users.profileedit');
+    Route::post('/users/profile/save', 'UserController@saveprofile')->name('saveprofile');
 
     Route::resource('/posts', "PostController");
     Route::resource('/categories', 'CategoryController');
     Route::resource('/pages', 'PageController');
     Route::resource('/features', 'FeatureController');
     Route::resource('/menu', 'MenuController');
+    Route::resource('/users', 'UserController');
 
     Route::get('/clear-cache', 'DashboardController@clear')->name('clear.cache');
 });
@@ -186,11 +190,6 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
 
 	Route::get('/forgot/{type}',    'Auth\ForgotPasswordController@forgot')->name("forgot");
     
-    Route::resource('/users', 'UserController');
-    // Route::group(['prefix' => 'user'], function () {
-    //     Route::get('/index',          'UserController@dashboard')->name("users");
-    // });
-
     # --> never necessory call these, but for test using
     // Route::get('/login', 'Mailstester\LoginController@index')->name("login");
     // Route::post('/login', 'Mailstester\LoginController@loginchk')->name("loginchk");
@@ -203,10 +202,11 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
         Route::post('/save-configure',        'Mailstester\SiteController@save_configure')->name("save-configure");
         
         // redirect checkoutpage or loginpage
+        // Route::get('/checkout/{step}', 'Mailstester\PaymentController@checkout_step')->name("checkout");
+        // Route::post('/checkout/{step}', 'Mailstester\PaymentController@checkout_step')->name("checkout");
         Route::get('/payment/{price}', 'Mailstester\PaymentController@checkout')->name("payment");
-
-        Route::get('/checkout/{step}', 'Mailstester\PaymentController@checkout_step')->name("checkout");
-        Route::post('/checkout/{step}', 'Mailstester\PaymentController@checkout_step')->name("checkout");
+        Route::get('/checkout', 'Mailstester\PaymentController@onepage')->name("checkout");
+        Route::post('/checkout', 'Mailstester\PaymentController@onepage')->name("checkout");
 
         Route::get('/profile/{type}',   'Mailstester\SiteController@profile')->name("profile");
         //Route::get('/address',          'Mailstester\SiteController@address')->name("address");

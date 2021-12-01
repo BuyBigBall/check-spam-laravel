@@ -434,6 +434,16 @@ class SpamTestController extends Controller
             ];
             Visitor::create($visitor);
         }
+
+        if (Auth::guard(null)->check()) {
+            $user_id = Auth::user()->id;
+            $db_hist = Balance::where(['supply'=>'>used', 'user_id'=>$user_id])->orderBy('id')->first();
+            if($db_hist!=null)
+            {
+                $db_hist_id = $db_hist->id;
+                Balance::where('id', $db_hist_id)->update('used' ,$db_hist->used+1);
+            }
+        }
     }
 
     function check_test_count_for_free_user()

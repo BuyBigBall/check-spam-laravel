@@ -17,8 +17,8 @@
         <h1 class="title py-5 m-0 text-white">
             @if    ($total_score>=7) {{ translate('Wow! Perfect, you can send') }}
             @elseif($total_score>=5) {{ translate('Good! you can send the mail')}}
-            @elseif($total_score>=4) {{ translate('Warning! you cannot send the mail, but you can improve mail's content.')}}
-            @elseif($total_score>=3) {{ translate('carefully! don't sen the mail.')}} 
+            @elseif($total_score>=4) {{ translate('Warning! you cannot send the mail, but you can improve mail\'s content.')}}
+            @elseif($total_score>=3) {{ translate('carefully! don\'t sen the mail.')}} 
             @else                    {{ translate('critical! This is a special spam mail.')}}
             @endif
             </h1>
@@ -30,7 +30,7 @@
         <div class="container text-white" id="mail-info">
             <a
                 class="text-white btn btn-transparent btn-sm mr-2"
-                href="{{ route('testresult') . '?message_id='.$mail_id }}"
+                href="javascript:NewLink()"
                 title="Refresh">
                 <i class="icon-refresh"></i>
             </a>
@@ -402,7 +402,7 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                         <div class="status success icon-check"></div>
                         <h3 class="title">
                             <i class="icon-down"></i>
-                            {{ translate('We didn't find short URLs')}}</h3>
+                            {{ translate('We didn\'t find short URLs')}}</h3>
                     </div>
                     <div class="content">
                         <div class="about">{{ translate('Checks whether your message uses URL shortener systems.')}}</div>
@@ -440,9 +440,9 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                 <h2 class="title">
                     <i class="icon-down"></i>
                         @if($black_list_score==0)
-                            {{ translate('You're not blacklisted')}}
+                            {{ translate('You\'re not blacklisted')}}
                         @else
-                            {{ translate('You're listed in blacklist')}} {{ $black_list_score/$bl_score_unit }} 
+                            {{ translate('You\'re listed in blacklist')}} {{ $black_list_score/$bl_score_unit }} 
                         @endif
                     </h2>
             </div>
@@ -628,7 +628,13 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
         </div>
     </div>
 </div>
-
+<script>
+    var new_mail_id = '{{ $mail_id }}';
+    function NewLink()
+    {
+        window.location.href="{{ route('testresult') }}" + "?message_id=" + new_mail_id;
+    }
+</script>
 </body>
 
 @if( !empty($css))

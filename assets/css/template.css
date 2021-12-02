@@ -1436,7 +1436,7 @@ select:focus:invalid:focus {
 	width: auto;
 	height: 18px;
 	min-width: 16px;
-	padding: 18px 5px;
+	padding: 13px 6px;
 	font-size: 13px;
 	font-weight: normal;
 	line-height: 18px;
@@ -7705,7 +7705,7 @@ body#com_mtmanager_checkout_listing, body#com_mtmanager_checkout_address, body#c
 
 .userdata input.login-text
 {
-	padding:18px 6px !important;
+	padding:13px 6px !important;
 }
 .login input, 
 .latest-tests input[type=text], 

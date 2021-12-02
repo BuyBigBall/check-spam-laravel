@@ -588,7 +588,7 @@ class SpamTestController extends Controller
                 abort(419);
             
 		}
-        $diff = date_diff( new \DateTime( "now" ), new \DateTime($response['receivedAt']) );
+        $diff = date_diff( new \DateTime( "now" ), new \DateTime( date( 'Y-n-d H:i:s', strtotime($response['receivedAt']))) );
 		$ago_time = (($diff->y>=1) ? (($diff->y+1) . ' years ago' ) : 
 					(($diff->m>=1) ? (($diff->m+1) . ' months ago' ) : 
 					(($diff->d>=1) ? (($diff->d+1) . ' days ago' ) : 

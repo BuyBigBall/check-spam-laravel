@@ -34,6 +34,7 @@ function as_it_is($key, $coll = 'general' ,  $lang = null){
 //We use this to translate text 
 
 function translate($key, $coll = 'general' ,  $lang = null){
+    if($key==null) return '';
     if($lang == null){
         $lang = App::getLocale();
     }

@@ -316,35 +316,35 @@ jQuery( '.test-result .header' ).on('click',function() {
 });
 
 
-jQuery('.geniframe').each(function(){
+// jQuery('.geniframe').each(function(){
 
-  let content = jQuery(this).data('raw');
-  if(!content) content = jQuery(jQuery(this).data('source')).data('raw');
+//   let content = jQuery(this).data('raw');
+//   if(!content) content = jQuery(jQuery(this).data('source')).data('raw');
 
-  if(jQuery(this).data('stripimages')){
-    const regex = /<img([^>]*)\ssrc=("(?!data:)[^"]+"|'(?!data:)[^']+')/gi;
-	  try
-	  {
-		  content = content.replace( regex, '<img$1 src=""' );
-	  }
-	  catch(ee)
-	  {
-		  console.log(ee);
-	  }
+//   if(jQuery(this).data('stripimages')){
+//     const regex = /<img([^>]*)\ssrc=("(?!data:)[^"]+"|'(?!data:)[^']+')/gi;
+// 	  try
+// 	  {
+// 		  content = content.replace( regex, '<img$1 src=""' );
+// 	  }
+// 	  catch(ee)
+// 	  {
+// 		  console.log(ee);
+// 	  }
     
-  }
+//   }
 
 
-  const blob = new Blob([content], {'type':'text/html'});
+//   const blob = new Blob([content], {'type':'text/html'});
 
-  const iframe = document.createElement('iframe');
-  iframe.src = URL.createObjectURL(blob);
-  iframe.style.width = '99%';
-  iframe.style.height = '600px';
-  iframe.style.border = '1px solid #ccc';
+//   const iframe = document.createElement('iframe');
+//   iframe.src = URL.createObjectURL(blob);
+//   iframe.style.width = '99%';
+//   iframe.style.height = '600px';
+//   iframe.style.border = '1px solid #ccc';
 
-  //Replace the current element by the iframe
-  jQuery(this).before(iframe);
-});
+//   //Replace the current element by the iframe
+//   jQuery(this).before(iframe);
+// });
 // <--- ###############  from mailtester.js
 

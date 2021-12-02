@@ -302,8 +302,17 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                 </div>
                 <!-- A Record Bounce DNS-->
                 <?php 
+                            $ii = 0;
+                            $mxhosts = [];
+                            $mxweight = [];
+                            try{
+                                getmxrr($mail_server_domain,$mxhosts,$mxweight); 
+                            }
+                            catch(Exception $except)
+                            {
+
+                            }
                             
-                            getmxrr($mail_server_domain,$mxhosts,$mxweight); $ii = 0;
                             ?>
                 <div class="test-result mxrecord-dns">
                     <div class="header clearfix">
@@ -629,11 +638,7 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
     </div>
 </div>
 <script>
-    var new_mail_id = '{{ $mail_id }}';
-    function NewLink()
-    {
-        window.location.href="{{ route('testresult') }}" + "?message_id=" + new_mail_id;
-    }
+    
 </script>
 </body>
 
@@ -642,4 +647,47 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
         {{ $css }}
     </style>
 @endif
+@endsection		
+
+
+@section('testresultjs')
+<script>
+    var new_mail_id = '{{ $mail_id }}';
+    setInterval(function() {
+        
+        $.ajax({
+            url: wait_url,
+            dataType: "text",
+            cache: false,
+            contentType: false,
+            processData: false,
+            type: "get",
+            data:{
+                
+                message_id : new_mail_id,
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success:function(data) {
+                data = JSON.parse(data);
+                if(data.result=='ok')
+                {
+                    if(data.message_id!=new_mail_id)
+                    {
+                        new_mail_id = data.message_id;  
+                        console.log("new mail has been received, id=" + new_mail_id);
+                    }
+                }
+            }
+        });
+    
+    }, 10000);
+    function NewLink()
+    {
+        var added = '';
+        @if(($request=Request::capture())->input('flag')=='whitelabel')
+            added = '&flag=whitelabel';
+        @endif
+        window.location.href="{{ route('testresult') }}" + "?message_id=" + new_mail_id + added;
+    }
+</script>
 @endsection		

@@ -91,6 +91,10 @@
         })});
     </script>
     */ ?>
+
+  <!-- jquery js -->
+  <script src="{{ asset('assets/js/vendor/jquery.min.js') }}"></script>
+
 </head>
 
 <body>
@@ -243,8 +247,6 @@
   </div>
 @endif
 
-  <!-- jquery js -->
-  <script src="{{ asset('assets/js/vendor/jquery.min.js') }}"></script>
   <!-- popper js -->
   <script src="{{ asset('assets/js/vendor/popper.min.js') }}"></script>
   <!-- bootstrap js -->
@@ -275,6 +277,9 @@
   <script src="{{ asset('assets/js/vendor/jquery.dataTables.min.js') }}"></script>
   <!-- main js -->
   <script src="{{ asset('assets/js/main.js?v1.2.9') }}"></script>
+
+  @yield('testresultjs')
+
   <script src="{{ asset('assets/js/cookieconsent.min.js') }}"></script>
   
 </body>

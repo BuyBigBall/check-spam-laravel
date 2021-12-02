@@ -7,9 +7,19 @@ use App\Models\settings;
 use Illuminate\Support\Str;
 use File as fle;
 
-
+function GetFirstWordFromLine($line)
+{
+    $pos = stripos($line, ' ', 0);
+    if($pos===false || $pos<=0)
+    {
+        return '';
+    }
+    else
+    {
+        return substr($line, 0, $pos);
+    }
+}
 //We use this to convert date to new format
-
 function ToDate($date)
 {
     if($date==null) return '';

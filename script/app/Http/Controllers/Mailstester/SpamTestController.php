@@ -34,6 +34,20 @@ class SpamTestController extends Controller
 {
     private $bl_score_unit = 0.5;
 	private $burl_score_unit = 0.5;
+
+    private $explain_array = [
+        'DKIM_SIGNED'       => 'This rule is automatically applied if your email contains a DKIM signature but other positive rules will also be added if your DKIM signature is valid. See immediately below.',
+        'DKIM_VALID'        => 'Great! Your signature is valid',
+        'DKIM_VALID_AU'     => 'Great! Your signature is valid and it\'s coming from your domain name',
+        'DKIM_VALID_EF'     => '',
+        'FREEMAIL_ENVFROM_END_DIGIT'=> '',
+        'FREEMAIL_FROM'                 => 'You\'re sending from a free email account',
+        'FREEMAIL_REPLYTO_END_DIGIT'    => '',
+        'FROM_EXCESS_BASE64'            => '',
+        'HTML_MESSAGE'  => 'No worry, that\'s expected if you send HTML emails',
+        'SPF_HELO_PASS' => '',
+        'SPF_PASS'      => 'Great! Your SPF is valid',
+    ];
     private $dnsbl_lookup = [
 		'Spamhaus PBL'      =>"pbl.spamhaus.org",
 		'Spamhaus SBL'      =>"sbl.spamhaus.org",
@@ -221,6 +235,13 @@ class SpamTestController extends Controller
 	}
 	function getDMARCsign($header, $mail_server_domain) 
 	{
+        
+        if(($pos = stripos( $header, 'DMARC-Signature:', 0))===false)
+        {
+            return ['auth_result'=>'fail;', 'dmarc_sign'=>'not found', 'dmarc_entries'=>[], 'dmarc_rows'=>[]];
+        }
+
+
 		$start = false;
 		$posend = $i = 0;
 		while( ($pos = stripos( $header, 'DMARC-Signature:', $i))!==false )
@@ -480,9 +501,17 @@ class SpamTestController extends Controller
 
         return $could_not_use;
     }
+
 	private function GetSpamAssassinRules($header)
     {
         $pos = stripos( $header, "X-Spam-Report:", 0);
+
+        if($pos===false)
+        {
+            $rules[] = ['score'=>10, 'description'=>'spamassassin cannot work well.'];
+            return $rules;
+        }
+
         $pos += strlen("X-Spam-Report:");
         $posend = stripos( $header, "X-Original-To:", $pos);
         $reports = substr($header, $pos, $posend - $pos);
@@ -513,7 +542,7 @@ class SpamTestController extends Controller
 		}
 		if($explain!='')
 		{
-			$rules[] = ['score'=>$marks, 'description'=>$explain];
+			$rules[] = ['score'=>$marks, 'key'=>GetFirstWordFromLine($explain),'description'=>$explain];
 			$explain = '';
 			$marks = 0;
 		}
@@ -523,6 +552,10 @@ class SpamTestController extends Controller
 	private function GetSpamAssassinScore($header)
     {
         $pos = stripos( $header, "X-Spam-Status:", 0);
+        if($pos===false)
+        {
+            return 10.0;
+        }
         $pos = stripos( $header, "score=", $pos);
         $posend = stripos( $header, " ", $pos+strlen("score="));
         $score = substr($header, $pos+strlen("score="), ($posend-$pos-strlen("score=")));
@@ -560,10 +593,35 @@ class SpamTestController extends Controller
         }
         $this->save_test_count_for_free_user($email, $mail_id);
         
-        $score = new \palPalani\SpamassassinScore\SpamassassinScore();
-		
+        $score = null;
+        $response = [];
         $to_email = $email;
-        $response = TrashMail::messages($email, $Hashid);
+
+        $guard = null; $db_hist = null;
+        if (Auth::guard($guard)->check()) 
+        {
+            $user_id = Auth::user()->id;
+            $db_hist = TestResult::where(['mail_id'=>$mail_id, 'user_id'=>$user_id])->first();
+            if($db_hist!=null)
+            {
+                $response['header'] = $db_hist->header;
+                $response['subject']= $db_hist->subject;
+                $response['is_seen'] = 1;
+                $response['from'] = $db_hist->name;
+                $response['from_email'] = $db_hist->email;
+                $response['receivedAt'] = $db_hist->received_at;
+                $response['id'] = $mail_id;
+                $response['attachments'] = [];
+                $response['content'] = $db_hist->content;
+                $response[] = $response;
+            }
+        }
+        
+        if( $db_hist==null && !empty($request->input('flag')) && $request->input('flag')!='whitelabel' )
+        {
+            $score = new \palPalani\SpamassassinScore\SpamassassinScore();
+            $response = TrashMail::messages($email, $Hashid);
+        }
 		
         if( empty($response['messages'])  && count($response)>0 )
         {
@@ -595,25 +653,32 @@ class SpamTestController extends Controller
 					(($diff->h>=1) ? (($diff->h+1) . ' hours ago' ) : 
 					(($diff->i>=1) ? (($diff->i+1) . ' minutes ago' ) : 
 					date( 'l d M Y H:i:s P (T)', strtotime($response['receivedAt']) )   )))));
-        //Cookie::queue('mail_body_html', $response['content'], 3);	//size error
+       
+                    //Cookie::queue('mail_body_html', $response['content'], 3);	//size error
 		Session::put('mail_body_html', $response['content']);
-        $score_report = $score->getScore( '<header>'.$response['header'].'</header>' .'<subject>'.$response['subject'].'</subject>'  .'<body>'.$this->getbody($response['content']).'</body>');
 
-        if($score_report['success'])
+
+        $score_report = ['score'=>0, 'report'=>null, 'rules'=>null];
+        if( false && $score!=null)
         {
-            $score_report['score'] = 0;
-            foreach($score_report['rules'] as &$check_rule)
+            $score_report = $score->getScore( '<header>'.$response['header'].'</header>' .'<subject>'.$response['subject'].'</subject>'  .'<body>'.$this->getbody($response['content']).'</body>');
+            if($score_report['success'])
             {
-                if($check_rule['score']<0)  $check_rule['score'] = '-0.0';
-                $score_report['score'] += $check_rule['score'];
+                foreach($score_report['rules'] as &$check_rule)
+                {
+                    if($check_rule['score']<0)  $check_rule['score'] = '-0.0';
+                    $score_report['score'] += $check_rule['score'];
+                }
             }
         }
-		$score_report['score'] = $this->GetSpamAssassinScore($response['header']);
+
+        $score_report['score'] = $this->GetSpamAssassinScore($response['header']);
+        
 		$score_rules = $this->GetSpamAssassinRules($response['header']);
 		$mail_server_domain = explode('@', $response['from_email'])[1];
 		//To check DMARC
-		$dmark_results = dns_get_record("_dmarc.".$mail_server_domain,DNS_TXT);
-
+		$dmark_results = dns_get_record("_dmarc.".$mail_server_domain, DNS_TXT);
+        
 		$auth_serverInfo = $this->getserverauth( $response['header'] );
 		$auth_rDnsInfo   = $this->getRDNSsign($response['header'], $auth_serverInfo );
         $auth_DMARCInfo  = $this->getDMARCsign($response['header'], $mail_server_domain );
@@ -627,7 +692,8 @@ class SpamTestController extends Controller
                 $user_name = Auth::user()->name;
                 $mail_id = $response['id'];
                 $email = Auth::user()->email;
-                $db_hist = TestResult::where(['mail_id'=>$mail_id, 'user_id'=>$user_id])->first();
+                
+                //$db_hist = TestResult::where(['mail_id'=>$mail_id, 'user_id'=>$user_id])->first();
                 if($db_hist==null)
                 {
 					$message_result = [
@@ -651,7 +717,7 @@ class SpamTestController extends Controller
             }
         }
         else
-            $auth_SPDcheck   = ['auth_result'=>'', 'spf_record'=>'', 'spf_issues'=>'', 'dig-query'=>[] ];
+            $auth_SPDcheck   = ['auth_result'=>'', 'spf_record'=>[], 'spf_issues'=>'', 'dig-query'=>[] ];
 
 
         ################# whitelabel style ################
@@ -678,6 +744,7 @@ class SpamTestController extends Controller
         $total_score = $score_report['score'];
 		$total_score += $black_list_score;
 		
+        $BL_results = [];
         foreach($bl_score_list as $keyname=>$check_score)
         {
             $BL_results[ $keyname ] = [
@@ -700,7 +767,7 @@ class SpamTestController extends Controller
             $broken_score += $row['score'];
         }
 		$total_score += $broken_score;
-
+        
 		//print_r(broken_urls); die;
         ################### return view ##################
         return view('mailstester.testresult')
@@ -710,8 +777,8 @@ class SpamTestController extends Controller
             ->with('css',           $css)
             ->with('email',         $email )
 			->with('ago_time',		$ago_time)
-            ->with('report', 	    $score_report['report'])
-			->with('rules', 	    $score_report['rules'])
+            // ->with('report', 	    $score_report['report'])
+			// ->with('rules', 	    $score_report['rules'])
 			->with('score_rules',   $score_rules)
 			->with('score', 	    10 - $score_report['score'])
 			->with('total_score', 	10 - $total_score)

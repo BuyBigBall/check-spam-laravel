@@ -15,11 +15,11 @@
         class="text-center pb-5 mh-33 @if($total_score>=7) mark-4 @elseif($total_score>=5) mark-3 @elseif($total_score>=4) mark-2 @elseif($total_score>=3) mark-1 @else mark-0 @endif"
         style='background-color: var(--main-color);'>
         <h1 class="title py-5 m-0 text-white">
-            @if    ($total_score>=7) {{ translate('Wow! Perfect, you can send') }}
-            @elseif($total_score>=5) {{ translate('Good! you can send the mail')}}
-            @elseif($total_score>=4) {{ translate('Warning! you cannot send the mail, but you can improve mail\'s content.')}}
-            @elseif($total_score>=3) {{ translate('carefully! don\'t sen the mail.')}} 
-            @else                    {{ translate('critical! This is a special spam mail.')}}
+            @if    ($total_score>=7) {{ translate("Wow! Perfect, you can send") }}
+            @elseif($total_score>=5) {{ translate("Good! you can send the mail")}}
+            @elseif($total_score>=4) {{ translate("Warning! you cannot send the mail, but you can improve mail's content.")}}
+            @elseif($total_score>=3) {{ translate("carefully! don't sen the mail.")}} 
+            @else                    {{ translate("critical! This is a special spam mail.")}}
             @endif
             </h1>
         <div class="subtitle text-white my-3" id="score-label">Score :</div>
@@ -131,7 +131,7 @@
                                 Text version</h3>
                         </div>
                         <div class="content">
-							<pre>{{  \Soundasleep\Html2Text::convert( $message['content'] ) }}</pre>
+							<pre>{{  \Soundasleep\Html2Text::convert( preg_replace("/ href=.*?>/",">",  $message['content'] ) ) }}</pre>
                         </div>
                     </div>
 
@@ -168,8 +168,9 @@
 							<tr class="sa-test">
 								@foreach ($score_rules as $rule)
 								<td class="text-center sa-test-score @if($rule['score']-0<0) status-warning @else status-success @endif">{{$rule['score']}}</td>
-								<!-- <td class="sa-test-name"><samp>DKIM_SIGNED</samp></td> -->
-								<td class="sa-test-description">{{$rule['description']}}</td>
+								<td class="sa-test-name"><samp>{{$rule['key']}}</samp></td>
+								<td class="sa-test-description">{{$rule['description']}}
+                                    <?php echo (!empty($rule['recommended']) ? '<br />' : '' ) . '<strong>'.$rule['recommended'].'</strong>' ?></td>
 								</tr>
 								@endforeach
 							
@@ -237,13 +238,6 @@
                         <div class="result">
                             <p>{{ translate('The DKIM signature of your message is:')}}</p>
                             <pre>{{$dkim_auth['dkim_sign']}}</pre>
-							<!--
-                            <p>Your public key is:</p>
-                            <pre>"v=DKIM1;
-k=rsa;
-p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUIGu0ZTCQa/GcsJJdZtfxKAxgxiSoWhwNxrJuSOB7IINeTCoZdQ2tT5d63b8N5rNoipOLmBfO4iadKKa6uUNbN6D3zEHg8xwz5rZaNk2MIiX2r79I2F/wQQDiJHpwXmNsuudWwIDAQAB"</pre>
-                            <p>Key length: 1024bits</p>
-							-->
                         </div>
                     </div>
                 </div>
@@ -297,9 +291,13 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                             <p></p>
                         </div>
                         <pre class="result">{{ translate('Here are the tested values for this check:')}}<br /><ul>
-							<li>IP: {{$rdns_auth['server_ip']}}</li><li>HELO: {{$rdns_auth['helo_domain']}}</li><li>rDNS: {{$rdns_auth['rdns_domain']}}</li></ul></pre>
+							<li>IP: {{$rdns_auth['server_ip']}}</li>
+                            <li>HELO: {{$rdns_auth['helo_domain']}}</li>
+                            <li>rDNS: {{$rdns_auth['rdns_domain']}}</li>
+                        </ul></pre>
                     </div>
                 </div>
+
                 <!-- A Record Bounce DNS-->
                 <?php 
                             $ii = 0;
@@ -336,6 +334,7 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                         </ul></pre>
                     </div>
                 </div>
+                
                 <!-- A Record DNS-->
                 <div class="test-result arecord-dns">
                     <div class="header clearfix">
@@ -370,7 +369,7 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                 <div class="about">{{ translate('Checks whether your message is well formatted or not.')}}</div>
                 <div class="result">
                     <p class="message-weight">{{ translate('Weight of the HTML version of your message:')}}
-                        <b>{{  strlen($message['content'] ) }}B</b>.</p>
+                        <b>{{  size(strlen($message['content']) ) }}</b>.</p>
                     <p>Your message contains
                         <b>{{ strlen($message['content'])==0 ? '&nbsp;' : round(strlen( \Soundasleep\Html2Text::convert( $message['content'] ) ) / strlen($message['content'])  * 100) }}</b>% of text.</p>
                 </div>
@@ -411,7 +410,7 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                         <div class="status success icon-check"></div>
                         <h3 class="title">
                             <i class="icon-down"></i>
-                            {{ translate('We didn\'t find short URLs')}}</h3>
+                            {{ translate("We didn't find short URLs")}}</h3>
                     </div>
                     <div class="content">
                         <div class="about">{{ translate('Checks whether your message uses URL shortener systems.')}}</div>
@@ -449,9 +448,9 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                 <h2 class="title">
                     <i class="icon-down"></i>
                         @if($black_list_score==0)
-                            {{ translate('You\'re not blacklisted')}}
+                            {{ translate("You're not blacklisted")}}
                         @else
-                            {{ translate('You\'re listed in blacklist')}} {{ $black_list_score/$bl_score_unit }} 
+                            {{ translate("You're listed in blacklist")}} {{ $black_list_score/$bl_score_unit }} 
                         @endif
                     </h2>
             </div>
@@ -466,123 +465,6 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
                             <a target="_blank" href="https://{{ $row['url'] }}">{{ $key }}</a>
                         </div>
                         @endforeach
-                    <!--
-                         <div class="col-sm-6 col-md-4 bl-result">
-                            <span class="status-success">Not listed</span>
-                            in
-                            <a target="_blank" href="https://www.spamhaus.org/sbl/">Spamhaus SBL Advisory</a>
-                        </div>
-                        <div class="col-sm-6 col-md-4 bl-result">
-                            <span class="status-success">Not listed</span>
-                            in
-                            <a target="_blank" href="https://www.spamhaus.org/css/">Spamhaus CSS Advisory</a>
-                        </div>
-                        <div class="col-sm-6 col-md-4 bl-result">
-                            <span class="status-success">Not listed</span>
-                            in
-                            <a target="_blank" href="https://www.spamhaus.org/pbl/">Spamhaus PBL Advisory</a>
-                        </div>
-                        <div class="col-sm-6 col-md-4 bl-result">
-                            <span class="status-success">Not listed</span>
-                            in
-                            <a target="_blank" href="http://barracudacentral.org/rbl">Barracuda</a>
-                        </div>
-                        <div class="col-sm-6 col-md-4 bl-result">
-                            <span class="status-success">Not listed</span>
-                            in
-                            <a target="_blank" href="http://ipadmin.junkemailfilter.com/remove.php">Hostkarma</a>
-                        </div>
-                        <div class="col-sm-6 col-md-4 bl-result">
-                            <span class="status-success">Not listed</span>
-                            in
-                            <a target="_blank" href="http://antispam.imp.ch/">IMP-SPAM</a>
-                        </div>
-                        <div class="col-sm-6 col-md-4 bl-result">
-                            <span class="status-success">Not listed</span>
-                            in
-                            <a target="_blank" href="http://www.backscatterer.org/index.php">BACKSCATTERER</a>
-                        </div>
-                        <div class="col-sm-6 col-md-4 bl-result">
-                            <span class="status-success">Not listed</span>
-                            in
-                            <a target="_blank" href="http://www.anti-spam.org.cn/">China Anti-Spam Alliance</a>
-                        </div>
-                        <div class="col-sm-6 col-md-4 bl-result">
-                            <span class="status-success">Not listed</span>
-                            in
-                            <a target="_blank" href="http://blacklist.lashback.com/">LashBack</a>
-                        </div>
-                        <div class="col-sm-6 col-md-4 bl-result">
-                            <span class="status-success">Not listed</span>
-                            in
-                            <a target="_blank" href="http://mailspike.net/">mailskipe</a>
-                        </div>
-                        <div class="col-sm-6 col-md-4 bl-result">
-                            <span class="status-success">Not listed</span>
-                            in
-                            <a target="_blank" href="http://www.heise.de/ix/nixspam/dnsbl_en/">NiX Spam</a>
-                        </div>
-                        <div class="col-sm-6 col-md-4 bl-result">
-                            <span class="status-success">Not listed</span>
-                            in
-                            <a target="_blank" href="https://www.redhawk.org/SpamHawk/">REDHAWK</a>
-                        </div>
-                        <div class="col-sm-6 col-md-4 bl-result">
-                            <span class="status-success">Not listed</span>
-                            in
-                            <a target="_blank" href="http://www.sorbs.net/lookup.shtml">SORBS (Relay)</a>
-                        </div>
-                        <div class="col-sm-6 col-md-4 bl-result">
-                            <span class="status-success">Not listed</span>
-                            in
-                            <a target="_blank" href="http://www.sorbs.net/lookup.shtml">SORBS (last 48 hours)</a>
-                        </div>
-                        <div class="col-sm-6 col-md-4 bl-result">
-                            <span class="status-success">Not listed</span>
-                            in
-                            <a target="_blank" href="http://www.sorbs.net/lookup.shtml">SORBS (last 28 days)</a>
-                        </div>
-                        <div class="col-sm-6 col-md-4 bl-result">
-                            <span class="status-success">Not listed</span>
-                            in
-                            <a target="_blank" href="http://spamcop.net/bl.shtml">SPAMCOP</a>
-                        </div>
-                        <div class="col-sm-6 col-md-4 bl-result">
-                            <span class="status-success">Not listed</span>
-                            in
-                            <a target="_blank" href="http://spameatingmonkey.com/index.html">SEM-BACKSCATTER</a>
-                        </div>
-                        <div class="col-sm-6 col-md-4 bl-result">
-                            <span class="status-success">Not listed</span>
-                            in
-                            <a target="_blank" href="http://spameatingmonkey.com/index.html">SEM-BLACK</a>
-                        </div>
-                        <div class="col-sm-6 col-md-4 bl-result">
-                            <span class="status-success">Not listed</span>
-                            in
-                            <a target="_blank" href="http://www.spamrats.com/">RATS-ALL</a>
-                        </div>
-                        <div class="col-sm-6 col-md-4 bl-result">
-                            <span class="status-success">Not listed</span>
-                            in
-                            <a target="_blank" href="http://psbl.surriel.com/">PSBL</a>
-                        </div>
-                        <div class="col-sm-6 col-md-4 bl-result">
-                            <span class="status-success">Not listed</span>
-                            in
-                            <a target="_blank" href="{{ route('testresult' , $email) }}">SWINOG</a>
-                        </div>
-                        <div class="col-sm-6 col-md-4 bl-result">
-                            <span class="status-success">Not listed</span>
-                            in
-                            <a target="_blank" href="http://www.gbudb.com/truncate/index.jsp">GBUdb Truncate</a>
-                        </div>
-                        <div class="col-sm-6 col-md-4 bl-result">
-                            <span class="status-success">Not listed</span>
-                            in
-                            <a target="_blank" href="http://wpbl.pc9.org/">Weighted Private Block List</a>
-                        </div> 
-                    -->
                     </div>
                 </div>
             </div>
@@ -637,9 +519,6 @@ p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDJYfguQ0IBnJSidZ9P0ANIN3rmotRGy+6zeq6QUI
         </div>
     </div>
 </div>
-<script>
-    
-</script>
 </body>
 
 @if( !empty($css))

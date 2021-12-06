@@ -167,13 +167,14 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
     Route::get('/micro-payment',    'Mailstester\PaymentController@micro_payment')->name("micro-payment");
 
     Route::get('/json-api',         'Mailstester\SiteController@json_api')->name("json-api");
+    Route::get('/json/{mail}',      'Mailstester\SpamTestController@json')->name("json");
 
     Route::get('/latest-tests',     'Mailstester\SiteController@latest_tests')->name("latest-tests");
     Route::get('/design',           'Mailstester\SiteController@design')->name("design");
     Route::post('/design',           'Mailstester\SiteController@design')->name("design");
     Route::get('/terms-of-service', 'Mailstester\SiteController@terms_of_service')->name("terms-of-service");
-    Route::get('/testresult',           'Mailstester\SpamTestController@TestResult')->name("testresult");
-    Route::post('/testresult',           'Mailstester\SpamTestController@TestResult')->name("testresult");
+    Route::get('/testresult',           'Mailstester\SpamTestController@TestResultView')->name("testresult");
+    Route::post('/testresult',           'Mailstester\SpamTestController@TestResultView')->name("testresult");
     Route::get('/mail_body_html',       'Mailstester\SpamTestController@mail_body_html')->name("mail_body_html");
     Route::get('/mail_body_html_noimg', 'Mailstester\SpamTestController@mail_body_html_noimg')->name("mail_body_html_noimg");
 

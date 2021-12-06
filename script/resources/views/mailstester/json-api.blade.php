@@ -15,7 +15,7 @@
                 <hr />
                 <ul class="toc">
                     <li>
-                        <a href="#how-to">How to use the Mail-Tester JSON API?</a>
+                        <a href="#how-to">How to use the {{ env('APP_NAME') }} JSON API?</a>
                     </li>
                     <li>
                         <a href="#dbug">Visualize your data with dBug</a>
@@ -24,19 +24,18 @@
                         <a href="#structure">Structure and examples</a>
                     </li>
                 </ul>
-                <h2 id="how-to" class="question">How to use the Mail-Tester JSON API?</h2>
+                <h2 id="how-to" class="question">How to use the {{ env('APP_NAME') }} JSON API?</h2>
                 <div class="answer">
                     <p>First send an email to
                         <em>yourusername</em>-whateveryouwant[at]{{ ($request=Request::capture())->gethttphost() }} (<em>yourusername</em>
                         should be replaced by your own username!)</p>
-                    <p>Then to use our API, call Mail-tester with this url:</p>
+                    <p>Then to use our API, call {{ env('APP_NAME') }} with this url:</p>
                     <p style="text-align: center;">
-                        <strong>{{ Request::root() }}/yourusername-</strong>
-                        <strong>whateveryouwant&amp;format=json</strong>
+                        <strong>{{ Request::root() }}/json/yourusername-whateveryouwant</strong>
                     </p>
                     <p>You can obviously replace "whateveryouwant" by everything you want... Please
                         make sure it's an unique string so one test does not override another.</p>
-                    <p>Basically, after calling this url, Mail-tester will process the mail sent to
+                    <p>Basically, after calling this url, {{ env('APP_NAME') }} will process the mail sent to
                         the given email address and return a JSON object than you can exploit.</p>
                     <p>Here is a short example of what you should execute to get the API result.
                         This given example uses
@@ -44,7 +43,7 @@
                         but you can use whatever you prefer:</p>
                     <pre style="margin: auto; max-width: 644px;">
 <!-- this code must be no indent -->
-$.getJSON("{{ Request::root() }}/aaweb-pDrqwp&amp;format=json", function(data){
+$.getJSON("{{ Request::root() }}/json/aaweb-pDrqwp", function(data){
     if(data.status==false){
         document.write(data.title);
         return;
@@ -71,7 +70,7 @@ $.getJSON("{{ Request::root() }}/aaweb-pDrqwp&amp;format=json", function(data){
                 </div>
                 <h2 id="dbug" class="question">Visualize your data with dBug</h2>
                 <div class="answer">
-                    <p>Since Mail-Tester is providing a lot of information and we don't want you to
+                    <p>Since {{ env('APP_NAME') }} is providing a lot of information and we don't want you to
                         be lost, we added a little that developers will love.</p>
                     <p>If you replace
                         <strong>&amp;format=json</strong>
@@ -95,7 +94,7 @@ $.getJSON("{{ Request::root() }}/aaweb-pDrqwp&amp;format=json", function(data){
                 </div>
                 <h2 id="structure" class="question">Structure and examples</h2>
                 <div class="answer">
-                    <p>As you may have noticed, Mail-Tester provides quite a lot of information
+                    <p>As you may have noticed, {{ env('APP_NAME') }} provides quite a lot of information
                         about your emails. Well the API includes everything on the result page and even
                         more.</p>
                     <p>Since we have implemented dBug in our API, the best way to have a good vision
@@ -106,7 +105,7 @@ $.getJSON("{{ Request::root() }}/aaweb-pDrqwp&amp;format=json", function(data){
                         look at our short sum-up about it.</p>
                     <h3 style="text-align: center;">Structure</h3>
                     <p>Six main sub-objects can be identified inside the main object. These
-                        sub-object are the same as the main categories on a classic Mail-Tester result
+                        sub-object are the same as the main categories on a classic {{ env('APP_NAME') }} result
                         page:</p>
                     <ul>
                         <li>
@@ -169,7 +168,7 @@ $.getJSON("{{ Request::root() }}/aaweb-pDrqwp&amp;format=json", function(data){
                             A HTML formatted message with our suggestions about the test and it results.</li>
                     </ul>
                     <h3 style="text-align: center;">Errors</h3>
-                    <p>If, for any reason, the Mail-tester test didn't work, you will still receive
+                    <p>If, for any reason, the {{ env('APP_NAME') }} test didn't work, you will still receive
                         a formatted object in json or with a dBug. The variable $object-&gt;status
                         should then be false and $object-&gt;title will give you an error message.</p>
                     <p class="top">

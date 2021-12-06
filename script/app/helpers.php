@@ -7,8 +7,28 @@ use App\Models\settings;
 use Illuminate\Support\Str;
 use File as fle;
 
+function agotime($date)
+{
+    $diff = date_diff( new \DateTime( "now" ), new \DateTime( date( 'Y-n-d H:i:s', strtotime($date))) );
+    $ago_time = (($diff->y>=1) ? (($diff->y+1) . ' years ago' ) : 
+                (($diff->m>=1) ? (($diff->m+1) . ' months ago' ) : 
+                (($diff->d>=1) ? (($diff->d+1) . ' days ago' ) : 
+                (($diff->h>=1) ? (($diff->h+1) . ' hours ago' ) : 
+                (($diff->i>=1) ? (($diff->i+1) . ' minutes ago' ) : 
+                date( 'l d M Y H:i:s P (T)', strtotime($date) )   )))));
+    return $ago_time;
+}
+
+function size($size)
+{
+    if($size>=1024*1024) return round($size/1024/1024,1).'MB';
+    else if($size>=1024) return round($size/1024,1).'KB';
+    return $size.'B';
+}
+
 function GetFirstWordFromLine($line)
 {
+    $line = trim($line);
     $pos = stripos($line, ' ', 0);
     if($pos===false || $pos<=0)
     {

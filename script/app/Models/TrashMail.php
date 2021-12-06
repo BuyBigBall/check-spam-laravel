@@ -74,7 +74,7 @@ class TrashMail extends Model
 		return null;
     }
   
-    public static function GetLastReadMail($email)
+    public static function GetLastReceiveMail($email)
     {
         # look for unread message for me
         $results = TrashMail::allMessages($email);
@@ -83,7 +83,7 @@ class TrashMail extends Model
         {
             if( !empty($last_message['error'])) continue;
 
-            if($last_message['is_seen'])
+            //if($last_message['is_seen'])
             {
                 $id = $last_message['id'];
 				return $id;

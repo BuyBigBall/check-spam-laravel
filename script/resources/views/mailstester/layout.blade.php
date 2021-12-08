@@ -339,7 +339,7 @@
         @yield('mailtesterjs')
         @yield('addressjs')
         @yield('register-script')        
-
-        <script src="{{ asset('assets/js/cookieconsent.min.js') }}"></script>
+		
+		<!-- <script src="{{ asset('assets/js/cookieconsent.min.js') }}"></script> -->
     </body>
 </html>

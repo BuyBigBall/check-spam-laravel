@@ -36,9 +36,7 @@ class MicroPayment extends Model
         return $this->belongsTo('App\Models\User', 'user_id');
     }
 
-    // because "Base table or view not found: 1146 Table 'trash_mail.micro_payments' doesn't exist" 
-    // deleted by yasha
-    // public function email() {
-    //     return $this->belongsTo('App\Models\TrashMail', 'email_id');
-    // }
+    public function email() {
+         return $this->belongsTo('App\Models\TrashMail', 'email_id');
+    }
 }

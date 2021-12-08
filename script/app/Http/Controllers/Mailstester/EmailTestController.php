@@ -80,9 +80,9 @@ class EmailTestController extends Controller
         {
             //dd($email);
             // for test update
-            //$id = TrashMail::GetLastUnreadMail($email);
-            $id = TestResult::where('receiver', $email)->orderBy('received_at', 'DESC');
-            if($id->first()!=null)                 $id = $id->first()->mail_id;
+            $id = TrashMail::GetLastUnreadMail($email);
+            // $id = TestResult::where('receiver', $email)->orderBy('received_at', 'DESC');
+            // if($id->first()!=null)                 $id = $id->first()->mail_id;
             //<--- for test
         }
         

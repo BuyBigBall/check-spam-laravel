@@ -3,6 +3,8 @@ namespace App\Http\Controllers\Mailstester;
 use DomDocument;
 use SPFLib\Term\Mechanism;
 use Exception;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process;
  
 class SpamAssassin
 {
@@ -63,6 +65,12 @@ class SpamAssassin
 		//"aspews.ext.sorbs.net","b.barracudacentral.org","bb.barracudacentral.org","bl.drmx.org","bl.konstant.no","bl.nszones.com","bl.spamcannibal.org","bl.spameatingmonkey.net","bl.spamstinks.com","black.junkemailfilter.com","blackholes.five-ten-sg.com","blacklist.sci.kun.nl","blacklist.woody.ch","bogons.cymru.com","bsb.empty.us","bsb.spamlookup.net","cbl.abuseat.org","cblless.anti-spam.org.cn","cblplus.anti-spam.org.cn","cdl.anti-spam.org.cn","cidr.bl.mcafee.com","combined.rbl.msrbl.net","db.wpbl.info","dev.null.dk","dialups.visi.com","dnsbl-0.uceprotect.net","dnsbl-1.uceprotect.net","dnsbl-2.uceprotect.net","dnsbl-3.uceprotect.net","dnsbl.anticaptcha.net","dnsbl.aspnet.hu","dnsbl.inps.de","dnsbl.justspam.org","dnsbl.kempt.net","dnsbl.madavi.de","dnsbl.rizon.net","dnsbl.rv-soft.info","dnsbl.rymsho.ru","dnsbl.zapbl.net","dnsrbl.swinog.ch","dul.pacifier.net","dyn.nszones.com","fnrbl.fast.net","fresh.spameatingmonkey.net","hostkarma.junkemailfilter.com","images.rbl.msrbl.net","ips.backscatterer.org","ix.dnsbl.manitu.net","korea.services.net","l2.bbfh.ext.sorbs.net","l3.bbfh.ext.sorbs.net","l4.bbfh.ext.sorbs.net","list.bbfh.org","list.blogspambl.com","mail-abuse.blacklist.jippg.org","netbl.spameatingmonkey.net","netscan.rbl.blockedservers.com","no-more-funn.moensted.dk","noptr.spamrats.com","orvedb.aupads.org","phishing.rbl.msrbl.net","pofon.foobar.hu","cart00ney.surriel.com","rbl.abuse.ro","rbl.blockedservers.com","rbl.dns-servicios.com","rbl.efnet.org","rbl.efnetrbl.org","rbl.iprange.net","rbl.schulte.org","rbl.talkactive.net","rbl2.triumf.ca","rsbl.aupads.org","sbl-xbl.spamhaus.org","sbl.nszones.com","short.rbl.jp","spam.dnsbl.anonmails.de","spam.pedantic.org","spam.rbl.blockedservers.com","spam.rbl.msrbl.net","spam.spamrats.com","spamsources.fabel.dk","st.technovision.dk","tor.dan.me.uk","tor.dnsbl.sectoor.de","tor.efnet.org","torexit.dan.me.uk","truncate.gbudb.net","uribl.spameatingmonkey.net","urired.spameatingmonkey.net","virbl.dnsbl.bit.nl","virus.rbl.jp","virus.rbl.msrbl.net","vote.drbl.caravan.ru","vote.drbl.gremlin.ru","web.rbl.msrbl.net","work.drbl.caravan.ru","work.drbl.gremlin.ru","wormrbl.imp.ch","xbl.spamhaus.org","zen.spamhaus.org"
     ];
 	
+	public static function check_url($url) {
+		$headers = @get_headers( $url);
+		$headers = (is_array($headers)) ? implode( "\n ", $headers) : $headers;
+		return (bool)preg_match('#^HTTP/.*\s+[(200|301|302)]+\s#i', $headers);
+	}
+
 
 	## curl_getinfo is long time without internet
 	public static function check_broken_links( $content )
@@ -86,11 +94,12 @@ class SpamAssassin
         $results = [];
         foreach($matches as $url)
         {
-			
+			/*
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_HEADER, 1);
+            curl_setopt($ch,  CURLOPT_URL, $url);
+            curl_setopt($ch,  CURLOPT_HEADER, 1);
             curl_setopt($ch , CURLOPT_RETURNTRANSFER, 1);
+			//curl_setopt($ch,  CURLOPT_TIMEOUT,300); 
 			
             $data = curl_exec($ch);
             $headers = curl_getinfo($ch);
@@ -112,24 +121,87 @@ class SpamAssassin
                     'score'=> SpamAssassin::$burl_score_unit,
                 ];
             }
+			// */
+			
+			if ( ! SpamAssassin::check_url($url))
+				 $results[] = [
+							'url' => $url,
+							'score'=> SpamAssassin::$burl_score_unit,
+						];
         }
 
         return $results;
     }
 	
+	public static function cmd_parse($result)
+	{
+		$pos = stripos('QUERY:', $result, 0);
+		$pos = stripos('ANSWER:', $result, $pos);
+		if($pos!==false)
+		{
+			$posend = stripos(',', $result, $pos);
+			return intval(substr($result, $pos, ($posend-$result-strlen('answer:'))));
+		}
+		return 0;
+	}
 	## checkdnsrr is long time without internet
     public static function cheking_blacklist($check_ip)
     {
         $listed = [];
         if ($check_ip) {
             $reverse_ip = implode(".", array_reverse(explode(".", $check_ip)));
+			$processes = [];
+			$starttime = time(); // print($starttime .' : ');
             foreach (SpamAssassin::$dnsbl_lookup as $keyname    =>  $host_url) 
             {
-                if (checkdnsrr($reverse_ip . "." . $host_url . ".", "A")) 
+				/*
+				$cmd = "dig " . $reverse_ip . "." . $host_url . "." . " A";
+				//$process = new Process(['dig', $reverse_ip.'.'.$host_url.'.', 'A' ]);
+				$process = new Process(['dig', $reverse_ip.'.'.$host_url.'.', 'A' ]);
+				$process->setTimeout(0);
+				$process->run(); //$process->disableOutput();				// $process->start();
+				// executes after the command finishes
+				if (!$process->isSuccessful()) {
+					throw new ProcessFailedException($process);
+				}
+				$processes[$keyname] = $process;
+				// */
+				
+				// /*
+				// print(time().'----');
+				
+				if (checkdnsrr($reverse_ip . "." . $host_url . ".", "A")) 
                     $listed[$keyname] = SpamAssassin::$bl_score_unit;
                 else 
                     $listed[$keyname] = 0;
+				// */
             }
+			//print(time() .' : ');
+			//print_r($processes);
+			/*
+			while(time()-$starttime<=30)
+			{
+				foreach ($processes as $keyname => $runningProcess) 
+				{
+					//print($keyname . ' ' . $runningProcess->isRunning().'<br>');
+					// specific process is finished, so we remove it
+					if (! $runningProcess->isRunning()) 
+					{
+						if( SpamAssassin::cmd_parse($process->getOutput()) )
+						{
+							$listed[$keyname] =  SpamAssassin::$bl_score_unit;
+						}
+						else
+						{
+							$listed[$keyname] = 0;
+						}
+					 	 unset($processes[$keyname]);
+					}
+				}
+				usleep(10000);
+				if(count($processes)==0) break;
+			}
+			// */
         }
     	return $listed;
     }

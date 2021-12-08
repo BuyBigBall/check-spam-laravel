@@ -161,7 +161,7 @@
 				</div>
 				<div class="content">
 					<div class="about">{{ translate('The famous spam filter ')}}
-							<a href="http://spamassassin.apache.org/" target="_blank">SpamAssassin</a>. {{ translate('Score :')}} -{{10-$score}}.
+							<a href="http://spamassassin.apache.org/" target="_blank">SpamAssassin</a>. {{ translate('Score :')}} {{10-$score}}.
 						<br />{{ translate('A score below -5 is considered spam.')}}</div>
 					<div class="result">
 						<table class="table"><tbody>
@@ -360,7 +360,7 @@
         <!-- Structure and Content -->
         <div class="test-result structure-and-content">
             <div class="header clearfix">
-                <div class="h-100 status warning icon-check"></div>
+                <div class="status warning icon-check"></div>
                 <h2 class="title">
                     <i class="icon-down"></i>{{ translate('Your message could be improved')}}</h2>
             </div>
@@ -444,7 +444,7 @@
         <!-- Blacklists -->
         <div class="test-result blacklists">
             <div class="header clearfix">
-                <div class="h-100 status @if($black_list_score==0) success icon-check @else failure @endif">@if($black_list_score!=0) {{-$black_list_score}} @endif</div>
+                <div class="status @if($black_list_score==0) success icon-check @else failure @endif">@if($black_list_score!=0) {{-$black_list_score}} @endif</div>
                 <h2 class="title">
                     <i class="icon-down"></i>
                         @if($black_list_score==0)

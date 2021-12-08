@@ -67,7 +67,6 @@ class SpamAssassin
 	## curl_getinfo is long time without internet
 	public static function check_broken_links( $content )
     {
-		//print_r($content); die;
         //<a href='https://mail-analyzer.com.'></a>
         $matches = [];
 		$regexp = "<a\s[^>]*href=(\"??)([^\" >]*?)\\1[^>]*>(.*)<\/a>";
@@ -87,10 +86,12 @@ class SpamAssassin
         $results = [];
         foreach($matches as $url)
         {
+			
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_HEADER, 1);
             curl_setopt($ch , CURLOPT_RETURNTRANSFER, 1);
+			
             $data = curl_exec($ch);
             $headers = curl_getinfo($ch);
             curl_close($ch);
@@ -112,6 +113,7 @@ class SpamAssassin
                 ];
             }
         }
+
         return $results;
     }
 	
@@ -400,7 +402,8 @@ class SpamAssassin
 	}
 	public static function ReverseScore($score)
 	{
-		if($score=='-0.0') return '0.001';
+		if($score==='-0.0') return '0.001';
+		if($score==='0.0') return '-0.001';
 		if($score=='0.0') return '-0.001';
 		return number_format (-$score, 1);
 	}

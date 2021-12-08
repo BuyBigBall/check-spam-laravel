@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Session;
 use App\Models\Settings;
 use App\Models\Profile;
-use App\Models\Configure;
+use App\Models\UserOption;
 use App\Models\TestResult;
 use App\Models\WhiteLabel;
 use Illuminate\Support\Str;
@@ -61,20 +61,32 @@ class SiteController extends Controller
             'serverip' => '',
             'clientip' => '',
             'mttoken' => '',
-            'micropayment' => 0
+            'micropayment' => 0, 
+            'pay_types' => [],
         ];
         if (Auth::guard($guard)->check()) {
             $role = Auth::user()->role; 
             $userdata['user_login'] = Auth::user();
-            $conf_val = Configure::selectConfigures($userdata['user_login']['id']);
+            $conf_val = UserOption::getOption($userdata['user_login']['id']);
             if(!empty($conf_val) && !empty($conf_val->user_id))
             $conf = [
                 'user_id' => $conf_val->user_id,
-                'pkey' => $conf_val->private_key,
-                'serverip' => $conf_val->server_ips,
-                'clientip' => $conf_val->client_ips,
-                'mttoken' => $conf_val->x_mt_tocken,
-                'micropayment' => $conf_val->micro_payment
+                'pkey' => $conf_val->email_key,
+                'serverip' => $conf_val->from_ips,
+                'clientip' => $conf_val->tests_ips,
+                'mttoken' => $conf_val->xmt_tocken,
+                'micropayment' => $conf_val->use_micropay,
+                'pay_type_ids' => !empty($conf_val->use_micropay) ?  explode(',', $conf_val->pay_types) : [],
+            ];
+            else
+            $conf = [
+                'user_id'      => $userdata['user_login']['id'],
+                'pkey'         => '',
+                'serverip'     => '',
+                'clientip'     => '',
+                'mttoken'      => '',
+                'micropayment' => '',
+                'pay_type_ids' => [1,2,4],
             ];
         }
         else
@@ -276,26 +288,45 @@ class SiteController extends Controller
         if (Auth::guard($guard)->check()) {
             $role = Auth::user()->role; 
             $userdata = Auth::user();
-            //print_r($userdata); die;
-            if( ($configure = Configure::selectConfigures($userdata['id'])) )
+
+            $pay_type_ids = '';
+            foreach($request->pay_type as $id)
             {
-                $configure->private_key     = $request->pkey;
-                $configure->server_ips      = $request->serverip;
-                $configure->client_ips      = $request->clientip;
-                $configure->x_mt_tocken     = $request->mttoken;
-                $configure->micro_payment   = $request->micropayment;
-                $configure->update();
+                if($pay_type_ids!='')   $pay_type_ids .= ',';
+                $pay_type_ids .= $id;
+            }
+            
+            if( ($options = UserOption::getOption($userdata['id'])) )
+            {
+                $options->email_id      = $userdata->trashmail[0]->id;
+                $options->email_key     = $request->pkey;
+                $options->from_ips      = $request->serverip;
+                $options->test_ips      = $request->clientip;
+                $options->xmt_token     = $request->mttoken;
+                $options->use_micropay  = $request->micropayment;
+                if($request->micropayment)
+                    $options->pay_types     = $pay_type_ids;
+                else
+                    $options->pay_types     = '';
+                $options->update();
             }
             else
             {
-                $configure = new Configure();
-                $configure->user_id = $userdata['id'];
-                $configure->private_key     = $request->pkey;
-                $configure->server_ips      = $request->serverip;
-                $configure->client_ips      = $request->clientip;
-                $configure->x_mt_tocken     = $request->mttoken;
-                $configure->micro_payment   = $request->micropayment;
-                $configure->save();
+                //dd($pay_type_ids);
+                $options = new UserOption();
+                $options->user_id       = $userdata['id'];
+                $options->pay_types     = $request->micropayment;
+                $options->email_id      = $userdata->trashmail[0]->id;
+                $options->email_key     = $request->pkey;
+                $options->from_ips      = $request->serverip;
+                $options->test_ips      = $request->clientip;
+                $options->xmt_token     = $request->mttoken;
+                $options->use_micropay  = $request->micropayment;
+                if($request->micropayment)
+                    $options->pay_types     = $pay_type_ids;
+                else
+                    $options->pay_types     = '';
+                $options->save();
             }
             
         }

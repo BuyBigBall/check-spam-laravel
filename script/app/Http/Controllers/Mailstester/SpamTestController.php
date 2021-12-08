@@ -387,8 +387,11 @@ class SpamTestController extends Controller
         $array_object['body']           = SpamTestJson::get_mailbody_array($mailbody, $from_email);
         $array_object['blacklists']     = SpamTestJson::get_blacklist_array($auth_serverInfo['serverip'], $from_email);
         $array_object['links']          = SpamTestJson::get_brokenlinks_array($mailbody, $from_email);
-        
+        //dd($array_object);
         $json_object  = json_encode($array_object);
+        header("Content-Type: application/json");
+		header("Accept: application/json");
+        print($json_object); die;
     }
 }
 

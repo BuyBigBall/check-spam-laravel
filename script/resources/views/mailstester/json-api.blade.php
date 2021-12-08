@@ -31,7 +31,7 @@
                         should be replaced by your own username!)</p>
                     <p>Then to use our API, call {{ env('APP_NAME') }} with this url:</p>
                     <p style="text-align: center;">
-                        <strong>{{ Request::root() }}/json/yourusername-whateveryouwant</strong>
+                        <strong>{{ Request::root() }}/json/yourusername.whateveryouwant</strong>
                     </p>
                     <p>You can obviously replace "whateveryouwant" by everything you want... Please
                         make sure it's an unique string so one test does not override another.</p>
@@ -43,7 +43,7 @@
                         but you can use whatever you prefer:</p>
                     <pre style="margin: auto; max-width: 644px;">
 <!-- this code must be no indent -->
-$.getJSON("{{ Request::root() }}/json/aaweb-pDrqwp", function(data){
+$.getJSON("{{ Request::root() }}/json/yakov.707", function(data){
     if(data.status==false){
         document.write(data.title);
         return;

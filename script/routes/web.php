@@ -164,7 +164,8 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
     Route::get('/payment_status',   'Mailstester\PaymentController@payment_status')->name('payment_status');
     #payment notify url
     Route::get('/paypal_notify',    'Mailstester\PaymentController@paypal_notify')->name('paypal_notify');
-    Route::get('/micro-payment',    'Mailstester\PaymentController@micro_payment')->name("micro-payment");
+    Route::get('/micro-payment',    'Mailstester\PaymentController@micro_payment_note')->name("micro-payment");
+    Route::get('/checkout-micropay','Mailstester\PaymentController@micropay')->name("checkout-micropay");
 
     Route::get('/json-api',         'Mailstester\SiteController@json_api')->name("json-api");
     Route::get('/json/{mail}',      'Mailstester\SpamTestController@json')->name("json");
@@ -193,7 +194,6 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
 	Route::post('/save-register',   'Mailstester\RegisterController@save_register')->name("save-register");
 
 	Route::get('/forgot/{type}',    'Auth\ForgotPasswordController@forgot')->name("forgot");
-    
     # --> never necessory call these, but for test using
     // Route::get('/login', 'Mailstester\LoginController@index')->name("login");
     // Route::post('/login', 'Mailstester\LoginController@loginchk')->name("loginchk");
@@ -203,7 +203,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
 
         Route::get('/account',          'Mailstester\SiteController@account')->name("account");
         Route::get('/get-started',      'Mailstester\SiteController@started')->name("get-started");
-        Route::post('/save-configure',        'Mailstester\SiteController@save_configure')->name("save-configure");
+        Route::post('/save-configure',  'Mailstester\SiteController@save_configure')->name("save-configure");
         
         // redirect checkoutpage or loginpage
         // Route::get('/checkout/{step}', 'Mailstester\PaymentController@checkout_step')->name("checkout");

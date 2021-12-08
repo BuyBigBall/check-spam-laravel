@@ -42,17 +42,15 @@ class SpamTestJson
         $bl_score_list = SpamAssassin::cheking_blacklist($serverip);	//'95.19.4.3');//
         
         $black_list_score_sum = array_sum($bl_score_list);
-        // $total_score = $score_report['score'];
-        // $total_score += $black_list_score_sum;
         
-        $hitMark = abs($black_list_score_sum) /SpapAssassin::$bl_score_unit;
-        $result["title"] = sprintf(tranalate("You're %s listed in %s blacklist")
+        $hitMark = abs($black_list_score_sum) / SpamAssassin::$bl_score_unit;
+        $result["title"] = sprintf(translate("You're %s listed in %s blacklist")
                     , ($black_list_score_sum==0 ? "not " : "") 
                     , ($hitMark==0 ? "any" : $hitMark ) );
         $result["mark"] = $black_list_score_sum;
         $result["displayedMark"] = $black_list_score_sum;
         $result["statusClass"] = $black_list_score_sum==0 ? "success" : "failure";
-        $result["description"] = sprintf( translate("Matches your server IP address (<b>%s</b>) against $d of the most common IPv4 blacklists.")
+        $result["description"] = sprintf( translate("Matches your server IP address (<b>%s</b>) against %d of the most common IPv4 blacklists.")
                     ,$serverip , count($bl_score_list));
         $result["hits"] = 1;
         $result["timeout"] = 0;
@@ -85,13 +83,13 @@ class SpamTestJson
         $result["status"] = "";
         $result["statusClass"] = translate("warning icon-check");
         $result["description"] = translate("Checks whether your message is well formatted or not.");
-        $result["messages"] = sprintf( translate("<p class=\"message-weight\">Weight of the HTML version of your message: <b>%s</b>.</p><p>Your message contains <b>%d</b>% of text.</p>")
+        $result["messages"] = sprintf( translate("<p class=\"message-weight\">Weight of the HTML version of your message: <b>%s</b>.</p><p>Your message contains <b>%d</b>%% of text.</p>")
                 , $body_length, round($weight));
 
         $result["subtests"] = [];
         $result["subtests"]["textToHtmlRatio"] = 
          [
-            "title" => sprintf( translate("Your message contains <b>%d</b>% of text."), $weight),
+            "title" => sprintf( translate("Your message contains <b>%d</b>%% of text."), $weight),
             "mark" => 0,
             "statusClass" => "success",
             "description" => "",
@@ -144,11 +142,10 @@ class SpamTestJson
     {
         $mail_server_domain = explode('@', $from_email)[1];
 		$auth_rDnsInfo   = SpamAssassin::getRDNSsign( $mailheader, $auth_serverInfo );
-        $auth_SPDcheck   = SpamAssassin::getSPFcheck($response['header'], $auth_rDnsInfo, $response['from_email'] );
+        $auth_SPDcheck   = SpamAssassin::getSPFcheck($mailheader, $auth_rDnsInfo, $from_email );
         $auth_DMARCInfo  = SpamAssassin::getDMARCsign($mailheader, $mail_server_domain );
         $auth_DKIMInfo   = SpamAssassin::getDKIMsign( $mailheader );
         $dmark_results   = dns_get_record("_dmarc.".$mail_server_domain, DNS_TXT);
-        //"spf", "dkim", "dmarc", "rDns", "aRecord", "mxRecord"
 
         $score = 0; $s1 = ""; $s2 = "";
         foreach( $auth_SPDcheck['spf_record']  as $entry) $s1 .= '<pre>'.$entry.'</pre>';
@@ -167,13 +164,13 @@ class SpamTestJson
         $result['description'] = translate("We check if the server you are sending from is authenticated");
         $result['subtests'] = [];
         $result['subtests']["spf"] = [
-            "title"=> sprintf( translate("[SPF] Your server <b>%s</b> is authorized to use <b>%s</b>"), $$auth_serverInfo['serverip'], $from_email ),
+            "title"=> sprintf( translate('[SPF] Your server <b>%s</b> is authorized to use <b>%s</b>'), $auth_serverInfo['serverip'], $from_email ),
             "mark"=> 0,
             "displayedMark"=> "",
             "status"=> "pass",
             "statusClass"=> "success icon-check",
             "description"=> translate("Sender Policy Framework (SPF) is an email validation system designed to prevent email spam by detecting email spoofing, a common vulnerability, by verifying sender IP addresses."),
-            "messages"=> sprintf(translate("<p>What we retained as your current SPF record is:</p>%s<br/><br/><p>Verification details:</p><pre>%s</pre>"), $s1, $s2),
+            "messages"=> sprintf(translate('<p>What we retained as your current SPF record is:</p>%s<br/><br/><p>Verification details:</p><pre>%s</pre>'), $s1, $s2),
             "record"=> $s1,
             "newrecord"=> $s1
         ];
@@ -184,11 +181,11 @@ class SpamTestJson
             "displayedMark" => "",
             "statusClass" => "success icon-check",
             "description" => translate("DomainKeys Identified Mail (DKIM) is a method for associating a domain name to an email message, thereby allowing a person, role, or organization to claim some responsibility for the message."),
-            "messages" => sprintf(translate("<p>The DKIM signature of your message is:</p><pre>\t%s</pre><p>Key length: 1024bits</p>"), $s1),
+            "messages" => sprintf(translate('<p>The DKIM signature of your message is:</p><pre>\t%s</pre><p>Key length: 1024bits</p>'), $s1),
             "status" => "pass"
         ];
         if($auth_DMARCInfo['auth_result']!='auth')  $s1 = "not"; else $s1 = "";
-        $s2 = "";
+        $s2 = "";$s3 = "";
         foreach($auth_DMARCInfo['dmarc_entries'] as $entry)     $s2 .= "<pre>$entry</pre>";
         foreach($auth_DMARCInfo['dmarc_rows'] as $entry)        $s3 .= "<li>$entry</li>";
 
@@ -256,10 +253,10 @@ class SpamTestJson
         $result['diplayedMark'] = 0;
         $result['threshold'] = -$max;
         $result['statusClass'] = $score==0 ? "success" : ($score>=-5 ?  "warning" : ($score>=-6 ?  "credicalwarning" : ($score>=-8 ?  "cretical" : 'fail')));
-        $result['description'] = "The famous spam filter <a href=\"http://spamassassin.apache.org/\" target=\"_blank\">SpamAssassin</a>. Score: ".number_format(-$score, 1).".<br/>A score below ".$max." is considered spam.";
+        $result['description'] = 'The famous spam filter <a href="http://spamassassin.apache.org/" target="_blank">SpamAssassin</a>. Score: '.number_format(-$score, 1).'.<br />A score below '.$max.' is considered spam.';
         $result['displayedMark'] = $score;
         $result['rules'] = [];
-        $rules = SpamAssassin::GetSpamAssassinRules($response['header'], $remove_score);
+        $rules = SpamAssassin::GetSpamAssassinRules($mailheader, $remove_score);
         foreach($rules as $rule)
         {
             $result['rules'][$rule['key']] = [
@@ -286,8 +283,8 @@ class SpamTestJson
              ) : "Mail not found. Please wait a few seconds and try again.";
         $email_object_array = [];
         $email_object_array["title"] = $title;
-        $email_object_array["mark"] = $inbox_object!=null ? $score : 0;
-        $email_object_array["displayedMark"] = $inbox_object!=null ?  number_format(10 + $score, 1) ."/10" : "";
+        $email_object_array["mark"] = $inbox_object!=null ? (-$score) : 0;
+        $email_object_array["displayedMark"] = $inbox_object!=null ?  number_format(10 - $score, 1) .'/10' : "";
         $email_object_array["maxMark"] = $inbox_object!=null ? 0 : 0;
         $email_object_array["commentedMark"] = $inbox_object!=null ? "Your lovely total: " . $email_object_array["displayedMark"] : "";
         $email_object_array["status"] = true;
@@ -302,10 +299,10 @@ class SpamTestJson
             'dateReceived'          => $inbox_object['receivedAt'],
             'bounceAddress'         => $inbox_object['from_email'],
             'bounceAddressDisplayed'=> 'Bounce address : ' . $inbox_object['from_email'],
-            'fromAddress'           => $inbox_object['from'] . ' ' . $inbox_object['from_email'],
-            'fromAddressDisplayed'  =>  "<b>From :</b> " . $inbox_object['from'] . ' ' . htmlspecialchars($inbox_object['from_email']),
+            'fromAddress'           => $inbox_object['from'] . ' <' . $inbox_object['from_email'] .'>',
+            'fromAddressDisplayed'  =>  '<b>From :</b> ' . $inbox_object['from'] . ' ' . htmlspecialchars($inbox_object['from_email']),
             'replyto'               => [ $inbox_object['from'] . ' ' . $inbox_object['from_email'] ],
-            'replytoDisplayed'      => "<b>From :</b> " . $inbox_object['from'] . ' ' . htmlspecialchars($inbox_object['from_email']) ,
+            'replytoDisplayed'      => '<b>From :</b> ' . $inbox_object['from'] . ' ' . htmlspecialchars($inbox_object['from_email']) ,
         ];
         $email_object_array["spamAssassin"] = null;
         $email_object_array["signature"] = null;

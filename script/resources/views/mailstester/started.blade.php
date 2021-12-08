@@ -193,7 +193,7 @@
                     to the user and the user will be able to access his test only after paying a
                     small fee.<br/>
                     You will receive a commission of
-                    <b>40%</b>
+                    <b>{{ env('MICROPAY_PROFIT') }}%</b>
                     of the amount spent by your users (excluded VAT).<br/>
                     Micro-payment mode :
                     <select
@@ -206,7 +206,11 @@
                         <option value="1" @if( $conf['micropayment']==1 ) selected @endif >Enabled - your users will have to pay a small fee to see their result</option>
                     </select>
                 </p>
-                <div id="micropaymentpacks" style="display:none">
+                <div id="micropaymentpacks"     
+                    @if( $conf['micropayment']!=1 ) 
+                        style="display:none"
+                    @endif
+                        >
                     Please select two or three offers you want to propose to your users:
                     <ul>
                         <li>
@@ -215,8 +219,11 @@
                                     id="product_8"
                                     type="checkbox"
                                     class="selectedproducts"
-                                    checked="checked"
-                                    value="8"/>
+                                    name='pay_type[]'
+                                    @if(in_array(1, $conf["pay_type_ids"]))
+                                        checked="checked"
+                                    @endif
+                                    value="1"/>
                                 1 € : Get access to the result of this test only</label>
                         </li>
                         <li>
@@ -225,13 +232,21 @@
                                     id="product_12"
                                     type="checkbox"
                                     class="selectedproducts"
-                                    checked="checked"
-                                    value="12"/>
+                                    @if(in_array(2, $conf["pay_type_ids"]))
+                                        checked="checked"
+                                    @endif
+                                    name='pay_type[]'
+                                    value="2"/>
                                 3 € : Get access to the next 5 tests you perform</label>
                         </li>
                         <li>
                             <label for="product_10">
-                                <input id="product_10" type="checkbox" class="selectedproducts" value="10"/>
+                                <input id="product_10" type="checkbox" 
+                                    name='pay_type[]'
+                                    @if(in_array(3, $conf["pay_type_ids"]))
+                                        checked="checked"
+                                    @endif
+                                    class="selectedproducts" value="3"/>
                                 3 € : Get access to the next 10 tests you perform</label>
                         </li>
                         <li>
@@ -240,33 +255,68 @@
                                     id="product_13"
                                     type="checkbox"
                                     class="selectedproducts"
-                                    checked="checked"
-                                    value="13"/>
+                                    @if(in_array(4, $conf["pay_type_ids"]))
+                                        checked="checked"
+                                    @endif
+                                    name='pay_type[]'
+                                    value="4"/>
                                 5 € : Get access to the next 20 tests you perform</label>
                         </li>
                         <li>
                             <label for="product_11">
-                                <input id="product_11" type="checkbox" class="selectedproducts" value="11"/>
+                                <input id="product_11" type="checkbox" 
+                                    class="selectedproducts" 
+                                    name='pay_type[]'
+                                    @if(in_array(5, $conf["pay_type_ids"]))
+                                        checked="checked"
+                                    @endif
+
+                                    value="5"/>
                                 5 € : Get access to the next 30 tests you perform</label>
                         </li>
                         <li>
                             <label for="product_9">
-                                <input id="product_9" type="checkbox" class="selectedproducts" value="9"/>
+                                <input id="product_9" type="checkbox" 
+                                    class="selectedproducts" 
+                                    value="6"
+                                    @if(in_array(6, $conf["pay_type_ids"]))
+                                        checked="checked"
+                                    @endif
+                                    name='pay_type[]'
+                                    />
                                 5 € : Perform as many tests as you want in the next 48 hours</label>
                         </li>
                         <li>
                             <label for="product_14">
-                                <input id="product_14" type="checkbox" class="selectedproducts" value="14"/>
+                                <input id="product_14" type="checkbox" 
+                                    name='pay_type[]'
+                                    class="selectedproducts" 
+                                    @if(in_array(7, $conf["pay_type_ids"]))
+                                        checked="checked"
+                                    @endif
+                                    value="7"/>
                                 10 € : Perform as many tests as you want during the next 7 days</label>
                         </li>
                         <li>
                             <label for="product_16">
-                                <input id="product_16" type="checkbox" class="selectedproducts" value="16"/>
+                                <input id="product_16" type="checkbox" 
+                                    name='pay_type[]'
+                                    class="selectedproducts" 
+                                    @if(in_array(8, $conf["pay_type_ids"]))
+                                        checked="checked"
+                                    @endif
+                                    value="8"/>
                                 25 € : Perform as many tests as you want during the next 30 days</label>
                         </li>
                         <li>
                             <label for="product_18">
-                                <input id="product_18" type="checkbox" class="selectedproducts" value="18"/>
+                                <input id="product_18" type="checkbox" 
+                                    name='pay_type[]'
+                                    class="selectedproducts" 
+                                    @if(in_array(9, $conf["pay_type_ids"]))
+                                        checked="checked"
+                                    @endif
+                                    value="9"/>
                                 200 € : Perform as many tests as you want during a year
                             </label>
                         </li>

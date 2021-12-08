@@ -29,7 +29,10 @@ class TrashMail extends Model
     public function user() {
         return $this->belongsTo('App\Models\User', 'user_id');
     }
-    
+    public function useroption() {
+        return $this->hasOne('App\Models\UserOption', 'email_id');
+    }
+
     public static function connection($email = null)
     {
         

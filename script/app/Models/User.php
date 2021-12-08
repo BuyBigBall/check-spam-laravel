@@ -53,6 +53,9 @@ class User extends Authenticatable
     public function profile() {
         return $this->hasMany('App\Models\Profile');
     }
+    public function trashmail() {
+        return $this->hasMany('App\Models\TrashMail',  'user_id', 'id');
+    }
     public function default() {
         return $this->hasOne('App\Models\Profile')->where('default_address','=', 1);
     }

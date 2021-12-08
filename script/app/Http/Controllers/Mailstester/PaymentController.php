@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Session;
 use App\Models\Settings;
 use App\Models\Profile;
-use App\Models\Configure;
 use App\Models\TestResult;
 use App\Models\WhiteLabel;
 use App\Models\Transaction;
@@ -227,8 +226,19 @@ class PaymentController extends Controller
         }
     }
 
+    public function micropay()
+    {
+        $guard = null;
+        $userdata = [];
+        if (Auth::guard($guard)->check()) {
+            $role = Auth::user()->role; 
+            $userdata['user_login'] = Auth::user();
+        }
+        return view('mailstester.checkout-micropay')
+                ->with('userdata' ,$userdata);
+    }
     // show micro-payment page 
-    public function micro_payment()
+    public function micro_payment_note()
     {
         $guard = null;
         $userdata = [];

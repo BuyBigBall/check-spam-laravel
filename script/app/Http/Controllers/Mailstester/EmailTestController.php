@@ -35,18 +35,25 @@ class EmailTestController extends Controller
     // show home page 
     public function index(Request $request)
     {
-        //	Samir Chakouri
+        //	Samir Chakouri, chakouri-HGLK@srv1.mail-tester.com
         //To	vvnavqq798@mail-analyzer.com, test-ebs4g0bo6@srv1.mail-tester.com
         // Date	Today 13:12
-        
         // Cookie::queue('email', 'vvnavqq798@mail-analyzer.com', 3);	
         
-        $email = null;
-        if (Cookie::has('email')) 
+        $pay_type_ids = [];
+        $email = $request->input('trsh_mail');
+        if (empty($email) && Cookie::has('email'))  $email =  Cookie::get('email');
+		$email_row = TrashMail::where('email', $email)->first();
+        if(    !empty($email_row) 
+            && !empty($email_row->useroption) 
+            && !empty($email_row->use_micropay) 
+            && !empty($email_row->useroption->pay_types)) 
         {
-            $email =  Cookie::get('email');
+            $pay_type_ids = explode( ",", $email_row->useroption->pay_types );
         }
-		
+
+
+
         if( !empty($request->input('message_id')) )
         {
             $id = $request->input('message_id');
@@ -65,6 +72,9 @@ class EmailTestController extends Controller
         {
             $css = $request->input('css');
         }
+        
+        if(!empty($id) && count($pay_type_ids)>0 )
+            return redirect( route('checkout-micropay').'?message_id='.$id );
 
         if(!empty($id) && 
             (       !Session::has('could_not_use_by_paid_user') 

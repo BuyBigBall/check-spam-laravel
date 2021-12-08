@@ -43,24 +43,17 @@ class EmailTestController extends Controller
         $pay_type_ids = [];
         $email = $request->input('trsh_mail');
         if (empty($email) && Cookie::has('email'))  $email =  Cookie::get('email');
-		$email_row = TrashMail::where('email', $email)->first();
+		$email_db_record = TrashMail::where('email', $email)->first();
         
-
-
         // getting useroption for micropayment
-        if(    !empty($email_row) 
-            && !empty($email_row->useroption)   //relation
-            && !empty($email_row->useroption->use_micropay)     //relation
-            && !empty($email_row->useroption->pay_types))   //relation
+        if(    !empty($email_db_record) 
+            && !empty($email_db_record->useroption)   //relation
+            && !empty($email_db_record->useroption->use_micropay)     //relation
+            && !empty($email_db_record->useroption->pay_types))   //relation
         {
-            $pay_type_ids = explode( ",", $email_row->useroption->pay_types );
+            $pay_type_ids = explode( ",", $email_db_record->useroption->pay_types );
         }
 
-
-        if( !empty($request->input('message_id')) )
-        {
-            $id = $request->input('message_id');
-        }
 
         $css = '';$guard = null;
         if (Auth::guard($guard)->check()) {
@@ -76,19 +69,30 @@ class EmailTestController extends Controller
             $css = $request->input('css');
         }
         
+        if( !empty($request->input('message_id')) )
+        {
+            $Hash_id = $request->input('message_id');
+			$Hash__decode_id_array = Hashids::decode($Hash_id);
+			$id = $Hash__decode_id_array[0];
+        }
         if(empty($id) )
         {
             //dd($email);
-            // for test update
             $id = TrashMail::GetLastUnreadMail($email);
-            // $id = TestResult::where('receiver', $email)->orderBy('received_at', 'DESC');
-            // if($id->first()!=null)                 $id = $id->first()->mail_id;
+			$Hash_id = Hashids::encode($id );
+			/* 
+			// for test update
+            $id = TestResult::where('receiver', $email)->orderBy('received_at', 'DESC');
+            if($id->first()!=null)                 $id = $id->first()->mail_id;
             //<--- for test
+			// */
         }
         
+		//dd($pay_type_ids);dd($id);
         if(!empty($id) && count($pay_type_ids)>0 )
         {
-            return redirect( route('checkout-micropay').'?message_id='.$id );
+			Session::put('checkout-micropay-email', $email);
+            return redirect( route('checkout-micropay').'?message_id='.$Hash_id );
         }
 
         if(!empty($id) && 

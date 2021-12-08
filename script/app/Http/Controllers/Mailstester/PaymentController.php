@@ -545,7 +545,7 @@ class PaymentController extends Controller
             
             if($response['status'] == 'COMPLETED'){
                 $inserted_id = $this->save_micro_payment_history($pay_request, $qty , $response);
-                return redirect(route('testresult').'?message_id='.$mail_id);
+                return redirect(route('testresult').'?mail_id='.$mail_id);
             }else{
                 session()->flash('error', translate('Payment failed.'));
                 return redirect(route('home'));
@@ -560,7 +560,7 @@ class PaymentController extends Controller
                 $session = StripeSession::retrieve($request->session_id);
                 if($session && $session->payment_status == 'paid'){
                     $inserted_id = $this->save_micro_payment_history($pay_request, $qty , $session);
-                    return redirect(route('testresult').'?message_id='.$mail_id);
+                    return redirect(route('testresult').'?mail_id='.$mail_id);
                 }
             }
             session()->flash('error', translate('Payment failed.'));
@@ -625,14 +625,21 @@ class PaymentController extends Controller
     public function micropay(Request $request)
     {
         $guard = null;
-        $email_receiver = TestResult::where('mail_id', $request->message_id)->first();
-        if($email_receiver==null || $email_receiver->user==null)
+		if( Session::has('checkout-micropay-email')  )
+		{
+			$email = Session::get('checkout-micropay-email') ;
+		}
+		$mailbox_mail = TrashMail::GetMail($email, $request->message_id);
+		$email_receiver = TrashMail::where('email', $email)->first();
+		
+        if($email==null)
         {
             return redirect(route('home'));
         }
 
+		$id_hash = Hashids::decode($request->message_id);
         return view('mailstester.checkout-micropay')
-                ->with('mail_id' , $request->message_id)
+                ->with('mail_id' , ($id=$id_hash[0]))
                 ->with('owner' , $email_receiver->user);
     }
 
@@ -974,7 +981,7 @@ class PaymentController extends Controller
             $microPay->pay_type = $pay_request->get('plan_id');
             $microPay->pay_amount = $price;
             //$microPay->qty = $pay_qty;
-            $microPay->expire_date = PaymentController::$micropay_plans[$pay_request->get('plan_id')]['expire'];
+            $microPay->expire_date  = PaymentController::$micropay_plans[$pay_request->get('plan_id')]['expire'];
             $microPay->supply_count = PaymentController::$micropay_plans[$pay_request->get('plan_id')]['limit'];
             $microPay->fee = env('VAT_FEE');
             $microPay->income = $price * (100-env('VAT_FEE')) / 100.0;
@@ -1140,7 +1147,7 @@ class PaymentController extends Controller
             $checkout_payment_coupon = $request->coupon_code;
             $coupon = Coupon::where('coupon_code', $checkout_payment_coupon)
                         ->where('state', 0)
-                        ->where(DB::raw("DATEDIFF('expiry_date', now())>0"))
+                        ->where(DB::raw("DATEDIFF(now(), 'expiry_date')"), '>=','0')
                         ->get()->first();
             
             $pay_price = session()->get('pay_price_'.$userdata['user_login']['id']);

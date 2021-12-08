@@ -13,3 +13,5 @@ ALTER TABLE  `test_results` ADD `json` TEXT CHARACTER SET utf8 COLLATE utf8_gene
 -- RENAME TABLE  `micropayment` TO `micro_payments`
 ALTER TABLE `micro_payments` CHANGE `Authrity` `Authority` VARCHAR(100) CHARSET utf8 COLLATE utf8_general_ci NULL; 
 ALTER TABLE `micro_payments` ADD COLUMN `guest_email` VARCHAR(50) CHARSET ASCII NOT NULL AFTER `payed_email`, ADD COLUMN `firstname` VARCHAR(40) CHARSET utf8 NULL AFTER `guest_email`, ADD COLUMN `lastname` VARCHAR(40) CHARSET utf8 NULL AFTER `firstname`, ADD COLUMN `country` VARCHAR(100) CHARSET utf8 NULL AFTER `lastname`; 
+
+ALTER TABLE `micro_payments` CHANGE `expire_date` `expire_date` TINYINT NULL, CHANGE `supply_count` `supply_count` TINYINT(4) DEFAULT 0 NULL; 

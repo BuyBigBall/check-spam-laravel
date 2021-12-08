@@ -83,18 +83,20 @@
             <br/>Please enter your email address to access your result :
             <br/>
             <form
+                autocomplete ='on'
                 method="post"
-                action="https://www.mail-tester.com/manager/micropayment/checkout/access.html">
+                action="{{route('testresult')}}">
                 @csrf
                 <input
                     type="text"
-                    name="email"
+                    name="guest_email"
                     style="height:auto;margin:0px;"
                     placeholder="Email address" />
 				<input type="submit" class="btn btn-primary" value="Submit"/>
-				<input type="hidden" name="mailbox" value="chakouri-fdgdgf"/>
-				<input type="hidden" name="ctrl" value="checkout"/>
-				<input type="hidden" name="task" value="access"/>
+				<input type="hidden" name="mailbox" value="{{$owner->trashmail[0]->email}}"/>
+                <input type="hidden" name="mail_id" value="{{$mail_id}}"/>
+				<!-- <input type="hidden" name="ctrl" value="checkout" />
+				<input type="hidden" name="task" value="access" /> -->
 				<input type="hidden" name="option" value="com_mtmanager"/>
 			</form>
 		</div>

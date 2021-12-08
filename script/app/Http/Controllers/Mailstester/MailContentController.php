@@ -14,7 +14,7 @@ use App\Models\Visitor;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\MicroPayment;
 // use Illuminate\Support\Str;
 // use Carbon\Carbon;
 
@@ -102,28 +102,70 @@ class MailContentController extends Controller
         return $could_not_use;
     }
 
-	
+	private function check_test_micropayment_user(Request $request)
+    {
+        if(!empty($request->mailbox)) return false;
+        $mail_address = TrashMail::where('email', $request->mailbox)->first();
+        if($mail_address!=null)     return false;
+        $owner_id = $mail_address->user->id;
+        $email_id = $mail_address->id;
+        if($mail_address->useroption->use_micropay)
+        {
+            $MicroPayment = MicroPayment::where('user_id', $owner_id)
+                        ->where('email_id', $email_id)
+                        ->where('guest_email', $request->guest_email)
+                        ->where(DB::raw('supply_count>use_count'))->first();
+            if($MicroPayment!=null)
+            {
+                MicroPayment::where('id', $MicroPayment->id)->update(DB::raw('use_count=use_count+1'));
+                return false;                
+            }
+
+            $MicroPayment = MicroPayment::where('user_id', $owner_id)
+                        ->where('email_id', $email_id)
+                        ->where('guest_email', $request->guest_email)
+                        ->where(DB::raw('TIMESTAMPDIFF(HOUR, now(), charge_date)'), '<', 'expire_date')->first();
+            if($MicroPayment!=null)
+            {
+                MicroPayment::where('id', $MicroPayment->id)->update(DB::raw('use_count=use_count+1'));
+                return false;                
+            }
+            else
+                return true;
+            
+        }
+        return false;
+        
+        //$request->mail_id
+    }
+
     public function TestResultView(Request $request)
     {
         $mail_id = 0;
         $email = null; if (Cookie::has('email')) $email =  Cookie::get('email');
-        $Hashid = $request->input('message_id');
+        $Hash_id = $request->input('message_id');
         if( !empty($request->input('mail_id')))
         {
             $mail_id     = $request->input('mail_id');
-            $Hashid      = Hashids::encode($request->input('mail_id'));
+            $Hash_id      = Hashids::encode($request->input('mail_id'));
         }
-        if( !empty($Hashid))
+        if( !empty($Hash_id))
         {
-            $id_hash = Hashids::decode($Hashid);
+            $id_hash = Hashids::decode($Hash_id);
             if(empty($id_hash) || !is_array($id_hash) || count($id_hash)==0) abort(419);
             $mail_id     = $id_hash[0];
         }
         
+        if( ($could_not_use=$this->check_test_micropayment_user($request) ))
+        {
+            Session::put('could_not_use_by_paid_user', 'You have expired the micro-payment limit.');
+            return redirect(route('checkout-micropay').'?message_id='.$Hash_id );
+        }
+
         if( ($could_not_use=$this->check_test_count_for_free_user() ))
         {
             Session::put('could_not_use_by_paid_user', 'You have exceeded the free user limit.');
-            return redirect('spamtest');
+            return redirect(route('prices'));
         }
         $this->save_test_count_for_free_user($email, $mail_id);
         
@@ -155,7 +197,7 @@ class MailContentController extends Controller
         #############   get mail object from inbox   ##############
         if( $db_hist==null && (empty($request->input('flag')) || $request->input('flag')!='whitelabel' ))
         {
-            $response = TrashMail::messages($email, $Hashid);
+            $response = TrashMail::messages($email, $Hash_id);
             if( empty($response['messages'])  && count($response)>0 )
             {
                 $response = $response[0];
@@ -169,7 +211,7 @@ class MailContentController extends Controller
                         $response['from'] = 'from whitlabel';
                         $response['from_email'] = 'test@test.com';
                         $response['receivedAt'] = date('Y-m-d H:i:s');
-                        $response['id'] = $Hashid;
+                        $response['id'] = $Hash_id;
                         $response['attachments'] = [];
                         $response['content'] = 'test email for whitelabel';
                         $response['header'] = '';
@@ -319,7 +361,7 @@ class MailContentController extends Controller
 		//dd($score_rules); 
         ################### return view ##################
         return view('mailstester.testresult')
-            ->with('mail_id',       $Hashid)
+            ->with('mail_id',       $Hash_id)
             ->with('broken_urls',   $broken_urls)
             ->with('broken_score',  $broken_score)
             ->with('css',           $css)

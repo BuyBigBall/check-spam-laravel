@@ -131,7 +131,7 @@
                                 Text version</h3>
                         </div>
                         <div class="content">
-							<pre>{{  \Soundasleep\Html2Text::convert( preg_replace("/ href=.*?>/",">",  $message['content'] ) ) }}</pre>
+							<pre>{{  \Soundasleep\Html2Text::convert( preg_replace("/ href=.*?>/",">",  $message['content'] ), ['ignore_errors' => true] ) }}</pre>
                         </div>
                     </div>
 
@@ -371,7 +371,7 @@
                     <p class="message-weight">{{ translate('Weight of the HTML version of your message:')}}
                         <b>{{  size(strlen($message['content']) ) }}</b>.</p>
                     <p>Your message contains
-                        <b>{{ strlen($message['content'])==0 ? '&nbsp;' : round(strlen( \Soundasleep\Html2Text::convert( $message['content'] ) ) / strlen($message['content'])  * 100) }}</b>% of text.</p>
+                        <b>{{ strlen($message['content'])==0 ? '&nbsp;' : round(strlen( \Soundasleep\Html2Text::convert( $message['content'] , ['ignore_errors' => true] ) ) / strlen($message['content'])  * 100) }} </b>% of text.</p>
                 </div>
 
                 <!-- Alt attribute -->

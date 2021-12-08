@@ -369,5 +369,21 @@ class TrashMail extends Model
             \abort(404);
         }
     }
+	
+	public static function GetMail($email, $mail_id)
+    {
+        # look for unread message for me
+        $results = TrashMail::allMessages($email, false);
+		
+        foreach($results["messages"] as $key=>$message)
+        {
+            if( !empty($message['error'])) continue;
+			//dd($message);
+            if( $mail_id == $message['id']) return $message;
+            
+        }
+		return null;
+    }
+
 
 }

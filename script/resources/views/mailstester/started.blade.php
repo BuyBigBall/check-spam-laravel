@@ -213,7 +213,7 @@
                         >
                     Please select two or three offers you want to propose to your users:
                     <ul>
-                        @foreach(PaymentController::$micropay_plans as $key=>$micropay_plan)
+                        @foreach(App\Http\Controllers\Mailstester\PaymentController::$micropay_plans as $key=>$micropay_plan)
                         <li>
                             <label for="product_{{$key}}">
                                 <input

@@ -86,7 +86,26 @@ class AppServiceProvider extends ServiceProvider
                         ->with('userdata', $userdata);
 
                 });
+                view()->composer('layouts.guest', function ($view) {
+                    $guard = null;
+                    $userdata = [];
+                    if (Auth::guard($guard)->check()) {
+                        $role = Auth::user()->role; 
+                        $userdata['user_login'] = Auth::user();
+                    }
 
+
+                    $links = Menu::all();
+                    $locale = LaravelLocalization::getCurrentLocale();
+                    $lang_name = Language::where('code', $locale)->first()->name;
+                    $pages = Page::where("status", "=", 1)->get();
+                    $view->with('pages', $pages)
+                        ->with('lang_locale', $locale)
+                        ->with('lang_name', $lang_name)
+                        ->with('links', $links)
+                        ->with('userdata', $userdata);
+
+                });
                 view()->composer('mailstester.layout', function ($view) {
                     
                     $guard = null;

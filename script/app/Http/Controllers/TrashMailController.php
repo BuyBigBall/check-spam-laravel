@@ -12,8 +12,6 @@ use Vinkla\Hashids\Facades\Hashids;
 use Carbon\Carbon;
 use Artesaos\SEOTools\Facades\SEOMeta;
 use Artesaos\SEOTools\Facades\OpenGraph;
-use App\Http\Controllers\Mailstester\SpamTestController;
-
 
 class TrashMailController extends Controller
 {
@@ -69,8 +67,6 @@ class TrashMailController extends Controller
         if (TrashMail::where('email',  $randomEmail)->exists()) {
             return generateRandomEmail();
         } else {
-			//$mailTester = new SpamTestController();
-			//$ret = $mailTester->createMailAddress($createdAccount);
             return $randomEmail;
         }
     }

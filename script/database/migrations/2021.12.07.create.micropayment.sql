@@ -7,5 +7,9 @@ ALTER TABLE  `micropayment` CHANGE `charge_date` `charge_date` DATETIME DEFAULT 
 
 CREATE TABLE `user_options` ( `id` INT UNSIGNED NOT NULL AUTO_INCREMENT, `user_id` INT UNSIGNED NOT NULL, `email_id` INT UNSIGNED NOT NULL, `email_key` VARCHAR(100) CHARSET ASCII, `from_ips` VARCHAR(255) CHARSET ASCII, `test_ips` VARCHAR(255) CHARSET ASCII, `xmt_token` VARCHAR(255) CHARSET ASCII, `use_micropay` TINYINT DEFAULT 0, `pay_types` VARCHAR(50), `created_at` DATETIME DEFAULT NOW(), `updated_at` TIMESTAMP DEFAULT NOW() ON UPDATE CURRENT_TIMESTAMP, PRIMARY KEY (`id`), INDEX (`user_id`), INDEX (`email_id`) ) CHARSET=utf8; 
 ALTER  TABLE `user_options` ADD FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE, ADD FOREIGN KEY (`email_id`) REFERENCES `trash_mails`(`id`) ON DELETE CASCADE; 
-
+ALTER TABLE  `test_results` ADD `json` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `content`;
 -- RENAME TABLE `user_option` TO `user_options`; 
+
+-- RENAME TABLE  `micropayment` TO `micro_payments`
+ALTER TABLE `micro_payments` CHANGE `Authrity` `Authority` VARCHAR(100) CHARSET utf8 COLLATE utf8_general_ci NULL; 
+ALTER TABLE `micro_payments` ADD COLUMN `guest_email` VARCHAR(50) CHARSET ASCII NOT NULL AFTER `payed_email`, ADD COLUMN `firstname` VARCHAR(40) CHARSET utf8 NULL AFTER `guest_email`, ADD COLUMN `lastname` VARCHAR(40) CHARSET utf8 NULL AFTER `firstname`, ADD COLUMN `country` VARCHAR(100) CHARSET utf8 NULL AFTER `lastname`; 

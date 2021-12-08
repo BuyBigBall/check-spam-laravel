@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
-use App\Http\Controllers\Mailstester\SpamTestController;
 use Illuminate\Support\Facades\Cookie;
 use App\Models\TrashMail;
 
@@ -124,7 +123,6 @@ class RegisterController extends Controller
             // ###################### --->
             // we do not need to create a user email when registering.
             $createdAccount = $request->input('name') . '.' .  $request->input('suffix');
-            // # $mailTester = new SpamTestController();
 			// # $ret = $mailTester->createMailAddress($createdAccount); //whether success or not
 
             $account_email = $createdAccount . '@' . env('MAIL_HOST');

@@ -31,7 +31,7 @@ use SPFLib\Term\Mechanism;
 use Vinkla\Hashids\Facades\Hashids;
 use App\Http\Controllers\Mailstester\SpamAssassin;
 
-class SpamTestController extends Controller
+class MailContentController extends Controller
 {
     // private $bl_score_unit = 0.5;
 	// private $burl_score_unit = 0.5;

@@ -213,20 +213,22 @@
                         >
                     Please select two or three offers you want to propose to your users:
                     <ul>
+                        @foreach(PaymentController::$micropay_plans as $key=>$micropay_plan)
                         <li>
-                            <label for="product_8">
+                            <label for="product_{{$key}}">
                                 <input
-                                    id="product_8"
+                                    id="product_{{$key}}"
                                     type="checkbox"
                                     class="selectedproducts"
                                     name='pay_type[]'
-                                    @if(in_array(1, $conf["pay_type_ids"]))
+                                    @if(in_array($key, $conf["pay_type_ids"]))
                                         checked="checked"
                                     @endif
-                                    value="1"/>
-                                1 € : Get access to the result of this test only</label>
+                                    value="{{$key}}"/>
+                                {{ $micropay_plan['amount'] }} {{$micropay_plan['unit']}} : {{$micropay_plan['description']}}</label>
                         </li>
-                        <li>
+                        @endforeach
+                        <!-- <li>
                             <label for="product_12">
                                 <input
                                     id="product_12"
@@ -319,7 +321,7 @@
                                     value="9"/>
                                 200 € : Perform as many tests as you want during a year
                             </label>
-                        </li>
+                        </li> -->
                     </ul>
                     Do you want to propose another deal to your users?
                     <a href="mailto:contact@mail-tester.org">Get in touch!</a>

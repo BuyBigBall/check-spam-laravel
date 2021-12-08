@@ -164,20 +164,27 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
     Route::get('/payment_status',   'Mailstester\PaymentController@payment_status')->name('payment_status');
     #payment notify url
     Route::get('/paypal_notify',    'Mailstester\PaymentController@paypal_notify')->name('paypal_notify');
+
+    #payment return url
+    Route::get('/micropayment_status',   'Mailstester\PaymentController@micropayment_status')->name('micropayment_status');
+
+
     Route::get('/micro-payment',    'Mailstester\PaymentController@micro_payment_note')->name("micro-payment");
     Route::get('/checkout-micropay','Mailstester\PaymentController@micropay')->name("checkout-micropay");
-
+    Route::post('/checkout-micropay-address','Mailstester\PaymentController@micropay_address')->name("checkout-micropay-address");
+    Route::post('/micropay_sitepay','Mailstester\PaymentController@micropay_sitepay')->name("micropay_sitepay");
+    
     Route::get('/json-api',         'Mailstester\SiteController@json_api')->name("json-api");
-    Route::get('/json/{mail}',      'Mailstester\SpamTestController@json')->name("json");
+    Route::get('/json/{mail}',      'Mailstester\MailContentController@json')->name("json");
 
     Route::get('/latest-tests',     'Mailstester\SiteController@latest_tests')->name("latest-tests");
     Route::get('/design',           'Mailstester\SiteController@design')->name("design");
     Route::post('/design',           'Mailstester\SiteController@design')->name("design");
     Route::get('/terms-of-service', 'Mailstester\SiteController@terms_of_service')->name("terms-of-service");
-    Route::get('/testresult',           'Mailstester\SpamTestController@TestResultView')->name("testresult");
-    Route::post('/testresult',           'Mailstester\SpamTestController@TestResultView')->name("testresult");
-    Route::get('/mail_body_html',       'Mailstester\SpamTestController@mail_body_html')->name("mail_body_html");
-    Route::get('/mail_body_html_noimg', 'Mailstester\SpamTestController@mail_body_html_noimg')->name("mail_body_html_noimg");
+    Route::get('/testresult',           'Mailstester\MailContentController@TestResultView')->name("testresult");
+    Route::post('/testresult',           'Mailstester\MailContentController@TestResultView')->name("testresult");
+    Route::get('/mail_body_html',       'Mailstester\MailContentController@mail_body_html')->name("mail_body_html");
+    Route::get('/mail_body_html_noimg', 'Mailstester\MailContentController@mail_body_html_noimg')->name("mail_body_html_noimg");
 
     Route::group(['namespace' => 'Auth'], function () {
         // Web Auth Routes

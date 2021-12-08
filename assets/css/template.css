@@ -186,7 +186,7 @@ textarea {
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
 }
-/* body {
+ body {
 	margin: 0;
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 13px;
@@ -204,7 +204,7 @@ a:hover,
 a:focus {
 	color: #21b6fe;
 	text-decoration: underline;
-} */
+} 
 .img-rounded {
 	-webkit-border-radius: 6px;
 	-moz-border-radius: 6px;

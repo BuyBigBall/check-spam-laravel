@@ -34,7 +34,7 @@
   @endif
   
   @yield('test_result_css')
-
+  @yield('checkout_payment_css')
   <!-- Custom  -->
 
 @if (!empty($setdata['google_analytics_code']))
@@ -94,7 +94,8 @@
 
   <!-- jquery js -->
   <script src="{{ asset('assets/js/vendor/jquery.min.js') }}"></script>
-
+  @yield('checkout_payment_js')
+  
 </head>
 
 <body>

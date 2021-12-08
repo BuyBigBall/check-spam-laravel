@@ -414,6 +414,10 @@
 
             </tfoot>
         </table>
+<script>
+    var winstyle = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=1060, height=700';
+    var winurl = 'https://www.paypal.com/us/webapps/mpp/paypal-popup';
+</script>
 
         <div id="payment" class="maz-checkout-payment">
             <ul class="wc_payment_methods payment_methods methods">
@@ -425,7 +429,8 @@
                         onclick="chenge_method(event, this)"
                         name="payment_method"
                         value="paybox_stripe"
-                        data-order_button_text="Proceed to Stripe"/>
+                        style="float:left;margin-right:9px;"
+                        data-order_button_text="Proceed to Stripe  "/>
 
                     <label for="payment_method_bacs">
                         Stripe&nbsp;
@@ -448,11 +453,8 @@
                         name="payment_method"
                         value="paybox_paypal"
                         checked="checked"
+                        style="float:left;margin-right:9px;"
                         data-order_button_text="Proceed to PayPal"/>
-<script>
-    var winstyle = 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=1060, height=700';
-    var winurl = 'https://www.paypal.com/us/webapps/mpp/paypal-popup';
-</script>
                     <label for="payment_method_paypal">
                         PayPal
                         <img src="{{asset('/assets/images/paypal_bar.png')}}" 

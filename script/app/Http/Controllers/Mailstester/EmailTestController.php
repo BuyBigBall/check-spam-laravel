@@ -44,14 +44,17 @@ class EmailTestController extends Controller
         $email = $request->input('trsh_mail');
         if (empty($email) && Cookie::has('email'))  $email =  Cookie::get('email');
 		$email_row = TrashMail::where('email', $email)->first();
+        
+
+
+        // getting useroption for micropayment
         if(    !empty($email_row) 
-            && !empty($email_row->useroption) 
-            && !empty($email_row->use_micropay) 
-            && !empty($email_row->useroption->pay_types)) 
+            && !empty($email_row->useroption)   //relation
+            && !empty($email_row->useroption->use_micropay)     //relation
+            && !empty($email_row->useroption->pay_types))   //relation
         {
             $pay_type_ids = explode( ",", $email_row->useroption->pay_types );
         }
-
 
 
         if( !empty($request->input('message_id')) )
@@ -73,8 +76,20 @@ class EmailTestController extends Controller
             $css = $request->input('css');
         }
         
+        if(empty($id) )
+        {
+            //dd($email);
+            // for test update
+            //$id = TrashMail::GetLastUnreadMail($email);
+            $id = TestResult::where('receiver', $email)->orderBy('received_at', 'DESC');
+            if($id->first()!=null)                 $id = $id->first()->mail_id;
+            //<--- for test
+        }
+        
         if(!empty($id) && count($pay_type_ids)>0 )
+        {
             return redirect( route('checkout-micropay').'?message_id='.$id );
+        }
 
         if(!empty($id) && 
             (       !Session::has('could_not_use_by_paid_user') 

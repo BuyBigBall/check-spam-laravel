@@ -104,30 +104,37 @@ class MailContentController extends Controller
 
 	private function check_test_micropayment_user(Request $request)
     {
-        if(!empty($request->mailbox)) return false;
+		
+        if(empty($request->mailbox)) return false;
         $mail_address = TrashMail::where('email', $request->mailbox)->first();
-        if($mail_address!=null)     return false;
+        if($mail_address==null)     return true;
         $owner_id = $mail_address->user->id;
         $email_id = $mail_address->id;
+		
         if($mail_address->useroption->use_micropay)
         {
-            $MicroPayment = MicroPayment::where('user_id', $owner_id)
+            $query = MicroPayment::where('user_id', $owner_id)
                         ->where('email_id', $email_id)
                         ->where('guest_email', $request->guest_email)
-                        ->where(DB::raw('supply_count>use_count'))->first();
+                        ->where(DB::raw('supply_count-use_count'),'>', 0);
+			
+			$MicroPayment = $query->first();
             if($MicroPayment!=null)
             {
-                MicroPayment::where('id', $MicroPayment->id)->update(DB::raw('use_count=use_count+1'));
+                MicroPayment::where('id', $MicroPayment->id)->update(['use_count'=>$MicroPayment->use_count+1]);
                 return false;                
             }
 
-            $MicroPayment = MicroPayment::where('user_id', $owner_id)
+            $query = MicroPayment::where('user_id', $owner_id)
                         ->where('email_id', $email_id)
                         ->where('guest_email', $request->guest_email)
-                        ->where(DB::raw('TIMESTAMPDIFF(HOUR, now(), charge_date)'), '<', 'expire_date')->first();
+                        ->where(DB::raw('expire_date - TIMESTAMPDIFF(HOUR, charge_date, now())'), '>=', '0');
+			
+			$MicroPayment = $query->first();
+			//dd($MicroPayment->tt);
             if($MicroPayment!=null)
             {
-                MicroPayment::where('id', $MicroPayment->id)->update(DB::raw('use_count=use_count+1'));
+                MicroPayment::where('id', $MicroPayment->id)->update(['use_count'=>$MicroPayment->use_count+1]);
                 return false;                
             }
             else

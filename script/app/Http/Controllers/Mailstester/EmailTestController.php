@@ -45,6 +45,8 @@ class EmailTestController extends Controller
         if (empty($email) && Cookie::has('email'))  $email =  Cookie::get('email');
 		$email_db_record = TrashMail::where('email', $email)->first();
         
+
+
         // getting useroption for micropayment
         if(    !empty($email_db_record) 
             && !empty($email_db_record->useroption)   //relation
@@ -53,7 +55,7 @@ class EmailTestController extends Controller
         {
             $pay_type_ids = explode( ",", $email_db_record->useroption->pay_types );
         }
-
+		
 
         $css = '';$guard = null;
         if (Auth::guard($guard)->check()) {
@@ -75,11 +77,14 @@ class EmailTestController extends Controller
 			$Hash__decode_id_array = Hashids::decode($Hash_id);
 			$id = $Hash__decode_id_array[0];
         }
+		
         if(empty($id) )
         {
             //dd($email);
-            $id = TrashMail::GetLastUnreadMail($email);
-			$Hash_id = Hashids::encode($id );
+            $Hash_id = TrashMail::GetLastUnreadMail($email);
+			$Hash__decode_id_array = Hashids::decode($Hash_id);
+			$id = $Hash__decode_id_array[0];
+			
 			/* 
 			// for test update
             $id = TestResult::where('receiver', $email)->orderBy('received_at', 'DESC');

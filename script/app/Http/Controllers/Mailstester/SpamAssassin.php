@@ -422,8 +422,12 @@ class SpamAssassin
 		$spf_record = (string) $record;
 		
 		$spf = 'v=spf1 all redirect=' . $email_domain . ' redirect='.$server_Helo_info['helo_domain'].' ptr:foo.bar mx include=' . $email_domain . ' exp=test.%{p}';
-		$record = (new \SPFLib\Decoder())->getRecordFromTXT($spf);
-		$issues = (new \SPFLib\SemanticValidator())->validate($record);
+		$issues = [];
+		try{
+			$record = (new \SPFLib\Decoder())->getRecordFromTXT($spf);
+			$issues = (new \SPFLib\SemanticValidator())->validate($record);
+		}
+		catch(Exception $except){}
 		$issue_strings = '';
 		foreach ($issues as $issue) {$issue_strings .= ((string) $issue. "\n");}
 		

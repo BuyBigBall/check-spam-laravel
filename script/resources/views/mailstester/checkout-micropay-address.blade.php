@@ -4,7 +4,7 @@
 <script type="text/javascript">
 	$(window).on("load", function () {
 		$(".preloader").fadeOut("slow");
-		$(".checkout-micropayment").css('background-color', '#a7a5df');
+		$(".checkout-micropayment").css('background-color', 'rgb(69 142 211)');
 	});
     function chenge_method(evt, obj)
     {

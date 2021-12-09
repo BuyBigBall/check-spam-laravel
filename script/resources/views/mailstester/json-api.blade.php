@@ -27,7 +27,7 @@
                 <h2 id="how-to" class="question">How to use the {{ env('APP_NAME') }} JSON API?</h2>
                 <div class="answer">
                     <p>First send an email to
-                        <em>yourusername</em>-whateveryouwant[at]{{ ($request=Request::capture())->gethttphost() }} (<em>yourusername</em>
+                        <em>yourusername</em>.whateveryouwant[at]{{ ($request=Request::capture())->gethttphost() }} (<em>yourusername</em>
                         should be replaced by your own username!)</p>
                     <p>Then to use our API, call {{ env('APP_NAME') }} with this url:</p>
                     <p style="text-align: center;">

@@ -44,7 +44,7 @@
                 <form method="get" target="_blank" action="http://localhost/en/spamtest">
                     Send to your email :
                     <input
-                        placeholder="user-whateveryouwant@mail-analyzer.com"
+                        placeholder="user.whateveryouwant@mail-analyzer.com"
                         type="email"
                         name="id"
                         readonly

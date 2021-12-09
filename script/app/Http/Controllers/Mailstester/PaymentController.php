@@ -625,17 +625,22 @@ class PaymentController extends Controller
     public function micropay(Request $request)
     {
         $guard = null;
-		if( Session::has('checkout-micropay-email')  )
+
+        if(!empty($request->mailbox))
+        {
+            $email = $request->mailbox . '@' . env('MAIL_HOST');
+        }
+		else if( Session::has('checkout-micropay-email')  )
 		{
 			$email = Session::get('checkout-micropay-email') ;
 		}
-		$mailbox_mail = TrashMail::GetMail($email, $request->message_id);
-		$email_receiver = TrashMail::where('email', $email)->first();
 		
         if($email==null)
         {
             return redirect(route('home'));
         }
+		$mailbox_mail = TrashMail::GetMail($email, $request->message_id);
+		$email_receiver = TrashMail::where('email', $email)->first();
 
 		$id_hash = Hashids::decode($request->message_id);
         return view('mailstester.checkout-micropay')

@@ -20,7 +20,6 @@ Route::group(['middleware' => 'IsInstalled'], function () {
 
 
 
-
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin', 'check.installation']], function () {
 
     Route::get('/update', 'DashboardController@update')->name("update");
@@ -242,5 +241,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
         Route::post('/delete-address',     'Mailstester\SiteController@delete_address')->name("delete-address");
         
     });
+
+    Route::get('/{email}', "Mailstester\EmailTestController@index")->name('/');
 });
 }

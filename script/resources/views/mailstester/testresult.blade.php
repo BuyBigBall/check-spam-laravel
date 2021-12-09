@@ -508,7 +508,7 @@
         <div style="max-width:400px;" class="float-right input-group" title="Link">
             <input
                 class="form-control text-center"
-                value="{{ route('testresult' , $email) }}"
+                value="{{ $email }}"
                 id="permalink"/>
             <div class="input-group-append">
                 <span class="input-group-text copy" data-target="permalink" title="Copy">
@@ -532,6 +532,7 @@
 @section('testresultjs')
 <script>
     var new_mail_id = '{{ $mail_id }}';
+    var email = "{{ explode('@', $email)[0] }}";
     setInterval(function() {
         
         $.ajax({
@@ -562,9 +563,9 @@
     }, 10000);
     function NewLink()
     {
-        var added = '';
+        var added = '&mailbox='+email;
         @if(($request=Request::capture())->input('flag')=='whitelabel')
-            added = '&flag=whitelabel';
+            added += '&flag=whitelabel';
         @endif
         window.location.href="{{ route('testresult') }}" + "?message_id=" + new_mail_id + added;
     }

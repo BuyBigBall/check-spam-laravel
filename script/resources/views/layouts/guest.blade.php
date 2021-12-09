@@ -88,7 +88,7 @@
   <!-- Preloader End -->
 
   @yield('content')
-
+  @yield('mailtesterjs')  
 </body>
 
 </html>

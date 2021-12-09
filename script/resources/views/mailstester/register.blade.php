@@ -276,7 +276,7 @@ function backend_API_challenge() {
             errorMessage = $('<div/>')
                 .addClass('message_username')
                 .html(
-                    'All your tests will have to be sent to ' + this.value + '-WhateverYouWant@mail' +
+                    'All your tests will have to be sent to ' + this.value + '.whateveryouwant@mail' +
                     '-tester.com'
                 );
             if (this.value.length > 0) 

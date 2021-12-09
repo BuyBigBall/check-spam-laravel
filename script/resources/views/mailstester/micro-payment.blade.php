@@ -28,7 +28,7 @@
                     users.</p>
                 <h3>How does it work?</h3>
                 <p>Just like a regular test, make sure you send an email to
-                    <em>yourusername</em>-whateveryouwant[at]{{ Request::root() }} and then display the iframe : /<em>yourusername</em>-whateveryouwant</p>
+                    <b><em>yourusername</em>.whateveryouwant{{ '@'.env('MAIL_HOST') }}</b> and then display the iframe : <b>{{Request::root()}}/<em>yourusername</em>.whateveryouwant</b></p>
                 <p>If the micro-payment mode
                     <a href="/get-started#micropaymentarea">is enabled on your account</a>, a
                     payment page will be displayed and the user will be able to purchase the test.</p>

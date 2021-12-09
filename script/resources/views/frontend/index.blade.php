@@ -7,7 +7,7 @@
 @include('frontend.home')
 
 <!-- Messages Section Start -->
-<section class="messages section-padding">
+<section class="messages section-padding" style='display:none;'>
   <div class="container">
     <div class="row">
       <div class="col-md-2 col-sm-12 unvisible">

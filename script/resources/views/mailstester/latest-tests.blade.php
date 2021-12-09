@@ -9,15 +9,15 @@
         <div class='latest-tests'>
             <h1>Perform a new test</h1>
             <form
-                method="get"
+                method="POST"
                 target="_blank"
                 action="{{ route('spamtest') }}">
                 @csrf
                 Send your message to :
                 <input
-                    placeholder="{{$userdata['user_login']['name']}}-whateveryouwant{{ '@'.env('MAIL_HOST') }}"
+                    placeholder="{{$userdata['user_login']['name']}}.whateveryouwant{{ '@'.env('MAIL_HOST') }}"
                     type="text"
-                    name="id"
+                    name="trsh_mail"
                     value="{{ $email }}" />
                 <button class="btn" style="margin-bottom:10px;" type="submit">Then access your result</button>
             </form>
@@ -65,23 +65,24 @@
                             <td colspan='20'>Cannot be found mail test histories.</td>
                         </tr>
                         @endif
-
+                        
                         @foreach($db_hist as $test_result)
+                        <?php $mail = explode('@',$test_result->receiver)[0]; ?>
                         <tr>
                             <td>
-                                <a href="{{ route('testresult', 'mail_id='.$test_result->mail_id) }}" target="_blank">{{ date('d-m-Y H:i:s', strtotime($test_result->tested_at)) }}</a>
+                                <a href="{{ route('testresult', 'mailbox='.$mail.'&mail_id='.$test_result->mail_id) }}" target="_blank">{{ date('d-m-Y H:i:s', strtotime($test_result->tested_at)) }}</a>
                             </td>
                             <td>
-                                <a href="{{ route('testresult', 'mail_id='.$test_result->mail_id) }}" class="underlined-link" target="_blank">{{ $test_result->subject }}</a>
+                                <a href="{{ route('testresult', 'mailbox='.$mail.'&mail_id='.$test_result->mail_id) }}" class="underlined-link" target="_blank">{{ $test_result->subject }}</a>
                             </td>
                             <td>
-                                <a href="{{ route('testresult', 'mail_id='.$test_result->mail_id) }}" target="_blank">{{ $test_result->email }}</a>
+                                <a href="{{ route('testresult', 'mailbox='.$mail.'&mail_id='.$test_result->mail_id) }}" target="_blank">{{ $test_result->email }}</a>
                             </td>
                             <td>
-                                <a href="{{ route('testresult', 'mail_id='.$test_result->mail_id) }}" target="_blank">{{ $test_result->score }}</a>
+                                <a href="{{ route('testresult', 'mailbox='.$mail.'&mail_id='.$test_result->mail_id) }}" target="_blank">{{ $test_result->score }}</a>
                             </td>
                             <td>
-                                <a href="{{ route('testresult', 'mail_id='.$test_result->mail_id) }}" target="_blank">{{ $test_result->sender }}</a>
+                                <a href="{{ route('testresult', 'mailbox='.$mail.'&mail_id='.$test_result->mail_id) }}" target="_blank">{{ $test_result->sender }}</a>
                             </td>
                         </tr>
                         @endforeach

@@ -131,8 +131,16 @@ $(function() {
 					  var d = JSON.parse(data);
 					  if(d.result=='ok')
 					  {
+						var mail = d.email.split('@');
+						try{
+							mail = mail[0];
+						}
+						catch(e)
+						{
+							console.log('result email : ' + d.email);
+						}
 						if(waitingTimeout!=null)clearInterval(waitingTimeout);
-						window.location.href = result_url + '?message_id='+d.message_id;
+						window.location.href = result_url + '?mailbox='+mail+'&message_id='+d.message_id;
 			
 					  }
 					},

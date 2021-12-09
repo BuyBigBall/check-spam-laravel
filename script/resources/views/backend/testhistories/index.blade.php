@@ -41,7 +41,7 @@
                     <td>{{$num++}}</td>
                     <td>
                         <a href="{{route('users.edit' , $history->user->id )}}">
-                          {{$history->user->name}} <br / >{{$history->user->email}}
+                          {{$history->user->name}} <br />{{$history->user->email}}
                         </a>
                     </td>
                     <td>
@@ -52,7 +52,8 @@
                       @endif
                     </td>
                     <td class="text-center">
-                      <a href="{{ route('testresult', 'mail_id='.$history->mail_id) }}" >
+                      <?php $mail = explode('@',$history->receiver)[0]; ?>
+                      <a href="{{ route('testresult', 'mailbox='.$mail.'&mail_id='.$history->mail_id) }}" >
                         {{$history->subject}}
                       </a>
                     </td>

@@ -1,6 +1,35 @@
-@extends('mailstester.layout')
+@extends('layouts.guest')
+
+@section('checkout_payment_js')
+<link href="/assets/css/spamtest.css" rel="stylesheet" type="text/css">
+<script type="text/javascript">
+	$(window).on("load", function () {
+		$(".preloader").fadeOut("slow");
+		$(".checkout-micropayment").css('background-color', 'rgb(69 142 211)');
+		$('.productselection').on('click', function (evt) {
+			$('.productselection').removeClass('selected');
+			$(this).addClass('selected');
+			$('#product_id').val($(this).attr('rel'));
+		});		
+	});
+    var wait_url =  "{{route('check_email')}}";
+    var result_url =  "{{route('testresult')}}";
+    function check_validation()
+    {
+        if($('#product_id').val()=="") 
+        {
+            alert("please select a plan.");
+            return false;
+        }
+        return true;
+    }
+	</script>
+@endsection		
+
 
 @section('content')
+<section id="waiting-page" class="blog checkout-micropayment d-flex align-items-center">
+
 <div id="content_container" style="width:100%">
     <div class="row-fluid contentsize">
 
@@ -12,7 +41,7 @@
                 <span class="mailbox" style="border:#ddd solid 1px;">{{ $email }}</span>
             </div>
 
-            <div class="container py-5">
+            <div class="bar container py-5">
                 <div class="subtitle text-center countdown my-3">0</div>
                 <div class="progress">
                     <div
@@ -30,28 +59,7 @@
         </div>
     </div>
 </div>
-
-<?php 
-/*
-<script src="https://js.pusher.com/7.0/pusher.min.js"></script> 
-<script>
-
-    // Pusher App name = "mails-tester"
-    // Enable pusher logging - don't include this in production
-    Pusher.logToConsole = true;
-
-    var pusher = new Pusher('a9e263a2a74e91890e12', {
-      cluster: 'eu'
-    });
-
-    var channel = pusher.subscribe('my-channel');
-    channel.bind('my-event', function(data) {
-      alert(JSON.stringify(data));
-    });
-</script>    
-// */
-?>
-
+</section>
 <script>
 
     @if(       Session::has('could_not_use_by_paid_user') && 
@@ -59,7 +67,6 @@
         alert("{{ Session::get('could_not_use_by_paid_user') }}");
     @endif
     <?php session()->forget('could_not_use_by_paid_user'); ?>
-
 </script>
 
 @if( !empty($css))

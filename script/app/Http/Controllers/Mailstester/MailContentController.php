@@ -104,9 +104,13 @@ class MailContentController extends Controller
 
 	private function check_test_micropayment_user(Request $request)
     {
-		
-        if(empty($request->mailbox)) return false;
-        $mail_address = TrashMail::where('email', $request->mailbox)->first();
+        $mailbox = !empty($request->mailbox) ? $request->mailbox : (!empty(session('mailbox')) ? session('mailbox') : null);
+        if( empty($mailbox ) )
+		{
+			return true;
+		}
+		$mailbox = explode('@', $mailbox)[0] .'@'. env('MAIL_HOST');
+        $mail_address = TrashMail::where('email', $mailbox)->first();
         if($mail_address==null)     return true;
         $owner_id = $mail_address->user->id;
         $email_id = $mail_address->id;
@@ -146,10 +150,15 @@ class MailContentController extends Controller
         //$request->mail_id
     }
 
+    #show /testresult page
     public function TestResultView(Request $request)
     {
         $mail_id = 0;
-        $email = null; if (Cookie::has('email')) $email =  Cookie::get('email');
+        //$email = null; if (Cookie::has('email')) $email =  Cookie::get('email');
+        $mailbox = !empty($request->mailbox) ? $request->mailbox : (!empty(session('mailbox')) ? session('mailbox') : null);
+		$email = explode('@', $mailbox)[0] .'@'. env('MAIL_HOST');
+        if(empty($mailbox)) return redirect(route('home') );
+        
         $Hash_id = $request->input('message_id');
         if( !empty($request->input('mail_id')))
         {
@@ -168,7 +177,7 @@ class MailContentController extends Controller
             Session::put('could_not_use_by_paid_user', 'You have expired the micro-payment limit.');
             return redirect(route('checkout-micropay').'?message_id='.$Hash_id );
         }
-
+        
         if( ($could_not_use=$this->check_test_count_for_free_user() ))
         {
             Session::put('could_not_use_by_paid_user', 'You have exceeded the free user limit.');
@@ -372,7 +381,7 @@ class MailContentController extends Controller
             ->with('broken_urls',   $broken_urls)
             ->with('broken_score',  $broken_score)
             ->with('css',           $css)
-            ->with('email',         $email )
+            ->with('email',         $to_email )
 			->with('ago_time',		$ago_time)
             // ->with('report', 	    $score_report['report'])
 			// ->with('rules', 	    $score_report['rules'])

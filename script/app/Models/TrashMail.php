@@ -62,7 +62,6 @@ class TrashMail extends Model
     {
         # look for unread message for me
         $results = TrashMail::allMessages($email, false);
-		
         foreach($results["messages"] as $key=>&$last_message)
         {
             if( !empty($last_message['error'])) continue;

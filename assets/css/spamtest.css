@@ -544,6 +544,11 @@ pre code {
   margin-right: auto;
   margin-left: auto;
 }
+
+.bar.container
+{
+  width: 90%;
+}
 @media (min-width: 576px) {
   .container {
     max-width: 540px;

@@ -22,7 +22,7 @@
               <i class="fas fa-copy"></i>
             </button>
           </div>
-          <div class="home-btn">
+          <div class="home-btn" style='display:none;'>
             <div class="row align-items-center">
               <div class="col text-center"><a href="{{route('home')}}" class="btn btn-1"><i class="fas fa-redo-alt"></i> {{translate('Refresh')}}</a></div>
               <div class="col text-center"><a href="{{route('change','#changeaccount')}}" class="btn btn-1"><i class="fas fa-pencil-alt"></i> {{translate('Change')}}</a></div>

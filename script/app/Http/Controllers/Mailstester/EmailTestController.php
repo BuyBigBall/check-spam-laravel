@@ -32,19 +32,27 @@ use Vinkla\Hashids\Facades\Hashids;
 class EmailTestController extends Controller
 {
 
-    // show home page 
-    public function index(Request $request)
+    #show /spamtest page
+    public function index(Request $request, $param=null)
     {
         //	Samir Chakouri, chakouri-HGLK@srv1.mail-tester.com
         //To	vvnavqq798@mail-analyzer.com, test-ebs4g0bo6@srv1.mail-tester.com
         // Date	Today 13:12
         // Cookie::queue('email', 'vvnavqq798@mail-analyzer.com', 3);	
-        
+        $iframe = false;
         $pay_type_ids = [];
-        $email = $request->input('trsh_mail');
-        if (empty($email) && Cookie::has('email'))  $email =  Cookie::get('email');
-		$email_db_record = TrashMail::where('email', $email)->first();
+        if($param!=null)
+        {
+            $email = $param . '@' . env('MAIL_HOST');
+            $iframe = true;
+        }
+        else
+        {
+            $email = $request->input('trsh_mail');
+            if (empty($email) && Cookie::has('email'))  $email =  Cookie::get('email');
+        }
         
+        $email_db_record = TrashMail::where('email', $email)->first();
 
 
         // getting useroption for micropayment
@@ -78,12 +86,15 @@ class EmailTestController extends Controller
 			$id = $Hash__decode_id_array[0];
         }
 		
-        if(empty($id) )
+        if(empty($id) && $_SERVER['HTTP_HOST']!='localhost' )
         {
             //dd($email);
             $Hash_id = TrashMail::GetLastUnreadMail($email);
-			$Hash__decode_id_array = Hashids::decode($Hash_id);
-			$id = $Hash__decode_id_array[0];
+            if($Hash_id!=null)
+            {
+                $Hash__decode_id_array = Hashids::decode($Hash_id);
+                $id = $Hash__decode_id_array[0];
+            }
 			
 			/* 
 			// for test update
@@ -104,7 +115,13 @@ class EmailTestController extends Controller
             (       !Session::has('could_not_use_by_paid_user') 
             || empty(Session::get('could_not_use_by_paid_user')) ))
         {
-            return redirect( route('testresult').'?message_id='.$id );
+            return redirect( route('testresult').'?message_id='.$Hash_id )->with('mailbox',  $email);
+        }
+        else if($iframe)
+        {
+            return view('mailstester.iframe') 
+            ->with('css', $css)
+            ->with('email', $email);
         }
         else
             return view('mailstester.spamtest') 

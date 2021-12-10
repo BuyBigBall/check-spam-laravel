@@ -58,5 +58,10 @@
     </div>
   </div>
 </section>
+@if(!empty(session('error')))
+  alert("session('error')");
+@endif
+<script>
 
+</script>
 <!-- Home Section End -->

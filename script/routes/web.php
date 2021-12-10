@@ -18,8 +18,6 @@ Route::group(['middleware' => 'IsInstalled'], function () {
     Route::post('/install/step4/set_admininfo', "Install\InstallController@set_admininfo")->name('install/step4/set_admininfo');
 });
 
-
-
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin', 'check.installation']], function () {
 
     Route::get('/update', 'DashboardController@update')->name("update");
@@ -127,7 +125,6 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
         return 'ok';
     });
 	Route::get('/curl_test', 'Mailstester\RegisterController@curl_test')->name("curl_test");
-	
     
     Route::get('/not-received', 'Mailstester\SiteController@not_received')->name("not-received");
     Route::get('/dbug-example', 'Mailstester\SiteController@dbug_example')->name("dbug-example");
@@ -241,7 +238,11 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
         Route::post('/delete-address',     'Mailstester\SiteController@delete_address')->name("delete-address");
         
     });
+	
+    Route::get('/cron_blacklist/{num}' , "Cron\CronJobController@cron_blacklist")->name('cron_blacklist');
+    Route::get('/cron_brokenlink/{num}', "Cron\CronJobController@cron_brokenlink")->name('cron_brokenlink');
 
-    Route::get('/{email}', "Mailstester\EmailTestController@index")->name('/');
+    Route::get('/{email}', "Mailstester\EmailTestController@index")->name('/');	//example <https://mail-analyzer.com/yakov.757>
+	
 });
 }

@@ -274,7 +274,7 @@
                 </a>
             </div>
 
-            @include('layouts.footermenu');
+            @include('layouts.footermenu')
         </div>
         <!-- The end of footer -->
 

@@ -21,24 +21,24 @@ class SpamTestJson
         }
         $result = [
             "title" => (count($broken_urls)>0) ? sprintf(translate("You have %d broken links"), count($broken_urls)) : translate("No broken links"),
-            "mark" => 0,
-            "displayedMark" => "",
-            "statusClass" => ((count($broken_urls)>0) ? "warning" : "success" ) . " icon-check",
-            "description" => "Checks if your newsletter contains broken links.",
-            "messages" => (count($broken_urls)>0) ? sprintf(translate("%d broken links found"), count($broken_urls)) : translate("No links found."),
-            "urls" => $broken_url_array,
-            "brokenLinks" => count($broken_urls),
-            "redirects" => 0,
-            "notFound" => 0,
-            "timeouts" => 0,
-            "imagesWeight" => 0
+            "mark"          => $broken_score,
+            "displayedMark" => $broken_score,
+            "statusClass"   => ((count($broken_urls)>0) ? "warning" : "success" ) . " icon-check",
+            "description"   => "Checks if your newsletter contains broken links.",
+            "messages"      => (count($broken_urls)>0) ? sprintf(translate("%d broken links found"), count($broken_urls)) : translate("No broken links found."),
+            "urls"          => $broken_url_array,
+            "brokenLinks"   => count($broken_urls),
+            "redirects"     => 0,
+            "notFound"      => count($broken_url_array),
+            "timeouts"      => 0,
+            "imagesWeight"  => 0
         ];
         return $result;
     }
     
     public static function get_blacklist_array($serverip, $from_email)
     {
-            $result = [];
+        $result = [];
         $bl_score_list = SpamAssassin::cheking_blacklist($serverip);	//'95.19.4.3');//
         
         $black_list_score_sum = array_sum($bl_score_list);
@@ -48,6 +48,7 @@ class SpamTestJson
                     , ($black_list_score_sum==0 ? "not " : "") 
                     , ($hitMark==0 ? "any" : $hitMark ) );
         $result["mark"] = $black_list_score_sum;
+        $result["serverip"] = $serverip;
         $result["displayedMark"] = $black_list_score_sum;
         $result["statusClass"] = $black_list_score_sum==0 ? "success" : "failure";
         $result["description"] = sprintf( translate("Matches your server IP address (<b>%s</b>) against %d of the most common IPv4 blacklists.")
@@ -58,13 +59,14 @@ class SpamTestJson
         foreach($bl_score_list as $keyname=>$check_score)
         {
             $result["messages"] .= sprintf("<div class=\"col-sm-6 col-md-4 bl-result\"><span class=\"status-success\">%s</span> in <a target=\"_blank\" href=\"%s\">%s</a></div>", ($check_score==0) ? translate("Not listed") : (($check_score<1) ? translate('Listed -0.1')  : translate('Critical -1.0')), SpamAssassin::$dnsbl_lookup[$keyname], $keyname );
-            $result[ SpamAssassin::$dnsbl_lookup[$keyname] ] = [
+            $result['blacklists'][ SpamAssassin::$dnsbl_lookup[$keyname] ] = [
                 "name" => $keyname,
                 "url" => "https://".SpamAssassin::$dnsbl_lookup[$keyname],
                 "dns" => SpamAssassin::$dnsbl_lookup[$keyname],
                 "statusCode" => 0,
-                "hitMark" => -0.5 - $check_score,
-                "mark" => -$check_score,
+                "hitMark" => $check_score,
+                "mark" => $check_score,
+                "classname" => $check_score==0 ? "status-success" : "status-warning" ,
                 "details" => ""
             ];
         }
@@ -75,7 +77,7 @@ class SpamTestJson
     public static function get_mailbody_array($mailbody, $from_email)
     {
         $body_length = size(strlen($mailbody) );
-        $weight      = strlen($mailbody)==0 ? '0' : strlen( \Soundasleep\Html2Text::convert( $mailbody ) ) / strlen($mailbody)  * 100;
+        $weight      = strlen($mailbody)==0 ? '0' : strlen( \Soundasleep\Html2Text::convert( $mailbody , ['ignore_errors' => true] ) ) / strlen($mailbody)  * 100;
         $result = [];
         $result["title"] = translate("Your message could be improved");
         $result["mark"] = 0;
@@ -162,6 +164,8 @@ class SpamTestJson
         $result['status'] = "";
         $result['statusClass'] = "success icon-check";
         $result['description'] = translate("We check if the server you are sending from is authenticated");
+        
+        
         $result['subtests'] = [];
         $result['subtests']["spf"] = [
             "title"=> sprintf( translate('[SPF] Your server <b>%s</b> is authorized to use <b>%s</b>'), $auth_serverInfo['serverip'], $from_email ),
@@ -243,16 +247,20 @@ class SpamTestJson
                 "tested" => sprintf( translate("MX records (%s) : <ul>%s</ul>"), $mail_server_domain, $s1),
         ];
 
+
+        $result['mark'] = $score;
+        $result['diplayedMark'] = $score;
+
         return $result;
     }
-    public static function get_spamassassin_array($mailheader, $score, $max = -5)
+    public static function get_spamassassin_array($mailheader, $score, $max = 5)
     {   $result = [];
         $result['title'] = translate('SpamAssassin thinks you can improve');
         $result['score'] = $score;
         $result['mark'] = $score;
         $result['diplayedMark'] = 0;
-        $result['threshold'] = -$max;
-        $result['statusClass'] = $score==0 ? "success" : ($score>=-5 ?  "warning" : ($score>=-6 ?  "credicalwarning" : ($score>=-8 ?  "cretical" : 'fail')));
+        $result['threshold'] = $max;
+        $result['statusClass'] = $score==0 ? "success" : ($score<4 ?  "good" : ($score<5 ?  "warning" : ($score<8 ?  "cretical" : 'fail')));
         $result['description'] = 'The famous spam filter <a href="http://spamassassin.apache.org/" target="_blank">SpamAssassin</a>. Score: '.number_format(-$score, 1).'.<br />A score below '.$max.' is considered spam.';
         $result['displayedMark'] = $score;
         $result['rules'] = [];
@@ -273,17 +281,17 @@ class SpamTestJson
 
     public static function get_email_array($email, $mail_id, $score, $inbox_object, $mark_serial='mark-4')
     {
-        $title = $inbox_object!=null ? 
-            (
-                (($score>=-3.0) ?  translate("Wow! Perfect, you can send") : 
-                (($score>=-5.0) ?  translate("Good! you can send the mail") : 
-                (($score>=-6.0) ?  translate("Warning! you cannot send the mail, but you can improve mail's content.") : 
-                                   translate("critical! This is a special spam mail.")  
-                 )))
-             ) : "Mail not found. Please wait a few seconds and try again.";
+        // $title = $inbox_object!=null ? 
+        //     (
+        //         (($score>=-3.0) ?  translate("Wow! Perfect, you can send") : 
+        //         (($score>=-5.0) ?  translate("Good! you can send the mail") : 
+        //         (($score>=-6.0) ?  translate("Warning! you cannot send the mail, but you can improve mail's content.") : 
+        //                            translate("critical! This is a special spam mail.")  
+        //          )))
+        //      ) : "Mail not found. Please wait a few seconds and try again.";
         $email_object_array = [];
-        $email_object_array["title"] = $title;
-        $email_object_array["mark"] = $inbox_object!=null ? (-$score) : 0;
+        $email_object_array["title"] = "Mail not found. Please wait a few seconds and try again.";
+        $email_object_array["mark"] = $inbox_object!=null ? $score : 0;
         $email_object_array["displayedMark"] = $inbox_object!=null ?  number_format(10 - $score, 1) .'/10' : "";
         $email_object_array["maxMark"] = $inbox_object!=null ? 0 : 0;
         $email_object_array["commentedMark"] = $inbox_object!=null ? "Your lovely total: " . $email_object_array["displayedMark"] : "";

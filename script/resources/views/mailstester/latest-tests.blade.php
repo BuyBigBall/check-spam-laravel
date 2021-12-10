@@ -52,11 +52,12 @@
                 <table class="table table-hover table-striped table-results">
                     <thead>
                         <tr>
-                            <th>Test Date</th>
-                            <th>Subject</th>
-                            <th>Source</th>
-                            <th>Score</th>
-                            <th>Sender</th>
+                            <th>{{translate('Received Date')}}</th>
+                            <th>{{translate('Test Date')}}</th>
+                            <th>{{translate('Subject')}}</th>
+                            <!-- <th>{{translate('Source')}}</th> -->
+                            <th>{{translate('Score')}}</th>
+                            <th>{{translate('Sender')}}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -70,16 +71,19 @@
                         <?php $mail = explode('@',$test_result->receiver)[0]; ?>
                         <tr>
                             <td>
+                                <a href="{{ route('testresult', 'mailbox='.$mail.'&mail_id='.$test_result->mail_id) }}" target="_blank">{{ date('d-m-Y H:i:s', strtotime($test_result->received_at)) }}</a>
+                            </td>
+                            <td>
                                 <a href="{{ route('testresult', 'mailbox='.$mail.'&mail_id='.$test_result->mail_id) }}" target="_blank">{{ date('d-m-Y H:i:s', strtotime($test_result->tested_at)) }}</a>
                             </td>
                             <td>
                                 <a href="{{ route('testresult', 'mailbox='.$mail.'&mail_id='.$test_result->mail_id) }}" class="underlined-link" target="_blank">{{ $test_result->subject }}</a>
                             </td>
-                            <td>
+                            <!-- <td>
                                 <a href="{{ route('testresult', 'mailbox='.$mail.'&mail_id='.$test_result->mail_id) }}" target="_blank">{{ $test_result->email }}</a>
-                            </td>
+                            </td> -->
                             <td>
-                                <a href="{{ route('testresult', 'mailbox='.$mail.'&mail_id='.$test_result->mail_id) }}" target="_blank">{{ $test_result->score }}</a>
+                                <a href="{{ route('testresult', 'mailbox='.$mail.'&mail_id='.$test_result->mail_id) }}" target="_blank">{{ 10 - $test_result->score }}</a>
                             </td>
                             <td>
                                 <a href="{{ route('testresult', 'mailbox='.$mail.'&mail_id='.$test_result->mail_id) }}" target="_blank">{{ $test_result->sender }}</a>

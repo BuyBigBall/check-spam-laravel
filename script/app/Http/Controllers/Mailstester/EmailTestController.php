@@ -11,6 +11,9 @@ use App\Models\TestResult;
 use App\Models\WhiteLabel;
 use App\Models\Balance;
 use App\Models\Visitor;
+use App\Models\MailBlacklistCheck;
+use App\Models\MailBrokenlinkCheck;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -107,15 +110,16 @@ class EmailTestController extends Controller
 		//dd($pay_type_ids);dd($id);
         if(!empty($id) && count($pay_type_ids)>0 )
         {
-			Session::put('checkout-micropay-email', $email);
-            return redirect( route('checkout-micropay').'?message_id='.$Hash_id );
+            return redirect( route('checkout-micropay').'?message_id='.$Hash_id )
+                    ->with('mailbox', $email);
         }
 
         if(!empty($id) && 
             (       !Session::has('could_not_use_by_paid_user') 
             || empty(Session::get('could_not_use_by_paid_user')) ))
         {
-            return redirect( route('testresult').'?message_id='.$Hash_id )->with('mailbox',  $email);
+            return redirect( route('testresult').'?message_id='.$Hash_id )
+                    ->with('mailbox',  $email);
         }
         else if($iframe)
         {
@@ -303,6 +307,12 @@ class EmailTestController extends Controller
         if( !empty($email))
         {
             $id = TrashMail::GetLastUnreadMail($email);
+
+            ## whether cronjob has been performed or not ?
+            $blst = MailBlacklistCheck::where('mail_id', $id)->find();
+            $blnk = MailBrokenlinkCheck::where('mail_id', $id)->find();
+            if($blst==null || $blnk==null)  unset($id);
+            ## <----------
         }
 
         if(!empty($id))

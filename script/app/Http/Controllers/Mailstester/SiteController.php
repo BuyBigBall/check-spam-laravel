@@ -129,7 +129,7 @@ class SiteController extends Controller
             $userdata['user_login'] = Auth::user();
             $user_id    = $userdata['user_login']->id;
             //$email      = $userdata['user_login']->email;
-            $db_hist    = TestResult::where('user_id', $user_id)->get();
+            $db_hist    = TestResult::where('user_id', $user_id)->orderBy('received_at', 'DESC')->get();
         }
         else
         {

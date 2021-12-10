@@ -68,7 +68,7 @@ class TrashMail extends Model
 
             if(!$last_message['is_seen'])
             {
-                $id = $last_message['id'];
+                $id = $last_message['id'];  // this will be $Hashid
 				return $id;
             }
             break;
@@ -88,7 +88,7 @@ class TrashMail extends Model
             //if($last_message['is_seen'])
             {
                 $id = $last_message['id'];
-				return $id;
+				return $id;  // this will be $Hashid
             }
             break;
         }
@@ -117,14 +117,7 @@ class TrashMail extends Model
             
             $search = new SearchExpression();
             $search->addCondition(new To($email));
-            // $search->addCondition(' OR ');
             // $search->addCondition(new Cc($email));
-            // $search->addCondition(' OR ');
-            // $search->addCondition(new Bcc($email));
-            // $search->addCondition(new After($date));
-            // $search->addCondition(new Undeleted());
-            // $search->addCondition(new Unseen('UNSEEN'));
-            // $search->addCondition(new To('nope@nope.com'));
             $messages = $mailbox->getMessages($search, \SORTDATE, true);
             
             // added by yasha for refresh asseenmark
@@ -384,5 +377,114 @@ class TrashMail extends Model
 		return null;
     }
 
+    public static function GetLastMail()
+    {
+        # look for unread message for me
+        $receive_email = env('MAIL_FROM_ADDRESS');
+
+        $results = [
+            'mailbox' => $receive_email,
+            'messages' => []
+        ];
+        
+        try {
+            $connection = TrashMail::connection($receive_email);
+			
+            if($connection==null)
+            {
+                $results['messages'][] = ['error'=>'Server settings Exception'];
+            }            
+            else
+            {
+                $mailbox = $connection->getMailbox('INBOX');
+                
+                $search = new SearchExpression();
+				
+                //$search->addCondition(new To($receive_email));
+				
+                $messages = $mailbox->getMessages($search, \SORTDATE, true);
+                
+                foreach ($messages as $message) {
+					//dd($message->getTo()[0]->getAddress());	
+					//dd($message->getTo());	
+											/*array:1 [?
+											  0 => Ddeboer\Imap\Message\EmailAddress {#1615 ?
+												-mailbox: "bfjzjwc770"
+												-hostname: "mail-analyzer.com"
+												-name: null
+												-address: "bfjzjwc770@mail-analyzer.com"
+											  }
+											]*/
+					//dd($message->getCc());	// []
+					//dd($message->getBcc());	// []
+					//dd($message->getReplyTo());
+											/*array:1 [?
+											  0 => Ddeboer\Imap\Message\EmailAddress {#1615 ?
+												-mailbox: "khkj"
+												-hostname: "obistar.com"
+												-name: "admin"
+												-address: "khkj@obistar.com"
+											  }
+											]
+											*/
+                    $mail_id = $message->getNumber();
+					$Hashid = Hashids::encode($mail_id);
+                    $sender = $message->getFrom();
+                    $date = $message->getDate();
+                    $date = new Carbon($date);
+					
+					$to_email = null;
+					foreach($message->getTo() as $to_email_addr)
+					{
+						if(stripos($to_email_addr->getHostname(), env('MAIL_HOST'), 0)!==false)
+						{
+							$to_email = $to_email_addr; break;
+						}
+					}
+					if($to_email==null)
+					foreach($message->getCc() as $to_email_addr)
+					{
+						if(stripos($to_email_addr->getHostname(), env('MAIL_HOST'), 0)!==false)
+						{
+							$to_email = $to_email_addr; break;
+						}
+					}
+					
+					if( $to_email==null ) continue;		// error continue;
+					
+					$data['to_mailbox'] = $to_email->getMailbox();
+					$data['to_host'] = $to_email->getHostname();
+					$data['to'] = $to_email->getName();
+					$data['to_email'] = $to_email->getAddress();
+					
+					
+                    $data['subject'] = $message->getSubject();
+                    $data['is_seen'] = $message->isSeen();
+                    $data['from'] = $sender->getName();
+                    $data['from_email'] = $sender->getAddress();
+                    $data['receivedAt'] = $date->format('Y-m-d H:i:s');
+                    $data['id'] = $Hashid;
+                    $data['attachments'] = [];
+                    if ( ($html = $message->getBodyHtml()) ) 
+                    {
+                        $data['content'] = str_replace('<a', '<a target="blank"', $html);
+                    } else {
+                        $text = $message->getBodyText();
+                        $data['content'] = str_replace('<a', '<a target="blank"', str_replace(array("\r\n", "\n"), '<br/>', $text));
+                    }
+                    array_push($results["messages"], $data);
+                    return $results;
+                }
+            }
+        } catch (Exception $e) {
+            $results = [
+                'mailbox' => "Erorr : Please Reload Page Again ",
+                'messages' => []
+            ];
+        }
+
+		return $results;
+    }
+  
 
 }

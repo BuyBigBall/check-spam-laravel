@@ -15,8 +15,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\MicroPayment;
-// use Illuminate\Support\Str;
-// use Carbon\Carbon;
 
 use Artesaos\SEOTools\Facades\SEOMeta;
 use Artesaos\SEOTools\Facades\OpenGraph;
@@ -33,9 +31,6 @@ use App\Http\Controllers\Mailstester\SpamAssassin;
 
 class MailContentController extends Controller
 {
-    // private $bl_score_unit = 0.5;
-	// private $burl_score_unit = 0.5;
-
     function save_test_count_for_free_user($email, $mail_id=0)
     {
         $user_ip = $_SERVER['REMOTE_ADDR'];
@@ -93,10 +88,6 @@ class MailContentController extends Controller
             {
                 $could_not_use = true;
             }
-            // $query = DB::getQueryLog();
-            // $query = end($query);
-            // print_r($query); die;
-            //print($test_total->first()->total); die;
         }
 
         return $could_not_use;
@@ -111,7 +102,10 @@ class MailContentController extends Controller
 		}
 		$mailbox = explode('@', $mailbox)[0] .'@'. env('MAIL_HOST');
         $mail_address = TrashMail::where('email', $mailbox)->first();
+        
         if($mail_address==null)     return true;
+        if($mail_address->user==null) return false;
+
         $owner_id = $mail_address->user->id;
         $email_id = $mail_address->id;
 		
@@ -128,14 +122,13 @@ class MailContentController extends Controller
                 MicroPayment::where('id', $MicroPayment->id)->update(['use_count'=>$MicroPayment->use_count+1]);
                 return false;                
             }
-
+            
             $query = MicroPayment::where('user_id', $owner_id)
                         ->where('email_id', $email_id)
                         ->where('guest_email', $request->guest_email)
                         ->where(DB::raw('expire_date - TIMESTAMPDIFF(HOUR, charge_date, now())'), '>=', '0');
 			
 			$MicroPayment = $query->first();
-			//dd($MicroPayment->tt);
             if($MicroPayment!=null)
             {
                 MicroPayment::where('id', $MicroPayment->id)->update(['use_count'=>$MicroPayment->use_count+1]);
@@ -146,19 +139,17 @@ class MailContentController extends Controller
             
         }
         return false;
-        
-        //$request->mail_id
     }
 
     #show /testresult page
     public function TestResultView(Request $request)
     {
         $mail_id = 0;
-        //$email = null; if (Cookie::has('email')) $email =  Cookie::get('email');
         $mailbox = !empty($request->mailbox) ? $request->mailbox : (!empty(session('mailbox')) ? session('mailbox') : null);
 		$email = explode('@', $mailbox)[0] .'@'. env('MAIL_HOST');
+
         if(empty($mailbox)) return redirect(route('home') );
-        
+
         $Hash_id = $request->input('message_id');
         if( !empty($request->input('mail_id')))
         {
@@ -171,11 +162,13 @@ class MailContentController extends Controller
             if(empty($id_hash) || !is_array($id_hash) || count($id_hash)==0) abort(419);
             $mail_id     = $id_hash[0];
         }
-        
+        // http://localhost/testresult?mail_id=35&mailbox=yakov.757
+
         if( ($could_not_use=$this->check_test_micropayment_user($request) ))
         {
             Session::put('could_not_use_by_paid_user', 'You have expired the micro-payment limit.');
-            return redirect(route('checkout-micropay').'?message_id='.$Hash_id );
+            return redirect(route('checkout-micropay').'?message_id='.$Hash_id )
+                            ->with('mailbox', $email);
         }
         
         if( ($could_not_use=$this->check_test_count_for_free_user() ))
@@ -183,18 +176,19 @@ class MailContentController extends Controller
             Session::put('could_not_use_by_paid_user', 'You have exceeded the free user limit.');
             return redirect(route('prices'));
         }
+        
+        
         $this->save_test_count_for_free_user($email, $mail_id);
         
         $score = null;
         $response = [];
+        $json_array = [];
+        $json_object = null;
         $to_email = $email;
+        $json_string = '';
 
-        $guard = null; $db_hist = null;
-        if (Auth::guard($guard)->check()) 
-        {
-            $user_id = Auth::user()->id;
+            $db_hist = \App\Models\TestResult::where(['mail_id'=>$mail_id])->first();
             
-            $db_hist = \App\Models\TestResult::where(['mail_id'=>$mail_id, 'user_id'=>$user_id])->get()->first();
             if($db_hist!=null)
             {
                 $response['header'] = $db_hist->header;
@@ -206,95 +200,82 @@ class MailContentController extends Controller
                 $response['id'] = $mail_id;
                 $response['attachments'] = [];
                 $response['content'] = $db_hist->content;
-                $response[] = $response;
+                $response = [$response];
+                $json_string = $db_hist->json;
             }
-        }
-        
-        #############   get mail object from inbox   ##############
-        if( $db_hist==null && (empty($request->input('flag')) || $request->input('flag')!='whitelabel' ))
-        {
-            $response = TrashMail::messages($email, $Hash_id);
-            if( empty($response['messages'])  && count($response)>0 )
+            
+            // #############   get mail object from inbox   ##############
+            // for test ===>
+            if( $_SERVER['HTTP_HOST']=='localhost')  
             {
-                $response = $response[0];
+                $db_hist=null;
+                $json_string = '';
             }
-            else
-            {
-                if($request->input('flag')!==null && $request->input('flag')=='whitelabel' )
-                    {
-                        $response['subject'] = 'test for whitlabel';
-                        $response['is_seen'] = 0;
-                        $response['from'] = 'from whitlabel';
-                        $response['from_email'] = 'test@test.com';
-                        $response['receivedAt'] = date('Y-m-d H:i:s');
-                        $response['id'] = $Hash_id;
-                        $response['attachments'] = [];
-                        $response['content'] = 'test email for whitelabel';
-                        $response['header'] = '';
-                    }
-                else
-                    abort(419);
-                
-            }
-    
-            $score = new \palPalani\SpamassassinScore\SpamassassinScore();
-        }
-		############################################################
+            //<----------- for test
 
-        $ago_time = agotime( $response['receivedAt'] );
-                    //Cookie::queue('mail_body_html', $response['content'], 3);	//size error
-		Session::put('mail_body_html', $response['content']);
-        
-
-        $score_report = ['score'=>0, 'report'=>null, 'rules'=>null];
-        if( false && $score!=null)
-        {
-            $score_report = $score->getScore( '<header>'.$response['header'].'</header>' .'<subject>'.$response['subject'].'</subject>'  .'<body>'.SpamAssassin::getbody($response['content']).'</body>');
-            if($score_report['success'])
+            if( $db_hist==null  ) // && (empty($request->input('flag')) || $request->input('flag')!='whitelabel' )
             {
-                foreach($score_report['rules'] as &$check_rule)
+                if($_SERVER['HTTP_HOST']!='localhost')
                 {
-                    if($check_rule['score']<0)  $check_rule['score'] = '-0.0';
-                    $score_report['score'] += $check_rule['score'];
+                    $response = TrashMail::messages($email, $Hash_id);
                 }
+
+                if( empty($response['messages'])  && count($response)>0 )
+                {
+                    $response = $response[0];
+                }
+                else
+                {
+                    if($request->input('flag')!==null && $request->input('flag')=='whitelabel' )
+                        {
+                            $response['subject'] = 'test for whitlabel';
+                            $response['is_seen'] = 0;
+                            $response['from'] = 'from whitlabel';
+                            $response['from_email'] = 'test@test.com';
+                            $response['receivedAt'] = date('Y-m-d H:i:s');
+                            $response['id'] = $Hash_id;
+                            $response['attachments'] = [];
+                            $response['content'] = 'test email for whitelabel';
+                            $response['header'] = '';
+                            $response['json'] = '';
+                            //$response = [$response];
+                        }
+                    else
+                        abort(419);
+                    
+                }
+                
+                if(empty($json_string))
+                $json_array = $this->GetJsonArray( $email ,  $response, $mail_id);
             }
-        }
+		    if(empty($json_string) && empty($json_array) && !empty($response))
+                $json_array = $this->GetJsonArray( $email ,  $response, $mail_id);
+            // ############################################################
+            
 
-        $score_report['score'] = SpamAssassin::GetSpamAssassinScore($response['header']);
-		$score_rules     = SpamAssassin::GetSpamAssassinRules($response['header'], $remove_score);
-        $score_report['score'] -= $remove_score;    // for example PYZOR_CHECK
+        if(empty($json_string) && count($json_array)>0) $json_string = json_encode($json_array);
         
-
-		$mail_server_domain = explode('@', $response['from_email'])[1];
-		
-        //To check DMARC
-		$dmark_results   = dns_get_record("_dmarc.".$mail_server_domain, DNS_TXT);
+        $json_object = json_decode($json_string);
         
-		$auth_serverInfo = SpamAssassin::getserverauth( $response['header'] );
-		$auth_rDnsInfo   = SpamAssassin::getRDNSsign($response['header'], $auth_serverInfo );
-        $auth_DMARCInfo  = SpamAssassin::getDMARCsign($response['header'], $mail_server_domain );
-        $auth_DKIMInfo   = SpamAssassin::getDKIMsign($response['header'] );
-
-        
-
         if($request->input('flag')!='whitelabel' )
         {
-            $auth_SPDcheck   = SpamAssassin::getSPFcheck($response['header'], $auth_rDnsInfo, $response['from_email'] );
+            //$auth_SPDcheck   = SpamAssassin::getSPFcheck($response['header'], $auth_rDnsInfo, $response['from_email'] );
+
+            if(!empty($response) && !empty($response[0])) $response = $response[0];
             $guard = null;
             if (Auth::guard($guard)->check()) {
-                $user_id = Auth::user()->id;
+                $user_id   = Auth::user()->id;
                 $user_name = Auth::user()->name;
-                $mail_id = $response['id'];
-                $email = Auth::user()->email;
+                $mail_id   = $response['id'];
+                $user_email= Auth::user()->email;
                 
-                //$db_hist = TestResult::where(['mail_id'=>$mail_id, 'user_id'=>$user_id])->first();
                 if($db_hist==null)
                 {
 					$message_result = [
                         'mail_id' =>    $mail_id,
                         'user_id' =>    $user_id,
                         'name' =>       $user_name ,
-                        'email' =>      $email,
+                        'email' =>      $user_email,
                         'receiver'=>    $to_email,
                         'sender' =>     $response['from_email'],
                         'tested_at' =>  date('Y-n-d H:i:s', time()),
@@ -302,17 +283,13 @@ class MailContentController extends Controller
                         'subject' =>    $response['subject'],
                         'header' =>     $response['header'],
                         'content' =>    $response['content'],
-                        'score' =>      $score_report['score'],
-                        // 'created_at' => time(),
+                        'score' =>      $json_object->mark,
+                        'json' =>       $json_string ,
                     ];
-					//print_r($message_result); die;
                     $db_hist =  TestResult::create($message_result);
                 }
             }
         }
-        else
-            $auth_SPDcheck   = ['auth_result'=>'', 'spf_record'=>[], 'spf_issues'=>'', 'dig-query'=>[] ];
-
             
         ################# whitelabel style ################
         $css = '';$guard = null;
@@ -331,72 +308,29 @@ class MailContentController extends Controller
             $css = $request->input('css');
         }
         
-        
-		##################  blacklist ip cheking #################
-        if(!empty($request->input('flag')) && $request->input('flag')=='whitelabel' )
-            $bl_score_list = [];
-        else
-        {
-            //dd($response);
-            $bl_score_list = SpamAssassin::cheking_blacklist($auth_serverInfo['serverip']);	//'95.19.4.3');//
-        }
-		
-        $black_list_score = array_sum($bl_score_list);
-        $total_score = $score_report['score'];
-		$total_score += $black_list_score;
-		
-        $BL_results = [];
-        foreach($bl_score_list as $keyname=>$check_score)
-        {
-            $BL_results[ $keyname ] = [
-                'url'   =>  SpamAssassin::$dnsbl_lookup[$keyname] , 
-                'classname' => ($check_score==0) ? 'status-success' : (($check_score<1) ? 'status-warning' : 'status-failure'),
-                'label' => ($check_score==0) ? 'Not Listed'     : (($check_score<1) ? 'Listed -0.1'      : 'Critical -1.0'),
-                'score' => $check_score ];
-        }
-        
-        ################### broken url cheking ###################
-        // if(!empty($request->input('flag')) && $request->input('flag')=='whitelabel' )
-        //     $broken_urls = [];
-        // else
-        {
-            $broken_urls = SpamAssassin::check_broken_links( $response['content'] );	//"
-            /*
-            $broken_urls = SpamAssassin::check_broken_links( '<a href="https://example1.com">Test 1</a>
-                                                        <a class="foo" id="bar" href="http://example2.com">Test 2</a>
-                                                        <a onclick="foo();" id="bar" href="http://example3.com">Test 3</a>' );
-            // */
-        }
-        $broken_score = 0;
-        foreach($broken_urls as $row)
-        {
-            $broken_score += $row['score'];
-        }
-		$total_score += $broken_score;
-        
-		//dd($score_rules); 
         ################### return view ##################
+        
+        ## dd($json_object);
+        Session::put('mail_body_html', $response['content']);
+        $total_score = 10 - $json_object->mark;
         return view('mailstester.testresult')
             ->with('mail_id',       $Hash_id)
-            ->with('broken_urls',   $broken_urls)
-            ->with('broken_score',  $broken_score)
+            ->with('broken_urls',   !empty($json_object->links) ? $json_object->links->urls : [] )       //['url'=>, 'score'=>]
+            ->with('broken_score',  !empty($json_object->links) ? $json_object->links->mark : 0 )
             ->with('css',           $css)
             ->with('email',         $to_email )
-			->with('ago_time',		$ago_time)
-            // ->with('report', 	    $score_report['report'])
-			// ->with('rules', 	    $score_report['rules'])
-			->with('score_rules',   $score_rules)
-			->with('score', 	    10 - $score_report['score'])
-			->with('total_score', 	10 - $total_score)
-            ->with('black_list_score', $black_list_score)
+			->with('ago_time',		agotime( $json_object->messageInfo->dateReceived ))
+			->with('score_rules',   $json_object->spamAssassin->rules )
+			->with('assassin_score',$json_object->spamAssassin->score )
+			->with('total_score', 	$total_score )
+            ->with('black_list_score', !empty($json_object->blacklists) ? $json_object->blacklists->mark : 0)
             ->with('bl_score_unit', SpamAssassin::$bl_score_unit)
-			->with('server_auth',   $auth_serverInfo )
-            ->with('dkim_auth',     $auth_DKIMInfo )
-			->with('dmarc_auth',    $auth_DMARCInfo )
-			->with('rdns_auth',     $auth_rDnsInfo )
-			->with('spf_check',     $auth_SPDcheck )
-            ->with('BL_results',    $BL_results )
-			->with('message',       $response );
+			->with('server_auth',   $json_object->signature )
+            ->with('BL_results',    $json_object->blacklists )
+            ->with('BODY_check',    $json_object->body)
+			->with('content_body',  $response['content'] )
+			->with('content_header',$response['header'] )
+			->with('message',       $json_object->messageInfo );
     }
 
     public function mail_body_html()
@@ -405,7 +339,6 @@ class MailContentController extends Controller
         $email_body = '';
         if (Session::has('mail_body_html')) 
         {
-            //$email_body =  Cookie::get('mail_body_html');
 			$email_body =  Session::get('mail_body_html');
         }
         print($email_body);die;
@@ -416,10 +349,56 @@ class MailContentController extends Controller
         $email_body = '';
         if (Session::has('mail_body_html')) 
         {
-		// $email_body = preg_replace("/<img[^>]+\>/i", "(image) ", Session::get('mail_body_html') ); 
 		$email_body = preg_replace("/<img[^>]+>/", "", Session::get('mail_body_html') ); 
         }
         print($email_body);die;
+    }
+
+    private function GetJsonArray($email, $inbox_object, $mail_id)
+    {
+        if( !empty($inbox_object) && !empty($inbox_object[0])) $inbox_object = $inbox_object[0];
+        $mailheader = $inbox_object['header'];
+        $mailbody = $inbox_object['content'];
+        $assassin_score = SpamAssassin::GetSpamAssassinScore($mailheader);
+        
+        $array_object                   = SpamTestJson::get_email_array($email, $mail_id,  $assassin_score, $inbox_object);
+        $array_object['spamAssassin']   = SpamTestJson::get_spamassassin_array($mailheader, $assassin_score);
+        $from_email                     = $array_object['messageInfo']['bounceAddress'];
+        $auth_serverInfo                = SpamAssassin::getserverauth( $mailheader );
+        $array_object['signature']      = SpamTestJson::get_signature_array($mailheader, $auth_serverInfo, $from_email);
+        $array_object['signature']['serverip'] = $auth_serverInfo['serverip'];                
+        $array_object['body']           = SpamTestJson::get_mailbody_array($mailbody, $from_email);
+        if( $_SERVER['HTTP_HOST']!='localhost')
+        {
+            $array_object['blacklists']     = SpamTestJson::get_blacklist_array($auth_serverInfo['serverip'], $from_email);
+            $array_object['links']          = SpamTestJson::get_brokenlinks_array($mailbody, $from_email);
+        }
+
+
+        // Summery =>
+        $score = $inbox_object!=null ? $assassin_score : 0;
+        $score += $array_object['signature']['mark'];
+        if( $_SERVER['HTTP_HOST']!='localhost')
+        {
+            $score += $array_object['blacklists']['mark'];
+            $score += $array_object['links']['mark'];
+        }
+        $array_object["mark"] = $score;
+        $array_object["maxMark"] = 10;
+        $array_object["displayedMark"] = $inbox_object!=null ?  number_format(10 - $score, 1) .'/10' : "";
+
+        $title = $inbox_object!=null ? 
+        (
+            (($score<=3.0) ?  translate("Wow! Perfect, you can send") : 
+            (($score<=5.0) ?  translate("Good! you can send the mail") : 
+            (($score<=6.0) ?  translate("Warning! you cannot send the mail, but you can improve mail's content.") : 
+                               translate("critical! This is a special spam mail.")  
+             )))
+         ) : "Mail not found. Please wait a few seconds and try again.";
+         
+        $array_object["title"] = $title;
+        // <== Summery
+        return $array_object;
     }
 
     public function json($email)
@@ -432,24 +411,11 @@ class MailContentController extends Controller
 
 
         $inbox_object = TrashMail::messages($email, $message_id);
-        if( !empty($inbox_object) && count($inbox_object)>0) $inbox_object = $inbox_object[0];
-        $mailheader = $inbox_object['header'];
-        $mailbody = $inbox_object['content'];
-        $assassin_score = SpamAssassin::GetSpamAssassinScore($mailheader);
-
-        $array_object                   = SpamTestJson::get_email_array($email, $mail_id,  $assassin_score, $inbox_object);
-        $array_object['spamAssassin']   = SpamTestJson::get_spamassassin_array($mailheader, $assassin_score);
-        $from_email                 = $array_object['messageInfo']['bounceAddress'];
-        $auth_serverInfo            = SpamAssassin::getserverauth( $mailheader );
-        $array_object['signature']      = SpamTestJson::get_signature_array($mailheader, $auth_serverInfo, $from_email);
-        $array_object['body']           = SpamTestJson::get_mailbody_array($mailbody, $from_email);
-        $array_object['blacklists']     = SpamTestJson::get_blacklist_array($auth_serverInfo['serverip'], $from_email);
-        $array_object['links']          = SpamTestJson::get_brokenlinks_array($mailbody, $from_email);
-        //dd($array_object);
-        $json_object  = json_encode($array_object);
+        $array_object = $this->GetJsonArray($email, $inbox_object, $mail_id);
+        $json_string  = json_encode($array_object);
         header("Content-Type: application/json");
 		header("Accept: application/json");
-        print($json_object); die;
+        print($json_string); die;
     }
 }
 

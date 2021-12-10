@@ -12,7 +12,7 @@ class TestResult extends Model
     use HasFactory;
     use Sluggable;
     
-    protected $fillable = ['mail_id', 'user_id', 'email', 'name', 'tested_at','received_at', 'subject', 'header', 'content', 'score', 'receiver', 'sender'];
+    protected $fillable = ['mail_id', 'user_id', 'email', 'name', 'tested_at','received_at', 'subject', 'header', 'content', 'score', 'receiver', 'sender', 'json'];
     
     public function sluggable(): array
     {

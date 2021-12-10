@@ -197,7 +197,7 @@
 
           </div>
 
-          @include('layouts.footermenu');
+          @include('layouts.footermenu')
           
         </div>
       </div>

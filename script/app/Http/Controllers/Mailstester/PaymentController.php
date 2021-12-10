@@ -519,7 +519,9 @@ class PaymentController extends Controller
             abort(419);
         }
     }
-    # payment return url
+    
+    
+    # micropayment return url
     public function micropayment_status(Request $request){
         
         $pay_request = session()->get('Micro_payment_');
@@ -542,10 +544,15 @@ class PaymentController extends Controller
             $provider = new PayPalClient([]);
             $provider->getAccessToken();
             $response = $provider->capturePaymentOrder($orderID);
-            
+            if(empty($response['status']))
+            {
+                session()->flash('error', translate('cannot find your payment transaction.'));
+                return redirect(route('home'));
+            }
             if($response['status'] == 'COMPLETED'){
                 $inserted_id = $this->save_micro_payment_history($pay_request, $qty , $response);
-                return redirect(route('testresult').'?mail_id='.$mail_id);
+                $user_email = $pay_request->get('mailbox');
+                return redirect(route('testresult').'?mail_id='.$mail_id)->with('mailbox', $user_email);
             }else{
                 session()->flash('error', translate('Payment failed.'));
                 return redirect(route('home'));
@@ -560,7 +567,8 @@ class PaymentController extends Controller
                 $session = StripeSession::retrieve($request->session_id);
                 if($session && $session->payment_status == 'paid'){
                     $inserted_id = $this->save_micro_payment_history($pay_request, $qty , $session);
-                    return redirect(route('testresult').'?mail_id='.$mail_id);
+                    $user_email = $pay_request->get('mailbox');
+                    return redirect(route('testresult').'?mail_id='.$mail_id)->with('mailbox', $user_email);
                 }
             }
             session()->flash('error', translate('Payment failed.'));
@@ -630,12 +638,12 @@ class PaymentController extends Controller
         {
             $email = $request->mailbox . '@' . env('MAIL_HOST');
         }
-		else if( Session::has('checkout-micropay-email')  )
+		else if( Session::has('mailbox')  )
 		{
-			$email = Session::get('checkout-micropay-email') ;
+			$email = Session::get('mailbox') ;
 		}
 		
-        if($email==null)
+        if( empty($email))
         {
             return redirect(route('home'));
         }

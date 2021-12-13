@@ -309,8 +309,8 @@ class EmailTestController extends Controller
             $id = TrashMail::GetLastUnreadMail($email);
 
             ## whether cronjob has been performed or not ?
-            $blst = MailBlacklistCheck::where('mail_id', $id)->find();
-            $blnk = MailBrokenlinkCheck::where('mail_id', $id)->find();
+            $blst = MailBlacklistCheck::where('mail_id', $id)->first();
+            $blnk = MailBrokenlinkCheck::where('mail_id', $id)->first();
             if($blst==null || $blnk==null)  unset($id);
             ## <----------
         }

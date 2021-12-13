@@ -7,6 +7,16 @@ use App\Models\settings;
 use Illuminate\Support\Str;
 use File as fle;
 
+
+function dnsbl_lookup($key)
+{
+    foreach(App\Http\Controllers\Cron\CronJobController::$dnsbl_lookup as $idx=>$dns)
+    {
+        if($dns[0]==$key) return $dns;
+    }
+    return ['', '', '', ''];
+    
+}
 function agotime($date)
 {
     $diff = date_diff( new \DateTime( "now" ), new \DateTime( date( 'Y-n-d H:i:s', strtotime($date))) );

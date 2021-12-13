@@ -406,6 +406,7 @@
                 <div class="about">{{ $BL_results->description }}</div>
                 <div class="result">
                     <div class="row">
+						@if(!empty($BL_results->blacklists))
                         @foreach($BL_results->blacklists as $key=>$row)
                         <div class="col-sm-6 col-md-4 bl-result">
                             <span class="{{!empty($row->classname) ? $row->classname : 'status-success' }}">{{$row->name}}</span>
@@ -413,6 +414,7 @@
                             <a target="_blank" href="{{ $row->url }}">{{ $key }}</a>
                         </div>
                         @endforeach
+						@endif
                     </div>
                 </div>
             </div>

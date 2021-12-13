@@ -407,8 +407,8 @@ class TrashMail extends Model
                 foreach ($messages as $message) {
 					//dd($message->getTo()[0]->getAddress());	
 					//dd($message->getTo());	
-											/*array:1 [?
-											  0 => Ddeboer\Imap\Message\EmailAddress {#1615 ?
+											/*array:1 [▼
+											  0 => Ddeboer\Imap\Message\EmailAddress {#1615 ▼
 												-mailbox: "bfjzjwc770"
 												-hostname: "mail-analyzer.com"
 												-name: null
@@ -418,8 +418,8 @@ class TrashMail extends Model
 					//dd($message->getCc());	// []
 					//dd($message->getBcc());	// []
 					//dd($message->getReplyTo());
-											/*array:1 [?
-											  0 => Ddeboer\Imap\Message\EmailAddress {#1615 ?
+											/*array:1 [▼
+											  0 => Ddeboer\Imap\Message\EmailAddress {#1615 ▼
 												-mailbox: "khkj"
 												-hostname: "obistar.com"
 												-name: "admin"
@@ -465,6 +465,9 @@ class TrashMail extends Model
                     $data['receivedAt'] = $date->format('Y-m-d H:i:s');
                     $data['id'] = $Hashid;
                     $data['attachments'] = [];
+					$data['header'] = $message->getRawHeaders();
+					
+					
                     if ( ($html = $message->getBodyHtml()) ) 
                     {
                         $data['content'] = str_replace('<a', '<a target="blank"', $html);

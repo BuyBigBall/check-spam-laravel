@@ -118,6 +118,7 @@ class SpamAssassin
 
 
 		###############  preperformed by cron ###########
+		$results = [];
 		$urls_array = [];
 		foreach($matches as $url_items)
 		{
@@ -126,7 +127,7 @@ class SpamAssassin
 			if(!in_array($url, $urls_array))
 				$urls_array[] = $url;
 		}
-		foreach($url_items as $url)
+		foreach($urls_array as $url)
 		{
 			$query = BrokenlinkResult::where('link_url', $url);
 			$blnk_results = $query->first();
@@ -170,15 +171,17 @@ class SpamAssassin
             //         $listed[$keyname] = 0;
             // }
 
+			//dd($check_ip);
 			################ preperform by cronjob ###########
 			$query = BlacklistResult::where('serverip', $check_ip)->orderBy('id', 'ASC');
 			$bl_results = $query->get();
 			foreach($bl_results as $domain_row)
 			{
 				$keyname = $domain_row->domain_key;
+				$link = $domain_row->domain_url;
 				$status = $domain_row->result;
 				$mark = $domain_row->mark;
-				$listed[$keyname] = $mark;
+				$listed[$keyname] = ['mark'=>$mark, 'status'=>$status, 'link'=>$link];
 			}
         }
     	return $listed;

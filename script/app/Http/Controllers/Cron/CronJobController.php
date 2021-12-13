@@ -31,7 +31,7 @@ use Exception;
 // use SimpleXMLElement;
 // use SPFLib\Term\Mechanism;
 // use Vinkla\Hashids\Facades\Hashids;
-// use App\Http\Controllers\Mailstester\SpamAssassin;
+use App\Http\Controllers\Mailstester\SpamAssassin;
 
 class CronJobController extends Controller
 {
@@ -127,16 +127,22 @@ class CronJobController extends Controller
 			
             $addresss_from  = $one_mail['from_email'];
             $hostname = explode('@', $addresss_from)[1];
-
+			//dd($one_mail);
             if(!array_key_exists($hostname, CronJobController::$ipByHost))
             {
-                $server_ip = gethostbyname($hostname);
+                $mailheader = $one_mail['header'];
+                $auth_serverInfo = SpamAssassin::getserverauth( $mailheader );
+                $server_ip = $auth_serverInfo['serverip'];			//mail.ru=>128.140.169.216
+                //$server_ip = gethostbyname($hostname);
+				
                 CronJobController::$ipByHost[$hostname] = $server_ip;
             }
             else
             {
                 $server_ip = CronJobController::$ipByHost[$hostname];
             }
+			//dd($server_ip);	// obistar.com=>87.106.127.240
+			//print($hostname);
 			//dd($server_ip);	// obistar.com=>87.106.127.240
             $this->lookfor_blacklist($server_ip, $mail_id, $num);
         }
@@ -168,7 +174,8 @@ class CronJobController extends Controller
                 $result = 1;
             else 
                 $result = 0;
-
+			//updateOrCreate
+			//dd($bl_result);
             if($bl_result==null)
             {
                 $blacklist = new BlacklistResult();
@@ -186,11 +193,16 @@ class CronJobController extends Controller
             }
         }
 		
-        $flag = new MailBlacklistCheck();
-		//dd($flag);
-        $flag->mail_id = $mail_id;
-        $flag->cron_number = $num;
-        $flag->save();
+        $chk = MailBlacklistCheck::where('mail_id', $mail_id)->where('cron_number', $num)->first();
+        if($chk==null)
+        {
+            $flag = new MailBlacklistCheck();
+            //dd($flag);
+            $flag->mail_id = $mail_id;
+            $flag->cron_number = $num;
+            $flag->save();
+        }
+
 		return true;
 	}
 
@@ -257,11 +269,15 @@ class CronJobController extends Controller
             }
             $i++;
         }
+        $chk = MailBrokenlinkCheck::where('mail_id', $mail_id)->where('cron_number', $num)->first();
+        if($chk==null)
+        {
+            $flag = new MailBrokenlinkCheck();
+			$flag->mail_id = $mail_id;
+			$flag->cron_number = $num;
+			$flag->save();
+        }
         
-        $flag = new MailBrokenlinkCheck();
-        $flag->mail_id = $mail_id;
-        $flag->cron_number = $num;
-        $flag->save();
 		return true;
 	}
 }

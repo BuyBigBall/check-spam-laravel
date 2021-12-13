@@ -147,7 +147,7 @@ class MailContentController extends Controller
         $mail_id = 0;
         $mailbox = !empty($request->mailbox) ? $request->mailbox : (!empty(session('mailbox')) ? session('mailbox') : null);
 		$email = explode('@', $mailbox)[0] .'@'. env('MAIL_HOST');
-
+		//dd($mailbox);
         if(empty($mailbox)) return redirect(route('home') );
 
         $Hash_id = $request->input('message_id');
@@ -186,7 +186,7 @@ class MailContentController extends Controller
         $json_object = null;
         $to_email = $email;
         $json_string = '';
-
+		
             $db_hist = \App\Models\TestResult::where(['mail_id'=>$mail_id])->first();
             
             if($db_hist!=null)
@@ -252,7 +252,7 @@ class MailContentController extends Controller
                 $json_array = $this->GetJsonArray( $email ,  $response, $mail_id);
             // ############################################################
             
-
+		//dd($json_array);
         if(empty($json_string) && count($json_array)>0) $json_string = json_encode($json_array);
         
         $json_object = json_decode($json_string);
@@ -266,9 +266,15 @@ class MailContentController extends Controller
             if (Auth::guard($guard)->check()) {
                 $user_id   = Auth::user()->id;
                 $user_name = Auth::user()->name;
-                $mail_id   = $response['id'];
                 $user_email= Auth::user()->email;
-                
+			}      
+			else
+			{
+                $user_id   = 0;
+                $user_name = '';
+                $user_email= '';
+			}
+                $mail_id   = $response['id'];
                 if($db_hist==null)
                 {
 					$message_result = [
@@ -288,7 +294,6 @@ class MailContentController extends Controller
                     ];
                     $db_hist =  TestResult::create($message_result);
                 }
-            }
         }
             
         ################# whitelabel style ################
@@ -310,7 +315,7 @@ class MailContentController extends Controller
         
         ################### return view ##################
         
-        ## dd($json_object);
+        //dd($json_object->blacklists);
         Session::put('mail_body_html', $response['content']);
         $total_score = 10 - $json_object->mark;
         return view('mailstester.testresult')
@@ -398,6 +403,7 @@ class MailContentController extends Controller
          
         $array_object["title"] = $title;
         // <== Summery
+		
         return $array_object;
     }
 

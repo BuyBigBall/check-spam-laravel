@@ -40,8 +40,10 @@ class SpamTestJson
     {
         $result = [];
         $bl_score_list = SpamAssassin::cheking_blacklist($serverip);	//'95.19.4.3');//
-        
-        $black_list_score_sum = array_sum($bl_score_list);
+       
+        $black_list_score_sum = 0;
+		foreach($bl_score_list as $row) $black_list_score_sum+=$row['mark'];
+		//array_sum($bl_score_list);
         
         $hitMark = abs($black_list_score_sum) / SpamAssassin::$bl_score_unit;
         $result["title"] = sprintf(translate("You're %s listed in %s blacklist")
@@ -56,17 +58,18 @@ class SpamTestJson
         $result["hits"] = 1;
         $result["timeout"] = 0;
         $result["messages"] = "<div class=\"row\">";
-        foreach($bl_score_list as $keyname=>$check_score)
+		$result['blacklists'] = [];
+        foreach($bl_score_list as $keyname=>$check_score_array)
         {
-            $result["messages"] .= sprintf("<div class=\"col-sm-6 col-md-4 bl-result\"><span class=\"status-success\">%s</span> in <a target=\"_blank\" href=\"%s\">%s</a></div>", ($check_score==0) ? translate("Not listed") : (($check_score<1) ? translate('Listed -0.1')  : translate('Critical -1.0')), SpamAssassin::$dnsbl_lookup[$keyname], $keyname );
-            $result['blacklists'][ SpamAssassin::$dnsbl_lookup[$keyname] ] = [
+            $result["messages"] .= sprintf("<div class=\"col-sm-6 col-md-4 bl-result\"><span class=\"status-success\">%s</span> in <a target=\"_blank\" href=\"%s\">%s</a></div>", ($check_score_array['mark']==0) ? translate("Not listed") : (($check_score_array['mark']<1) ? translate('Listed -0.1')  : translate('Critical -1.0')), dnsbl_lookup($keyname)[1], $keyname );
+            $result['blacklists'][ dnsbl_lookup($keyname)[1] ] = [
                 "name" => $keyname,
-                "url" => "https://".SpamAssassin::$dnsbl_lookup[$keyname],
-                "dns" => SpamAssassin::$dnsbl_lookup[$keyname],
+                "url" => "https://".$check_score_array['link'],
+                "dns" => dnsbl_lookup($keyname)[1],
                 "statusCode" => 0,
-                "hitMark" => $check_score,
-                "mark" => $check_score,
-                "classname" => $check_score==0 ? "status-success" : "status-warning" ,
+                "hitMark" => $check_score_array['mark'],
+                "mark" => $check_score_array['mark'],
+                "classname" => $check_score_array['mark']==0 ? "status-success" : (dnsbl_lookup($keyname)[3]=='red' ? "status-failure" : "status-warning") ,
                 "details" => ""
             ];
         }

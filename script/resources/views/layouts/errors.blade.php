@@ -32,7 +32,7 @@
             <h4 class="text-muted">@yield('message')</h4>
             <p class="mb-4">@yield('message2')</p>
             <a class="btn-2" href="{{url('/')}}" role="button"><i
-                    class="fas fa-house-user mr-2"></i>{{translate('Back to Home')}}</a>
+                    class="fas fa-house-user mr-2"></i>{{__('Back to Home')}}</a>
         </div>
         
     </div>

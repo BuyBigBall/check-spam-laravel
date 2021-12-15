@@ -1,0 +1,1 @@
+ALTER TABLE `transactions` ADD COLUMN `username` VARCHAR(100) CHARSET utf8 NULL AFTER `id`, ADD COLUMN `useremail` VARCHAR(100) CHARSET ASCII NULL AFTER `username`; 

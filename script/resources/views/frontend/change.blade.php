@@ -14,19 +14,19 @@
         <div class="card mb-2">
           <div class="card-header">
             <div class="row">
-              <div class="col-6">{{translate('Change E-mail Address')}}</div>
+              <div class="col-6">{{__('Change E-mail Address')}}</div>
             </div>
           </div>
           <div class="card-body">
             <div class="change_email">
               <p>
-                {!! translate('Change Description') !!}
+                {!! __('Change Description') !!}
               </p>
               <form action="{{route("create")}}" method="post" class="col-md-8 col-sm-12 align-items-center">
                 @csrf
                 <div class="form-group">
                   <input type="text" required name="name" class="form-control  @error('name') is-invalid @enderror"
-                    placeholder="{{translate('Enter Your Mail!')}}" value="{{old('name')}}">
+                    placeholder="{{__('Enter Your Mail!')}}" value="{{old('name')}}">
                   @error('name')
                   <div class="invalid-feedback">
                     <strong>{{ $message }}</strong>
@@ -46,9 +46,9 @@
                   @enderror
                 </div>
                 @if(Cookie::has('count') && Cookie::get('count') >= 5)
-                  <button type="button" data-toggle="modal" data-target="#check_bot" class="btn btn-2">{{translate('Change Email')}}</button>
+                  <button type="button" data-toggle="modal" data-target="#check_bot" class="btn btn-2">{{__('Change Email')}}</button>
                 @else
-                  <button type="submit" class="btn btn-2">{{translate('Change Email')}}</button>
+                  <button type="submit" class="btn btn-2">{{__('Change Email')}}</button>
                 @endif
                 
                 @if (session()->has('error'))

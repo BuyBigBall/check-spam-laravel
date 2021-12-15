@@ -81,7 +81,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-6">
+            <!-- <div class="col-lg-6">
                 <div class="card card-large-icons">
                     <div class="card-icon bg-primary text-white">
                         <i class="fas fa-bullhorn"></i>
@@ -90,6 +90,19 @@
                         <h4>{{__('Ads')}}</h4>
                         <p>{{__('Manage all ads ,And earn money from advertising')}}</p>
                         <a href="{{route('settings.ads')}}" class="card-cta text-primary">{{__('Change Setting')}} <i
+                                class="fas fa-chevron-right"></i></a>
+                    </div>
+                </div>
+            </div> -->
+            <div class="col-lg-6">
+                <div class="card card-large-icons">
+                    <div class="card-icon bg-primary text-white">
+                        <i class="fas fa-money-bill-alt"></i>
+                    </div>
+                    <div class="card-body">
+                        <h4>{{__('Payment Control')}}</h4>
+                        <p>{{__('Manage all payment API(gateway, vat, payment api credential and so on)')}}</p>
+                        <a href="{{route('settings.payment')}}" class="card-cta text-primary">{{__('Change Setting')}} <i
                                 class="fas fa-chevron-right"></i></a>
                     </div>
                 </div>

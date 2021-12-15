@@ -35,6 +35,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin', 'check
     Route::post('/settings/general/update', 'settings\GeneralController@update')->name('settings.general.update');
     Route::post('/settings/general/update2', 'settings\GeneralController@update2')->name('settings.general.update2');
     Route::post('/settings/check/imap', 'settings\GeneralController@check_imap')->name('check.imap');
+    Route::get('/settings/payment/control', 'settings\GeneralController@payment')->name('settings.payment');
+    Route::post('/settings/payment/control', 'settings\GeneralController@payment_update')->name('settings.payment.update');
+    
 
     // Seo Settings
     Route::get('/settings/seo', 'settings\SeoController@index')->name('settings.seo');
@@ -71,6 +74,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin', 'check
     
     Route::get('/users/profile/{id}', 'UserController@profile')->name('users.profileedit');
     Route::post('/users/profile/save', 'UserController@saveprofile')->name('saveprofile');
+    
+    Route::get('/print-invoice/{id}', 'TransactionController@invoice')->name("print-invoice");
 
     Route::resource('/posts', "PostController");
     Route::resource('/categories', 'CategoryController');

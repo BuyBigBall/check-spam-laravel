@@ -62,7 +62,6 @@ class GeneralController extends Controller
 
     public function update2(Request $request)
     {
-
         $request->validate([
             'imap_host' => 'required',
             'imap_user' => 'required',
@@ -187,5 +186,51 @@ class GeneralController extends Controller
 
 
 
+    }
+
+    public function payment()
+    {
+        return view('backend.settings.payment');
+    }
+
+    public function payment_update(Request $request)
+    {
+        
+        if ($request->has('use_paypal') && $request->use_paypal=='true' ) {
+            if($request->paypal_mode=='sandbox')
+            {
+                setEnv("PAYPAL_SANDBOX_APPID", trim($request->sandbox_appid));
+                setEnv("PAYPAL_SANDBOX_CLIENT_ID", trim($request->sandbox_clientid));
+                setEnv("PAYPAL_SANDBOX_CLIENT_SECRET", trim($request->sandbox_clientsecret));
+            }
+            if($request->paypal_mode=='live')
+            {
+                setEnv("PAYPAL_LIVE_APPID", trim($request->paypallive_appid));
+                setEnv("PAYPAL_LIVE_CLIENT_ID", trim($request->paypallive_clientid));
+                setEnv("PAYPAL_LIVE_CLIENT_SECRET", trim($request->paypallive_clientsecret));
+            }
+        }
+
+        if ($request->has('use_stripe') && $request->use_stripe=='true' ) {
+            setEnv("STRIPE_KEY",    trim($request->stripe_key));
+            setEnv("STRIPE_SECRET", trim($request->stripe_secret));
+        }
+        
+        //dd(((!empty($request->use_paypal) && $request->use_paypal=='true') ? "TRUE" : "FALSE"));
+        setEnv("USE_PAYPAL",  ((!empty($request->use_paypal) && $request->use_paypal=='true') ?     "true":"false"));
+        setEnv("USE_STRIPE",  ((!empty($request->use_stripe) && $request->use_stripe=='true') ?     "true":"false"));
+        setEnv("USE_MICROPAY",((!empty($request->use_micropay) && $request->use_micropay=='true') ? "true":"false"));
+        
+
+        setEnv("PAYPAL_MODE", !empty($request->paypal_mode) ? $request->paypal_mode : "");
+
+        if(!empty($request->freetest_count))
+            setEnv("MAX_FREETEST_COUNT",$request->freetest_count<0 ? -1 : $request->freetest_count );
+        
+        if(!empty($request->vat_fee) && $request->vat_fee>0 )
+            setEnv("VAT_FEE",  $request->vat_fee);
+
+        //return view('backend.settings.payment');        
+        return redirect(route('settings.general'));
     }
 }

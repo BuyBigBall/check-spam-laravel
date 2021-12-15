@@ -1,6 +1,6 @@
 @extends('layouts.user')
 
-@section('title', translate('Homepage Title') . " | ")
+@section('title', __('Homepage Title') . " | ")
 
 @section('content')
 
@@ -17,17 +17,17 @@
         <div class="card mb-3 mt-3">
           <div class="card-header">
             <div class="row">
-              <div class="col-12 d_show">{{translate('INBOX')}}</div>
-              <div class="col-4 d_hide">{{translate('Sender')}}</div>
-              <div class="col-6 d_hide">{{translate('Subject')}}</div>
-              <div class="col-2 text-right d_hide">{{translate('View')}}</div>
+              <div class="col-12 d_show">{{__('INBOX')}}</div>
+              <div class="col-4 d_hide">{{__('Sender')}}</div>
+              <div class="col-6 d_hide">{{__('Subject')}}</div>
+              <div class="col-2 text-right d_hide">{{__('View')}}</div>
             </div>
           </div>
           <div class="card-body" >
             <div class="mailbox-empty">
               <i class="fas fa-sync-alt fa-spin"></i>
-              <h3>{{translate('Your inbox is empty')}}</h3>
-              <p>{{translate('Waiting for incoming emails')}}</p>
+              <h3>{{__('Your inbox is empty')}}</h3>
+              <p>{{__('Waiting for incoming emails')}}</p>
             </div>
             <div id="mailbox"></div>
           </div>

@@ -52,12 +52,12 @@
                 <table class="table table-hover table-striped table-results">
                     <thead>
                         <tr>
-                            <th>{{translate('Received Date')}}</th>
-                            <th>{{translate('Test Date')}}</th>
-                            <th>{{translate('Subject')}}</th>
-                            <!-- <th>{{translate('Source')}}</th> -->
-                            <th>{{translate('Score')}}</th>
-                            <th>{{translate('Sender')}}</th>
+                            <th>{{__('Received Date')}}</th>
+                            <th>{{__('Test Date')}}</th>
+                            <th>{{__('Subject')}}</th>
+                            <!-- <th>{{__('Source')}}</th> -->
+                            <th>{{__('Score')}}</th>
+                            <th>{{__('Sender')}}</th>
                         </tr>
                     </thead>
                     <tbody>

@@ -58,8 +58,8 @@ class LoginController extends Controller
         if ($this->attemptLogin($request)) {
             return $this->redirectTo($request);
         } else {
-            //session()->put('msg', translate('Unauthorised'));
-            return redirect(route('login'))->with('msg', translate('Unauthorised'));
+            //session()->put('msg', __('Unauthorised'));
+            return redirect(route('login'))->with('msg', __('Unauthorised'));
         }
     }
 

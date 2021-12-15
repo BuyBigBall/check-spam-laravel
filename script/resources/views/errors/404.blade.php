@@ -1,6 +1,6 @@
 @extends('layouts.errors')
 
-@section('title', translate('Not Found'))
+@section('title', __('Not Found'))
 @section('code', '404')
-@section('message', translate('Page Not Found'))
-@section('message2', translate('We are sorry but the page you are looking for was not found'))
+@section('message', __('Page Not Found'))
+@section('message2', __('We are sorry but the page you are looking for was not found'))

@@ -61,8 +61,8 @@ class RegisterController extends Controller
 					]);
             $this->guard()->login($user);
             $success_msg = 'Completed your account registration!';
-            session()->put('msg', translate($success_msg));
-            return redirect(route('login'))->with('msg', translate($success_msg));            
+            session()->put('msg', __($success_msg));
+            return redirect(route('login'))->with('msg', __($success_msg));            
 		}
 		return null;
 	}
@@ -143,10 +143,10 @@ class RegisterController extends Controller
             if($user_register_mode == 'deactive'){
                 // $this->guard()->login($user);
                 $success_msg = 'Thanks for registration!';
-                session()->flash('success', translate($success_msg));
+                session()->flash('success', __($success_msg));
                 //return redirect()->back()->with('msg',trans('main.thanks_reg'));
-                session()->put('msg', translate($success_msg));
-                return redirect(route('login'))->with('msg', translate($success_msg));
+                session()->put('msg', __($success_msg));
+                return redirect(route('login'))->with('msg', __($success_msg));
             } else {
 				
                 sendMail([
@@ -156,15 +156,15 @@ class RegisterController extends Controller
                     'content' => ['token'=>$user_token],
                 ]);
                 $success_msg = 'Thanks for registration, Please check your email and follow activation link to active your account.';
-                session()->flash('success', translate($success_msg));
-                session()->put('msg', translate($success_msg));
+                session()->flash('success', __($success_msg));
+                session()->put('msg', __($success_msg));
                 //return redirect()->back()->with('msg',trans('main.active_account_alert'));
-                return redirect(route('login'))->with('msg',translate($success_msg) );
+                return redirect(route('login'))->with('msg',__($success_msg) );
             }
 
         } catch (ValidationException $e) {
             $messages = $e->getMessage();
-            session()->flash('error', translate('Some validation error occur.' ) );
+            session()->flash('error', __('Some validation error occur.' ) );
             return redirect(route('signup'));
         }            
     }

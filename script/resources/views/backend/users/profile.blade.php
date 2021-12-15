@@ -12,11 +12,11 @@
         <div class="section-header-back">
             <a href="{{ route('users.index')}}" class="btn btn-icon"><i class="fas fa-arrow-left"></i></a>
         </div>
-        <h1>{{translate('User Profile')}}</h1>
+        <h1>{{__('User Profile')}}</h1>
         <div class="section-header-breadcrumb">
-            <div class="breadcrumb-item active"><a href="{{ route('dashboard')}}">{{translate('Dashboard')}}</a></div>
-            <div class="breadcrumb-item"><a href="{{ route('users.index')}}">{{translate('Users')}}</a></div>
-            <div class="breadcrumb-item">{{translate('User Profile')}}</div>
+            <div class="breadcrumb-item active"><a href="{{ route('dashboard')}}">{{__('Dashboard')}}</a></div>
+            <div class="breadcrumb-item"><a href="{{ route('users.index')}}">{{__('Users')}}</a></div>
+            <div class="breadcrumb-item">{{__('User Profile')}}</div>
         </div>
     </div>
 
@@ -37,7 +37,7 @@
                     <label
                         for='firstname'
                         class="col-form-label text-md-right col-12 col-md-3 col-lg-3">
-                        {{ translate('First name') }}
+                        {{ __('First name') }}
                         <span class='required'>*</span>
                         :</label>
                     <div class="col-sm-12 col-md-7">
@@ -53,7 +53,7 @@
                 <div class="form-group row mb-4">
                     <label
                         class="col-form-label text-md-right col-12 col-md-3 col-lg-3"
-                        for='lastname'>{{ translate('Last name') }}
+                        for='lastname'>{{ __('Last name') }}
                         <span class='required'>*</span>
                         :</label>
                     <div class="col-sm-12 col-md-7">
@@ -69,7 +69,7 @@
                 <div class="form-group row mb-4">
                     <label
                         class="col-form-label text-md-right col-12 col-md-3 col-lg-3"
-                        for='company'>{{ translate('Company name') }}
+                        for='company'>{{ __('Company name') }}
                         :</label>
                     <div class="col-sm-12 col-md-7">
                         <input
@@ -84,7 +84,7 @@
                 <div class="form-group row mb-4">
                     <label
                         class="col-form-label text-md-right col-12 col-md-3 col-lg-3"
-                        for='country'>{{ translate('Country / Region') }}
+                        for='country'>{{ __('Country / Region') }}
                         <span class='required'>*</span>
                         :</label>
                     <div class="col-sm-12 col-md-7">
@@ -100,7 +100,7 @@
                 <div class="form-group row mb-4">
                     <label
                         class="col-form-label text-md-right col-12 col-md-3 col-lg-3"
-                        for='street'>{{ translate('Street address') }}
+                        for='street'>{{ __('Street address') }}
                         <span class='required'>*</span>
                         :</label>
                     <div class="col-sm-12 col-md-7">
@@ -114,7 +114,7 @@
                 </div>
 
                 <div class="form-group row mb-4">
-                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3" for='city'>{{ translate('City') }}
+                    <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3" for='city'>{{ __('City') }}
                         <span class='required'>*</span>
                         :</label>
                     <div class="col-sm-12 col-md-7">
@@ -129,7 +129,7 @@
                 <div class="form-group row mb-4">
                     <label
                         class="col-form-label text-md-right col-12 col-md-3 col-lg-3"
-                        for='state'>{{ translate('State') }}
+                        for='state'>{{ __('State') }}
                         <span class='required'>*</span>
                         :</label>
                     <div class="col-sm-12 col-md-7">
@@ -144,7 +144,7 @@
                 <div class="form-group row mb-4">
                     <label
                         class="col-form-label text-md-right col-12 col-md-3 col-lg-3"
-                        for='email'>{{ translate('Email Address') }}
+                        for='email'>{{ __('Email Address') }}
                         <span class='required'>*</span>
                         :</label>
                     <div class="col-sm-12 col-md-7">
@@ -159,7 +159,7 @@
                 <div class="form-group row mb-4">
                     <label
                         class="col-form-label text-md-right col-12 col-md-3 col-lg-3"
-                        for='phone'>{{ translate('Phone Number') }}
+                        for='phone'>{{ __('Phone Number') }}
                         <span class='required'>*</span>
                         :</label>
                     <div class="col-sm-12 col-md-7">
@@ -174,7 +174,7 @@
                 <div class="form-group row mb-4">
                     <label
                         class="col-form-label text-md-right col-12 col-md-3 col-lg-3"
-                        for='postcode'>{{ translate('Post Code') }}
+                        for='postcode'>{{ __('Post Code') }}
                         <span class='required'>*</span>
                         :</label>
                     <div class="col-sm-12 col-md-7">

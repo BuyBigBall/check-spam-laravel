@@ -318,6 +318,7 @@ class PaymentController extends Controller
         ]);
         
         session()->put('Micro_payment_', $request->request);
+        session()->put('Order_account_', ['username'=>$request->firstname . ' ' . $request->lastname, 'email'=>$request->guest_email]);
 
         $profile_id = 0;    // must be positive
         $payment_method = $request->payment_method;
@@ -359,7 +360,7 @@ class PaymentController extends Controller
                     return redirect($l['href']);
                 }            
             }
-            session()->flash('error', translate('Some error occur, sorry for inconvenient.'));
+            session()->flash('error', __('Some error occur, sorry for inconvenient.'));
             return redirect(route('prices'));
         }else if($payment_method == 'paybox_stripe'){ 
             // stripe -----------------------------------------
@@ -455,6 +456,7 @@ class PaymentController extends Controller
                     "return_url" => route( env('PAYPAL_RETURN_URL') )
                 ] 
             ]);
+            session()->put('Order_account_'.$userdata['id'], ['username'=>$request->firstname . ' ' . $request->lastname, 'email'=>$request->mail_addr]);
             session()->put('Order_method_'.$userdata['id'], $payment_method);
             session()->put('Order_id_'.$userdata['id'],     $result['id']);
             session()->put('Order_qty_'.$userdata['id'],    $pay_amount);
@@ -471,7 +473,7 @@ class PaymentController extends Controller
                     return redirect($l['href']);
                 }            
             }
-            session()->flash('error', translate('Some error occur, sorry for inconvenient.'));
+            session()->flash('error', __('Some error occur, sorry for inconvenient.'));
             return redirect(route('prices'));
         }else if($payment_method == 'paybox_stripe'){ 
             // stripe -----------------------------------------
@@ -493,7 +495,8 @@ class PaymentController extends Controller
                 'success_url' => route( env('STRIPE_RETURN_URL')) . '?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url' => route('prices'),
             ]);
-
+            
+            session()->put('Order_account_'.$userdata['id'], ['username'=>$request->firstname . ' ' . $request->lastname, 'email'=>$request->mail_addr]);
             session()->put('Order_method_'.$userdata['id'],$payment_method);
             session()->put('Order_qty_'.$userdata['id'],    $pay_amount);
             session()->put('Order_price_'.$userdata['id'],  $price);
@@ -525,17 +528,18 @@ class PaymentController extends Controller
     public function micropayment_status(Request $request){
         
         $pay_request = session()->get('Micro_payment_');
+        $payment_owner = session()->get('Order_account_');
         //dd($pay_request->get('mail_id'));
         
         if(empty( $pay_request) )
         {
-            session()->flash('error', translate('Payment failed.'));
+            session()->flash('error', __('Payment failed.'));
             return redirect(route('home'));
         }
         
         $mail_id = $pay_request->get('mail_id');
         $payment_method = $pay_request->get('payment_method');
-        
+
         if($payment_method == 'paybox_paypal'){ 
             // paypal status ---------------------------------
             $profile_id = session()->get('Order_userid_');
@@ -546,15 +550,15 @@ class PaymentController extends Controller
             $response = $provider->capturePaymentOrder($orderID);
             if(empty($response['status']))
             {
-                session()->flash('error', translate('cannot find your payment transaction.'));
+                session()->flash('error', __('cannot find your payment transaction.'));
                 return redirect(route('home'));
             }
             if($response['status'] == 'COMPLETED'){
-                $inserted_id = $this->save_micro_payment_history($pay_request, $qty , $response);
+                $inserted_id = $this->save_micro_payment_history($pay_request, $qty , $response, $payment_owner);
                 $user_email = $pay_request->get('mailbox');
                 return redirect(route('testresult').'?mail_id='.$mail_id)->with('mailbox', $user_email);
             }else{
-                session()->flash('error', translate('Payment failed.'));
+                session()->flash('error', __('Payment failed.'));
                 return redirect(route('home'));
             } 
         }else if($payment_method == 'paybox_stripe'){ 
@@ -566,12 +570,12 @@ class PaymentController extends Controller
                 Stripe::setApiKey(env('STRIPE_SECRET'));
                 $session = StripeSession::retrieve($request->session_id);
                 if($session && $session->payment_status == 'paid'){
-                    $inserted_id = $this->save_micro_payment_history($pay_request, $qty , $session);
+                    $inserted_id = $this->save_micro_payment_history($pay_request, $qty , $payment_owner);
                     $user_email = $pay_request->get('mailbox');
                     return redirect(route('testresult').'?mail_id='.$mail_id)->with('mailbox', $user_email);
                 }
             }
-            session()->flash('error', translate('Payment failed.'));
+            session()->flash('error', __('Payment failed.'));
             return redirect(route('home'));
         }         
         else
@@ -590,7 +594,8 @@ class PaymentController extends Controller
             return redirect(route('prices'));
         }
         $payment_method = session()->get('Order_method_'.$userdata['id']);
-
+        $payment_owner = session()->get('Order_account_'.$userdata['id']);
+        
         if($payment_method == 'paybox_paypal'){ 
             // paypal status ---------------------------------
             $profile_id = session()->get('Order_userid_'.$userdata['id']);
@@ -600,11 +605,11 @@ class PaymentController extends Controller
             $provider->getAccessToken();
             $response = $provider->capturePaymentOrder($orderID);
             if($response['status'] == 'COMPLETED'){
-                $inserted_id = $this->save_Paypal_payment_history($qty , $response);
+                $inserted_id = $this->save_Paypal_payment_history($qty , $response, $payment_owner);
                 $balance_id = $this->create_balance($inserted_id);
                 return redirect(route('checkout', 'step4'));
             }else{
-                session()->flash('error', translate('Payment failed.'));
+                session()->flash('error', __('Payment failed.'));
                 return redirect(route('prices'));
             } 
         }else if($payment_method == 'paybox_stripe'){ 
@@ -616,12 +621,12 @@ class PaymentController extends Controller
                 Stripe::setApiKey(env('STRIPE_SECRET'));
                 $session = StripeSession::retrieve($request->session_id);
                 if($session && $session->payment_status == 'paid'){
-                    $inserted_id = $this->save_Stripe_payment_history($qty , $session);
+                    $inserted_id = $this->save_Stripe_payment_history($qty , $session, $payment_owner);
                     $balance_id = $this->create_balance($inserted_id);
                     return redirect(route('checkout', 'step4'));
                 }
             }
-            session()->flash('error', translate('Payment failed.'));
+            session()->flash('error', __('Payment failed.'));
             return redirect(route('latest-tests'));
         }         
         else
@@ -957,12 +962,14 @@ class PaymentController extends Controller
             $authority = $payment_response['payment_intent'];
             $bank = 'stripe';
             $type = 'micropay';
-            $income = round($pay_amount * env('MICROPAY_PROFIT') / 100.0 ,2);
+            $income = round($pay_amount * env('MICROPAY_PROFIT') *100.0/ 100.0 ,2);
         }
 
         if($payment_method == 'paybox_paypal' || $payment_method == 'paybox_stripe' )
         {
             $tranc = new Transaction();
+            $tranc->username = $payment_response['username'];
+            $tranc->useremail = $payment_response['email'];
             $tranc->user_id = $owner_id;
             $tranc->email_id = $email_id;
             $tranc->price_type = $price_type;
@@ -1009,7 +1016,7 @@ class PaymentController extends Controller
         }
         return null;
     }
-    private function save_Paypal_payment_history($pay_amount, $payment_response)
+    private function save_Paypal_payment_history($pay_amount, $payment_response, $payment_owner)
     {
         $user_id = Auth::user()->id;
 
@@ -1040,6 +1047,8 @@ class PaymentController extends Controller
         $income = round($pay_amount * 100.0 / (100+env('VAT_FEE')),2);
 
         $tranc = new Transaction();
+        $tranc->username = $payment_owner['username'];
+        $tranc->email = $payment_owner['email'];
         $tranc->user_id = $profile_id;
         $tranc->email_id = $email_id;
         $tranc->price_type = $price_type;
@@ -1069,7 +1078,7 @@ class PaymentController extends Controller
         return $tranc->id;
     }
     
-    private function save_Stripe_payment_history($pay_amount, $payment_response)
+    private function save_Stripe_payment_history($pay_amount, $payment_response, $payment_owner)
     {
         $payment_response = $payment_response->toArray();
 
@@ -1091,9 +1100,11 @@ class PaymentController extends Controller
         $authority = $payment_response['payment_intent'];
         $bank = 'stripe';
         $type = $payment_response['payment_status'];
-        $income = round($pay_amount * 100.0 / (100+env('VAT_FEE')),2);
+        $income = round($pay_amount * 100.0 / (100+env('VAT_FEE'))*100.0,2);
 
         $tranc = new Transaction();
+        $tranc->username = $payment_owner['username'];
+        $tranc->email = $payment_owner['email'];
         $tranc->user_id = $user_id;
         $tranc->email_id = $email_id;
         $tranc->price_type = $price_type;

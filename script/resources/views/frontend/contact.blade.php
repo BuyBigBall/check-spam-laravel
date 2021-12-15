@@ -14,7 +14,7 @@
                 <div class="card mb-2">
                     <div class="card-header">
                         <div class="row">
-                            <div class="col-6">{{translate('Contact Us')}}</div>
+                            <div class="col-6">{{__('Contact Us')}}</div>
                         </div>
                     </div>
                     <div class="card-body">
@@ -24,16 +24,16 @@
                                 {{ Session::get('success') }}
                             </div>
                             @endif
-                            <p>{!! translate('Contact Description') !!}</p>
+                            <p>{!! __('Contact Description') !!}</p>
                             @if (empty($setdata['MAIL_FROM_ADDRESS']))
-                                <h3 class="text-center mt-5">{{translate('We will add a contact from as soon as possible')}}</h3>
+                                <h3 class="text-center mt-5">{{__('We will add a contact from as soon as possible')}}</h3>
                             @else
                             <form action="{{route("contact.store")}}" method="post">
                                 @csrf
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <input type="text" name="name" placeholder="{{translate('Your Name')}}"
+                                            <input type="text" name="name" placeholder="{{__('Your Name')}}"
                                                 class="form-control  @error('name') is-invalid @enderror">
                                             @error('name')
                                             <div class="invalid-feedback">
@@ -44,7 +44,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <input type="email" name="email" placeholder="{{translate('Your Email')}}"
+                                            <input type="email" name="email" placeholder="{{__('Your Email')}}"
                                                 class="form-control  @error('email') is-invalid @enderror">
                                             @error('email')
                                             <div class="invalid-feedback">
@@ -55,7 +55,7 @@
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <input type="text" name="phone" placeholder="{{translate('Your Phone')}}"
+                                            <input type="text" name="phone" placeholder="{{__('Your Phone')}}"
                                                 class="form-control  @error('phone') is-invalid @enderror">
                                             @error('phone')
                                             <div class="invalid-feedback">
@@ -66,7 +66,7 @@
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <input type="text" name="subject" placeholder="{{translate('Subject')}}"
+                                            <input type="text" name="subject" placeholder="{{__('Subject')}}"
                                                 class="form-control  @error('subject') is-invalid @enderror">
                                             @error('subject')
                                             <div class="invalid-feedback">
@@ -77,7 +77,7 @@
                                     </div>
                                     <div class="col-md-12">
                                         <div class="form-group">
-                                            <textarea rows="5" name="message" placeholder="{{translate('Your Message')}}"
+                                            <textarea rows="5" name="message" placeholder="{{__('Your Message')}}"
                                                 class="form-control  @error('message') is-invalid @enderror"></textarea>
                                             @error('message')
                                             <div class="invalid-feedback">
@@ -96,7 +96,7 @@
                                         @endif
                                     </div>
                                     <div class="col-md-12 mt-2">
-                                        <button class="btn btn-2">{{translate('Send Message')}}</button>
+                                        <button class="btn btn-2">{{__('Send Message')}}</button>
                                     </div>
                                 </div>
                             </form>

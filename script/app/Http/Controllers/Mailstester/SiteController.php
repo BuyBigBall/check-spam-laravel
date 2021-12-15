@@ -356,11 +356,11 @@ class SiteController extends Controller
                 ]);
             }
             $success_msg = 'Your account updated successfully.';
-            session()->flash('success', translate($success_msg));
+            session()->flash('success', __($success_msg));
             return redirect(route('profile','account'));
 
         } catch (ValidationException $e) {
-            session()->flash('error', translate('Some validation error occur.'));
+            session()->flash('error', __('Some validation error occur.'));
             return redirect(route('profile','account'));
         } 
     }
@@ -401,7 +401,7 @@ class SiteController extends Controller
         if(!empty($id)){ //edit profile
             Profile::find($id)->update($request->all());
             $success_msg = 'Your address updated successfully.';
-            session()->flash('success', translate($success_msg));
+            session()->flash('success', __($success_msg));
         } else {
             $firstname = $request->get('firstname');
             $lastname = $request->get('lastname');
@@ -428,7 +428,7 @@ class SiteController extends Controller
                 'state' => $state
             ]);
             $success_msg = 'Your address created successfully.';
-            session()->flash('success', translate($success_msg));
+            session()->flash('success', __($success_msg));
         }
         return redirect(route('profile','address'));
     }

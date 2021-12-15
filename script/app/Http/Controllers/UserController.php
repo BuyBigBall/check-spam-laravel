@@ -61,7 +61,7 @@ class UserController extends Controller
         $user_profile = Profile::where('user_id', $id)->get()->first();
         // if($user_profile==null)
         // {
-        //     return redirect( route('users.index'))->with('msg', translate('Could not found user information'));    
+        //     return redirect( route('users.index'))->with('msg', __('Could not found user information'));    
         // }
         return view('backend.users.profile')
                 ->with('user_id', $id)
@@ -203,7 +203,7 @@ class UserController extends Controller
     {
         if($user->id==null)
         {
-            return redirect( route('users.index'))->with('msg', translate('Could not found user information'));    
+            return redirect( route('users.index'))->with('msg', __('Could not found user information'));    
         }
         return view('backend.users.edit')->with('user', $user);
     }

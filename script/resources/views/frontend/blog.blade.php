@@ -12,7 +12,7 @@
         <div class="row justify-content-center">
             <div class="col-md-7">
                 <div class="blog-text">
-                    <h1>{{translate('Blog') }}</h1>
+                    <h1>{{__('Blog') }}</h1>
                 </div>
             </div>
         </div>

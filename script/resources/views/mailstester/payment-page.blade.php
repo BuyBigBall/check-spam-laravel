@@ -421,6 +421,7 @@
 
         <div id="payment" class="maz-checkout-payment">
             <ul class="wc_payment_methods payment_methods methods">
+                @if(env('use_stripe'))
                 <li class="wc_payment_method payment_method_bacs">
                     <input
                         id="payment_method_bacs"
@@ -444,6 +445,8 @@
                             cleared in our account.</p>
                     </div>
                 </li>
+                @endif
+                @if(env('use_paypal'))
                 <li class="wc_payment_method payment_method_paypal">
                     <input
                         id="payment_method_paypal"
@@ -470,7 +473,8 @@
                             account.</p>
                     </div>
                     
-                                                </li>
+                </li>
+                @endif
             </ul>
             <div class="form-row place-order">
                 <noscript>

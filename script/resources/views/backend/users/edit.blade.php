@@ -6,32 +6,32 @@
         <div class="section-header-back">
             <a href="{{ route('users.index')}}" class="btn btn-icon"><i class="fas fa-arrow-left"></i></a>
         </div>
-        <h1>{{translate('Edit User')}}</h1>
+        <h1>{{__('Edit User')}}</h1>
         <div class="section-header-breadcrumb">
-            <div class="breadcrumb-item active"><a href="{{ route('dashboard')}}">{{translate('Dashboard')}}</a></div>
-            <div class="breadcrumb-item"><a href="{{ route('users.index')}}">{{translate('Users')}}</a></div>
-            <div class="breadcrumb-item">{{translate('Edit User')}}</div>
+            <div class="breadcrumb-item active"><a href="{{ route('dashboard')}}">{{__('Dashboard')}}</a></div>
+            <div class="breadcrumb-item"><a href="{{ route('users.index')}}">{{__('Users')}}</a></div>
+            <div class="breadcrumb-item">{{__('Edit User')}}</div>
         </div>
     </div>
 
     <div class="section-body">
-        <h2 class="section-title">{{translate('Edit User')}}</h2>
+        <h2 class="section-title">{{__('Edit User')}}</h2>
         <p class="section-lead">
-            {{translate('On this page you can edit user and fill in all fields.')}}
+            {{__('On this page you can edit user and fill in all fields.')}}
         </p>
 
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4>{{translate('Edit Your User')}}</h4>
+                        <h4>{{__('Edit Your User')}}</h4>
                     </div>
                     <div class="card-body">
                         <form action="{{ route('users.update' , $user->id) }}" method="POST">
                             @csrf
                             @method("PUT")
                             <div class="form-group row mb-4">
-                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">{{translate('User Name')}}
+                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">{{__('User Name')}}
                                     :</label>
                                 <div class="col-sm-12 col-md-7">
                                     <input type="text" class="form-control @error('name') is-invalid @enderror"
@@ -44,7 +44,7 @@
                                 </div>
                             </div>
                             <div class="form-group row mb-4">
-                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">{{translate('User Email')}}
+                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">{{__('User Email')}}
                                     :</label>
                                 <div class="col-sm-12 col-md-7">
                                     <input type="email" class="form-control @error('email') is-invalid @enderror"
@@ -57,7 +57,7 @@
                                 </div>
                             </div>
                             <div class="form-group row mb-4">
-                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">{{translate('User Password')}}
+                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">{{__('User Password')}}
                                     :</label>
                                 <div class="col-sm-12 col-md-7">
                                     <input type="password" class="form-control @error('password') is-invalid @enderror"
@@ -70,7 +70,7 @@
                                 </div>
                             </div>
                             <div class="form-group row mb-4">
-                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">{{translate('Confirm Password')}}
+                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">{{__('Confirm Password')}}
                                     :</label>
                                 <div class="col-sm-12 col-md-7">
                                     <input type="password" class="form-control @error('confirmpassword') is-invalid @enderror"
@@ -83,7 +83,7 @@
                                 </div>
                             </div>
                             <div class="form-group row mb-4">
-                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">{{translate('Status')}}
+                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">{{__('Status')}}
                                     :</label>
                                 <div class="col-sm-12 col-md-7">
                                     <select class="form-control @error('status') is-invalid @enderror"
@@ -99,7 +99,7 @@
                                 </div>
                             </div>
                             <div class="form-group row mb-4" style='display:none;'>
-                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">{{translate('Slug')}} :</label>
+                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">{{__('Slug')}} :</label>
                                 <div class="col-sm-12 col-md-7">
                                     <input type="text" class="form-control @error('slug') is-invalid @enderror"
                                         name="slug" value="" placeholder="Slug">
@@ -113,7 +113,7 @@
                             <div class="form-group row mb-4">
                                 <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3"></label>
                                 <div class="col-sm-12 col-md-7">
-                                    <button class="btn btn-primary">{{translate('Update')}}</button>
+                                    <button class="btn btn-primary">{{__('Update')}}</button>
                                 </div>
                             </div>
                         </form>

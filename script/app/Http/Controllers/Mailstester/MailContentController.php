@@ -394,10 +394,10 @@ class MailContentController extends Controller
 
         $title = $inbox_object!=null ? 
         (
-            (($score<=3.0) ?  translate("Wow! Perfect, you can send") : 
-            (($score<=5.0) ?  translate("Good! you can send the mail") : 
-            (($score<=6.0) ?  translate("Warning! you cannot send the mail, but you can improve mail's content.") : 
-                               translate("critical! This is a special spam mail.")  
+            (($score<=3.0) ?  __("Wow! Perfect, you can send") : 
+            (($score<=5.0) ?  __("Good! you can send the mail") : 
+            (($score<=6.0) ?  __("Warning! you cannot send the mail, but you can improve mail's content.") : 
+                               __("critical! This is a special spam mail.")  
              )))
          ) : "Mail not found. Please wait a few seconds and try again.";
          

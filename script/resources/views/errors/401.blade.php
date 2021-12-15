@@ -1,6 +1,6 @@
 @extends('layouts.errors')
 
-@section('title', translate('Unauthorised'))
+@section('title', __('Unauthorised'))
 @section('code', '401')
-@section('message', translate('Unauthorised'))
+@section('message', __('Unauthorised'))
 

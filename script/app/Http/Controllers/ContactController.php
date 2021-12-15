@@ -50,6 +50,6 @@ class ContactController extends Controller
         }
 
 
-        return back()->with('success', translate('We have received your message and would like to thank you for writing to us.'));
+        return back()->with('success', __('We have received your message and would like to thank you for writing to us.'));
     }
 }

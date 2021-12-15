@@ -11,6 +11,7 @@
             <li class="nav-item"><a href="{{route('settings.blog')}}" class="nav-link {{ Request()->segment(3) == "blog" ? "active" : '' }}">{{__('Blog Settings')}}</a></li>
             <li class="nav-item"><a href="{{route('settings.smtp')}}" class="nav-link {{ Request()->segment(3) == "smtp" ? "active" : '' }}">{{__('SMTP')}}</a></li>
             <li class="nav-item"><a href="{{route('languages.index')}}" class="nav-link {{ Request()->segment(3) == "languages" ? "active" : '' }}">{{__('Languages')}}</a></li>
+            <li class="nav-item"><a href="{{route('settings.payment')}}" class="nav-link {{ Request()->segment(3) == "payment" ? "active" : '' }}">{{__('Payment')}}</a></li>
         </ul>
         
         </div>

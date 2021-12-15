@@ -157,7 +157,7 @@
                                     {{ $userdata['user_login']['name'] }}
                                 </div>
                                 <div class="logout-button">
-                                    <input type="submit" class="btn btn-primary" value="{{translate('Log out')}}">
+                                    <input type="submit" class="btn btn-primary" value="{{__('Log out')}}">
                                     <!-- <input type="hidden" name="option" value="com_users"> <input type="hidden"
                                     name="task" value="user.logout"> <input type="hidden" name="return"
                                     value="aW5kZXgucGhwP0l0ZW1pZD0xNjk="> <input type="hidden"
@@ -330,8 +330,8 @@
                 wait_url =  "{{route('check_email')}}",
                 result_url =  "{{route('testresult')}}",
                 color = "{{$setdata['secondary_color']}}",
-                click_to_copy = "{{translate('Click To Copy!')}}",
-                copied = "{{translate('Copied!')}}";
+                click_to_copy = "{{__('Click To Copy!')}}",
+                copied = "{{__('Copied!')}}";
         </script>
         <!-- main js -->
         <script src="{{ asset('assets/js/vendor/jquery.dataTables.min.js') }}"></script>

@@ -15,11 +15,11 @@
         class="text-center pb-5 mh-33 @if($total_score>=7) mark-4 @elseif($total_score>=5) mark-3 @elseif($total_score>=4) mark-2 @elseif($total_score>=3) mark-1 @else mark-0 @endif"
         style='background-color: var(--main-color);'>
         <h1 class="title py-5 m-0 text-white">
-            @if    ($total_score>=7) {{ translate("Wow! Perfect, you can send") }}
-            @elseif($total_score>=5) {{ translate("Good! you can send the mail")}}
-            @elseif($total_score>=4) {{ translate("Warning! you cannot send the mail, but you can improve mail's content.")}}
-            @elseif($total_score>=3) {{ translate("carefully! don't sen the mail.")}} 
-            @else                    {{ translate("critical! This is a special spam mail.")}}
+            @if    ($total_score>=7) {{ __("Wow! Perfect, you can send") }}
+            @elseif($total_score>=5) {{ __("Good! you can send the mail")}}
+            @elseif($total_score>=4) {{ __("Warning! you cannot send the mail, but you can improve mail's content.")}}
+            @elseif($total_score>=3) {{ __("carefully! don't sen the mail.")}} 
+            @else                    {{ __("critical! This is a special spam mail.")}}
             @endif
             </h1>
         <div class="subtitle text-white my-3" id="score-label">Score :</div>
@@ -34,7 +34,7 @@
                 title="Refresh">
                 <i class="icon-refresh"></i>
             </a>
-            {{ translate('Subject')}} :
+            {{ __('Subject')}} :
             {{ $message->subject }}
             <div class="float-right date-received" title="{{date( 'l d M Y H:i:s P (T)', strtotime($message->dateReceived) )}}">
                 <i class="icon-clock"></i>Received {{$ago_time}}</div>
@@ -49,17 +49,17 @@
                 <div class="header clearfix">
                     <div class="status success icon-check"></div>
                     <h2 class="title">
-                        <i class="icon-down"></i>{{ translate('Click here to view your message')}}</h2>
+                        <i class="icon-down"></i>{{ __('Click here to view your message')}}</h2>
                 </div>
                 <div class="content">
                     <div class="result">
-                        <b>{{ translate('From :')}}</b>
+                        <b>{{ __('From :')}}</b>
                         {{ $message->fromAddress }}
                         <br/>
-                        <b>{{ translate('Bounce address :')}}
+                        <b>{{ __('Bounce address :')}}
                         </b>{{ $message->bounceAddress }}
                         <br/>
-                        <b>{{ translate('Reply-To :')}}</b>
+                        <b>{{ __('Reply-To :')}}</b>
                             {{ $message->replyto[0] }}
                     </div>
 
@@ -67,7 +67,7 @@
                     <div class="test-result html-version">
                         <div class="header clearfix">
                             <h3 class="title">
-                                <i class="icon-down"></i>{{ translate('HTML version')}}</h3>
+                                <i class="icon-down"></i>{{ __('HTML version')}}</h3>
                         </div>
                         <div class="content">
                             <div class="result">
@@ -94,7 +94,7 @@
                         <div class="header clearfix">
                             <h3 class="title">
                                 <i class="icon-down"></i>
-                                {{ translate('HTML version (without external images)')}}
+                                {{ __('HTML version (without external images)')}}
                             </h3>
                         </div>
                         <div class="content">
@@ -141,7 +141,7 @@
                                 Source</h3>
                         </div>
                         <div class="content">
-                            <pre class="result">{{ translate('Received: by')}} {{ env('MAIL_HOST') }} ; {{date('l d M Y H:i:s P (T)', strtotime($message->dateReceived))}} 
+                            <pre class="result">{{ __('Received: by')}} {{ env('MAIL_HOST') }} ; {{date('l d M Y H:i:s P (T)', strtotime($message->dateReceived))}} 
 {{ $content_header }}
 							</pre>
 						</div>
@@ -154,12 +154,12 @@
 			<div class="test-result spamassassin">
 				<div class="header clearfix">
 					<div class="status warning">{{-floatval($assassin_score)}}</div>
-					<h2 class="title"><i class="icon-down"></i>{{ translate('SpamAssassin thinks you can improve')}}</h2>
+					<h2 class="title"><i class="icon-down"></i>{{ __('SpamAssassin thinks you can improve')}}</h2>
 				</div>
 				<div class="content">
-					<div class="about">{{ translate('The famous spam filter ')}}
-							<a href="http://spamassassin.apache.org/" target="_blank">SpamAssassin</a>. {{ translate('Score :')}} {{-$assassin_score}}.
-						<br />{{ translate('A score below -5 is considered spam.')}}</div>
+					<div class="about">{{ __('The famous spam filter ')}}
+							<a href="http://spamassassin.apache.org/" target="_blank">SpamAssassin</a>. {{ __('Score :')}} {{-$assassin_score}}.
+						<br />{{ __('A score below -5 is considered spam.')}}</div>
 					<div class="result">
 						<table class="table"><tbody>
 							<tr class="sa-test">
@@ -199,12 +199,12 @@
 							<div class="about">{{ $server_auth->subtests->spf->description }}</div>
 							<div class="result">
                                 <?php /*
-                                <p>{{ translate('What we retained as your current SPF record is:')}}</p>
+                                <p>{{ __('What we retained as your current SPF record is:')}}</p>
 								@foreach( $spf_check['spf_record']  as $entry)
 								<pre>{{$entry}}</pre>
 								@endforeach
 								<br/>
-                            <p>{{ translate('Verification details:')}}</p>
+                            <p>{{ __('Verification details:')}}</p>
 							<pre>
 @foreach( $spf_check['dig-query'] as  $entry) {{ $entry['cmd'].' :' }} 
 @foreach( $entry['details'] as $line)
@@ -224,10 +224,10 @@
                         <div class="status success icon-check"></div>
                         <h3 class="title">
                             <i class="icon-down"></i>
-                            {{ translate($server_auth->subtests->dkim->title)}}</h3>
+                            {{ __($server_auth->subtests->dkim->title)}}</h3>
                     </div>
                     <div class="content">
-                        <div class="about">{{ translate($server_auth->subtests->dkim->description)}}</div>
+                        <div class="about">{{ __($server_auth->subtests->dkim->description)}}</div>
                         <div class="result">
                             {{$server_auth->subtests->dkim->messages}}
                         </div>
@@ -240,17 +240,17 @@
                         <div class="status success icon-check"></div>
                         <h3 class="title">
                             <i class="icon-down"></i>
-                            {{ translate($server_auth->subtests->dmarc->title)}}</h3>
+                            {{ __($server_auth->subtests->dmarc->title)}}</h3>
                     </div>
                     <div class="content">
-                        <div class="about">{{ translate($server_auth->subtests->dmarc->description)}}</div>
+                        <div class="about">{{ __($server_auth->subtests->dmarc->description)}}</div>
                         <div class="result">{{ $server_auth->subtests->dmarc->messages }}
                             <?php /*
 							@foreach($dmarc_auth['dmarc_entries'] as $entry)
                             <pre>{{$entry}}</pre>
 							@endforeach
                             <p></p>
-                            <p>{{ translate('Verification details:')}}</p>
+                            <p>{{ __('Verification details:')}}</p>
                             <pre><ul>
 								@foreach($dmarc_auth['dmarc_rows'] as $entry) <li>{{ env('MAIL_HOST') }}; {{$entry}}</li> @endforeach <li>From Domain: {{$mail_server_domain}}</li> <li>DKIM Domain: {{$mail_server_domain}}</li>								
 								</ul></pre>
@@ -267,7 +267,7 @@
                             <i class="icon-down"></i> {{$server_auth->subtests->rDns->title}}</h3>
                     </div>
                     <div class="content">
-                        <div class="about">{{ translate($server_auth->subtests->rDns->description)}}</div>
+                        <div class="about">{{ __($server_auth->subtests->rDns->description)}}</div>
                         <div class="result">
                             <p>{{$server_auth->subtests->rDns->messages}}</p>
                         </div>
@@ -325,7 +325,7 @@
         <div class="test-result structure-and-content">
             <div class="header clearfix">
                 <div class="status warning icon-check"></div>
-                <h2 class="title"><i class="icon-down"></i>{{ translate($BODY_check->title)}}</h2>
+                <h2 class="title"><i class="icon-down"></i>{{ __($BODY_check->title)}}</h2>
             </div>
             <div class="content">
 
@@ -350,7 +350,7 @@
                     <div class="header clearfix">
                         <div class="status success icon-check"></div>
                         <h3 class="title"><i class="icon-down"></i>
-                            {{ translate($BODY_check->subtests->forbiddenTags->title)}}</h3>
+                            {{ __($BODY_check->subtests->forbiddenTags->title)}}</h3>
                     </div>
                     <div class="content">
                         <div class="about">{{ $BODY_check->subtests->forbiddenTags->description }}</div>
@@ -431,15 +431,15 @@
                     <i class="icon-down"></i>@if(count($broken_urls)>0) You have {{count($broken_urls)}} broken links @else No broken links @endif</h2>
             </div>
             <div class="content">
-                <div class="about">{{ translate('Checks if your newsletter contains broken links.')}}</div>
+                <div class="about">{{ __('Checks if your newsletter contains broken links.')}}</div>
                 <div class="result">
-                        @if(count($broken_urls)==0) {{ translate('No links found.')}} 
+                        @if(count($broken_urls)==0) {{ __('No links found.')}} 
                         @else 
                         <ul>
                             @foreach($broken_urls as $broken)
                             <li>
                                 <div class="col-sm-6 col-md-4 bl-result">
-                                    <span class="status-success">{{ translate('broken link')}}</span> :
+                                    <span class="status-success">{{ __('broken link')}}</span> :
                                     <a target="_blank" href="<?php echo $broken; ?>">{{$broken}}</a>
                                 </div>
                             </li>
@@ -450,7 +450,7 @@
         </div>
 
 
-        <div class="total text-right subtitle">{{ translate('Your lovely total:')}} {{$total_score}}/10</div>
+        <div class="total text-right subtitle">{{ __('Your lovely total:')}} {{$total_score}}/10</div>
     </div>
 </div>
 

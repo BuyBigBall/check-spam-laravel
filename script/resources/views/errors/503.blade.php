@@ -1,5 +1,5 @@
 @extends('layouts.errors')
 
-@section('title', translate('Service Unavailable'))
+@section('title', __('Service Unavailable'))
 @section('code', '503')
-@section('message', translate('Service Unavailable'))
+@section('message', __('Service Unavailable'))

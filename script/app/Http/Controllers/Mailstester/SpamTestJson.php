@@ -20,12 +20,12 @@ class SpamTestJson
             $broken_score += $row['score'];
         }
         $result = [
-            "title" => (count($broken_urls)>0) ? sprintf(translate("You have %d broken links"), count($broken_urls)) : translate("No broken links"),
+            "title" => (count($broken_urls)>0) ? sprintf(__("You have %d broken links"), count($broken_urls)) : __("No broken links"),
             "mark"          => $broken_score,
             "displayedMark" => $broken_score,
             "statusClass"   => ((count($broken_urls)>0) ? "warning" : "success" ) . " icon-check",
             "description"   => "Checks if your newsletter contains broken links.",
-            "messages"      => (count($broken_urls)>0) ? sprintf(translate("%d broken links found"), count($broken_urls)) : translate("No broken links found."),
+            "messages"      => (count($broken_urls)>0) ? sprintf(__("%d broken links found"), count($broken_urls)) : __("No broken links found."),
             "urls"          => $broken_url_array,
             "brokenLinks"   => count($broken_urls),
             "redirects"     => 0,
@@ -46,14 +46,14 @@ class SpamTestJson
 		//array_sum($bl_score_list);
         
         $hitMark = abs($black_list_score_sum) / SpamAssassin::$bl_score_unit;
-        $result["title"] = sprintf(translate("You're %s listed in %s blacklist")
+        $result["title"] = sprintf(__("You're %s listed in %s blacklist")
                     , ($black_list_score_sum==0 ? "not " : "") 
                     , ($hitMark==0 ? "any" : $hitMark ) );
         $result["mark"] = $black_list_score_sum;
         $result["serverip"] = $serverip;
         $result["displayedMark"] = $black_list_score_sum;
         $result["statusClass"] = $black_list_score_sum==0 ? "success" : "failure";
-        $result["description"] = sprintf( translate("Matches your server IP address (<b>%s</b>) against %d of the most common IPv4 blacklists.")
+        $result["description"] = sprintf( __("Matches your server IP address (<b>%s</b>) against %d of the most common IPv4 blacklists.")
                     ,$serverip , count($bl_score_list));
         $result["hits"] = 1;
         $result["timeout"] = 0;
@@ -61,7 +61,7 @@ class SpamTestJson
 		$result['blacklists'] = [];
         foreach($bl_score_list as $keyname=>$check_score_array)
         {
-            $result["messages"] .= sprintf("<div class=\"col-sm-6 col-md-4 bl-result\"><span class=\"status-success\">%s</span> in <a target=\"_blank\" href=\"%s\">%s</a></div>", ($check_score_array['mark']==0) ? translate("Not listed") : (($check_score_array['mark']<1) ? translate('Listed -0.1')  : translate('Critical -1.0')), dnsbl_lookup($keyname)[1], $keyname );
+            $result["messages"] .= sprintf("<div class=\"col-sm-6 col-md-4 bl-result\"><span class=\"status-success\">%s</span> in <a target=\"_blank\" href=\"%s\">%s</a></div>", ($check_score_array['mark']==0) ? __("Not listed") : (($check_score_array['mark']<1) ? __('Listed -0.1')  : __('Critical -1.0')), dnsbl_lookup($keyname)[1], $keyname );
             $result['blacklists'][ dnsbl_lookup($keyname)[1] ] = [
                 "name" => $keyname,
                 "url" => "https://".$check_score_array['link'],
@@ -82,19 +82,19 @@ class SpamTestJson
         $body_length = size(strlen($mailbody) );
         $weight      = strlen($mailbody)==0 ? '0' : strlen( \Soundasleep\Html2Text::convert( $mailbody , ['ignore_errors' => true] ) ) / strlen($mailbody)  * 100;
         $result = [];
-        $result["title"] = translate("Your message could be improved");
+        $result["title"] = __("Your message could be improved");
         $result["mark"] = 0;
         $result["displayedMark"] = "";
         $result["status"] = "";
-        $result["statusClass"] = translate("warning icon-check");
-        $result["description"] = translate("Checks whether your message is well formatted or not.");
-        $result["messages"] = sprintf( translate("<p class=\"message-weight\">Weight of the HTML version of your message: <b>%s</b>.</p><p>Your message contains <b>%d</b>%% of text.</p>")
+        $result["statusClass"] = __("warning icon-check");
+        $result["description"] = __("Checks whether your message is well formatted or not.");
+        $result["messages"] = sprintf( __("<p class=\"message-weight\">Weight of the HTML version of your message: <b>%s</b>.</p><p>Your message contains <b>%d</b>%% of text.</p>")
                 , $body_length, round($weight));
 
         $result["subtests"] = [];
         $result["subtests"]["textToHtmlRatio"] = 
          [
-            "title" => sprintf( translate("Your message contains <b>%d</b>%% of text."), $weight),
+            "title" => sprintf( __("Your message contains <b>%d</b>%% of text."), $weight),
             "mark" => 0,
             "statusClass" => "success",
             "description" => "",
@@ -102,43 +102,43 @@ class SpamTestJson
          ];
 
          $result["subtests"]["altAttributes"] = [
-                "title" => translate("You have no images in your message"),
+                "title" => __("You have no images in your message"),
                 "mark" => 0,
                 "displayedMark" => "",
                 "statusClass" => "success icon-check",
-                "description" => translate("ALT attributes provide a textual alternative to your images.<br/>It is a useful fallback for people who are blind or visually impaired and for cases where your images cannot be displayed."),
+                "description" => __("ALT attributes provide a textual alternative to your images.<br/>It is a useful fallback for people who are blind or visually impaired and for cases where your images cannot be displayed."),
                 "imagesWithoutAlt" => [],
                 "messages" => ""
          ];
         $result["subtests"]["forbiddenTags"] = [
-                "title" => translate("Your content is safe"),
+                "title" => __("Your content is safe"),
                 "mark" => 0,
                 "displayedmark" => 0,
                 "statusClass" => "success icon-check",
-                "description" => translate("Checks whether your message contains dangerous html elements such as javascript, iframes, embed content or applet."),
+                "description" => __("Checks whether your message contains dangerous html elements such as javascript, iframes, embed content or applet."),
                 "matches" => 0,
                 "messages" => "",
                 "rules" => [],
                 "displayedMark" => ""
         ];
         $result["subtests"]["shorturl"] = [
-                "title" => translate("We didn't find short URLs"),
+                "title" => __("We didn't find short URLs"),
                 "mark" => 0,
                 "displayedMark" => "",
                 "statusClass" => "success icon-check",
-                "description" => translate("Checks whether your message uses URL shortener systems."),
+                "description" => __("Checks whether your message uses URL shortener systems."),
                 "matches" => 0,
                 "messages" => "",
                 "rules" => [],
                 "tested" => ""
         ];
         $result["subtests"]["listUnsubscribe"] = [
-                "title" => translate("Your message does not contain a List-Unsubscribe header"),
+                "title" => __("Your message does not contain a List-Unsubscribe header"),
                 "mark" => 0,
                 "displayedMark" => "",
                 "statusClass" => "warning icon-check",
-                "description" => translate("The List-Unsubscribe header is required if you send mass emails, it enables the user to easily unsubscribe from your mailing list."),
-                "messages" => translate("Your message does not contain a List-Unsubscribe header"),
+                "description" => __("The List-Unsubscribe header is required if you send mass emails, it enables the user to easily unsubscribe from your mailing list."),
+                "messages" => __("Your message does not contain a List-Unsubscribe header"),
                 "tested" => ""
         ];
         return $result;
@@ -161,34 +161,34 @@ class SpamTestJson
         }
 
         $result = [];
-        $result['title'] = translate('SpamAssassin thinks you can improve');
+        $result['title'] = __('SpamAssassin thinks you can improve');
         $result['mark'] = $score;
         $result['diplayedMark'] = 0;
         $result['status'] = "";
         $result['statusClass'] = "success icon-check";
-        $result['description'] = translate("We check if the server you are sending from is authenticated");
+        $result['description'] = __("We check if the server you are sending from is authenticated");
         
         
         $result['subtests'] = [];
         $result['subtests']["spf"] = [
-            "title"=> sprintf( translate('[SPF] Your server <b>%s</b> is authorized to use <b>%s</b>'), $auth_serverInfo['serverip'], $from_email ),
+            "title"=> sprintf( __('[SPF] Your server <b>%s</b> is authorized to use <b>%s</b>'), $auth_serverInfo['serverip'], $from_email ),
             "mark"=> 0,
             "displayedMark"=> "",
             "status"=> "pass",
             "statusClass"=> "success icon-check",
-            "description"=> translate("Sender Policy Framework (SPF) is an email validation system designed to prevent email spam by detecting email spoofing, a common vulnerability, by verifying sender IP addresses."),
-            "messages"=> sprintf(translate('<p>What we retained as your current SPF record is:</p>%s<br/><br/><p>Verification details:</p><pre>%s</pre>'), $s1, $s2),
+            "description"=> __("Sender Policy Framework (SPF) is an email validation system designed to prevent email spam by detecting email spoofing, a common vulnerability, by verifying sender IP addresses."),
+            "messages"=> sprintf(__('<p>What we retained as your current SPF record is:</p>%s<br/><br/><p>Verification details:</p><pre>%s</pre>'), $s1, $s2),
             "record"=> $s1,
             "newrecord"=> $s1
         ];
         $s1 = $auth_DKIMInfo['dkim_sign'];
         $result['subtests']["dkim"] = [
-            "title" => translate("Your DKIM signature is valid"),
+            "title" => __("Your DKIM signature is valid"),
             "mark" => 0,
             "displayedMark" => "",
             "statusClass" => "success icon-check",
-            "description" => translate("DomainKeys Identified Mail (DKIM) is a method for associating a domain name to an email message, thereby allowing a person, role, or organization to claim some responsibility for the message."),
-            "messages" => sprintf(translate('<p>The DKIM signature of your message is:</p><pre>\t%s</pre><p>Key length: 1024bits</p>'), $s1),
+            "description" => __("DomainKeys Identified Mail (DKIM) is a method for associating a domain name to an email message, thereby allowing a person, role, or organization to claim some responsibility for the message."),
+            "messages" => sprintf(__('<p>The DKIM signature of your message is:</p><pre>\t%s</pre><p>Key length: 1024bits</p>'), $s1),
             "status" => "pass"
         ];
         if($auth_DMARCInfo['auth_result']!='auth')  $s1 = "not"; else $s1 = "";
@@ -198,37 +198,37 @@ class SpamTestJson
 
         $result['subtests']["dmarc"] = [
             "status" => "pass",
-            "title" => translate( "Your message passed the DMARC test" ),
+            "title" => __( "Your message passed the DMARC test" ),
             "mark" => 0,
             "displayedMark" => "",
             "statusClass" => "success icon-check",
-            "description" => translate("A DMARC policy allows a sender to indicate that their emails are protected by SPF and/or DKIM, and give instruction if neither of those authentication methods passes. Please be sure you have a DKIM and SPF set before using DMARC."),
-            "messages" => sprintf( translate("Your DMARC record is %s set correctly and your message passed the DMARC test<p>DMARC DNS entry found for the domain <b>_dmarc.%s</b>:%s</p><p>Verification details:</p><pre><ul>%s</ul></pre>")
+            "description" => __("A DMARC policy allows a sender to indicate that their emails are protected by SPF and/or DKIM, and give instruction if neither of those authentication methods passes. Please be sure you have a DKIM and SPF set before using DMARC."),
+            "messages" => sprintf( __("Your DMARC record is %s set correctly and your message passed the DMARC test<p>DMARC DNS entry found for the domain <b>_dmarc.%s</b>:%s</p><p>Verification details:</p><pre><ul>%s</ul></pre>")
                     , $s1, $mail_server_domain, $s2, $s3 ),
         ];
 
         $rdns_domain = empty($auth_rDnsInfo['helo_domain']) ? $auth_rDnsInfo['rdns_domain'] :$auth_rDnsInfo['helo_domain'];
         $result['subtests']["rDns"] = [
-            "title" => sprintf(translate("Your server <b>%s</b> is successfully associated with <b>%s</b>"), $auth_serverInfo['serverip'], $rdns_domain),
+            "title" => sprintf(__("Your server <b>%s</b> is successfully associated with <b>%s</b>"), $auth_serverInfo['serverip'], $rdns_domain),
             "mark" => 0,
             "displayedMark" => "",
             "status" => "pass",
             "statusClass" => "success icon-check",
-            "description" => translate("Reverse DNS lookup or reverse DNS resolution (rDNS) is the determination of a domain name that is associated with a given IP address.<br />Some companies such as AOL will reject any message sent from a server without rDNS, so you must ensure that you have one.<br />You cannot associate more than one domain name with a single IP address."),
+            "description" => __("Reverse DNS lookup or reverse DNS resolution (rDNS) is the determination of a domain name that is associated with a given IP address.<br />Some companies such as AOL will reject any message sent from a server without rDNS, so you must ensure that you have one.<br />You cannot associate more than one domain name with a single IP address."),
             "messages" => "",
-            "tested" => sprintf(translate("Here are the tested values for this check:<br/><ul><li>IP: %s</li><li>HELO: %s</li><li>rDNS: %s</li></ul>")
+            "tested" => sprintf(__("Here are the tested values for this check:<br/><ul><li>IP: %s</li><li>HELO: %s</li><li>rDNS: %s</li></ul>")
                     , $auth_rDnsInfo['server_ip'], $auth_rDnsInfo['helo_domain'], $auth_rDnsInfo['rdns_domain']), 
         ];
         
         $result['subtests']["aRecord"] = [
-                "title" => sprintf( translate("Your hostname <strong>%s</strong> is assigned to a server."), $rdns_domain ),
+                "title" => sprintf( __("Your hostname <strong>%s</strong> is assigned to a server."), $rdns_domain ),
                 "mark" => 0,
                 "displayedMark" => "",
                 "status" => "pass",
                 "statusClass" => "success icon-check",
-                "description" => sprintf( translate("We check if there is a server (A Record) behind your hostname <strong>%s</strong>."), $rdns_domain),
+                "description" => sprintf( __("We check if there is a server (A Record) behind your hostname <strong>%s</strong>."), $rdns_domain),
                 "messages" => "",
-                "tested" => sprintf( translate("A records (%s) : <ul><li>%s</li></ul>"), $rdns_domain, $auth_serverInfo['serverip']),
+                "tested" => sprintf( __("A records (%s) : <ul><li>%s</li></ul>"), $rdns_domain, $auth_serverInfo['serverip']),
         ];
 
         $ii = 0; $s1 = ""; $mxhosts = []; $mxweight = [];
@@ -240,14 +240,14 @@ class SpamTestJson
             $s1 .= "<li> " . $mxweight[$ii++]  . " $host_domain.</li>";
         
         $result['subtests']["mxRecord"] = [
-                "title" => sprintf(translate("Your domain name <strong>%s</strong> is assigned to a mail server."), $mail_server_domain),
+                "title" => sprintf(__("Your domain name <strong>%s</strong> is assigned to a mail server."), $mail_server_domain),
                 "mark" => 0,
                 "displayedMark" => "",
                 "status" => "pass",
                 "statusClass" => "success icon-check",
-                "description" => sprintf(translate("We check if there is a mail server (MX Record) behind your domain name <strong>%s</strong>."), $mail_server_domain),
+                "description" => sprintf(__("We check if there is a mail server (MX Record) behind your domain name <strong>%s</strong>."), $mail_server_domain),
                 "messages" => "",
-                "tested" => sprintf( translate("MX records (%s) : <ul>%s</ul>"), $mail_server_domain, $s1),
+                "tested" => sprintf( __("MX records (%s) : <ul>%s</ul>"), $mail_server_domain, $s1),
         ];
 
 
@@ -258,7 +258,7 @@ class SpamTestJson
     }
     public static function get_spamassassin_array($mailheader, $score, $max = 5)
     {   $result = [];
-        $result['title'] = translate('SpamAssassin thinks you can improve');
+        $result['title'] = __('SpamAssassin thinks you can improve');
         $result['score'] = $score;
         $result['mark'] = $score;
         $result['diplayedMark'] = 0;
@@ -286,10 +286,10 @@ class SpamTestJson
     {
         // $title = $inbox_object!=null ? 
         //     (
-        //         (($score>=-3.0) ?  translate("Wow! Perfect, you can send") : 
-        //         (($score>=-5.0) ?  translate("Good! you can send the mail") : 
-        //         (($score>=-6.0) ?  translate("Warning! you cannot send the mail, but you can improve mail's content.") : 
-        //                            translate("critical! This is a special spam mail.")  
+        //         (($score>=-3.0) ?  __("Wow! Perfect, you can send") : 
+        //         (($score>=-5.0) ?  __("Good! you can send the mail") : 
+        //         (($score>=-6.0) ?  __("Warning! you cannot send the mail, but you can improve mail's content.") : 
+        //                            __("critical! This is a special spam mail.")  
         //          )))
         //      ) : "Mail not found. Please wait a few seconds and try again.";
         $email_object_array = [];

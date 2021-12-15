@@ -357,7 +357,7 @@ class TrashMailController extends Controller
             // already existing mail address using
             // Cookie::queue('email', $new_email, Settings::selectSettings("email_lifetime") * Settings::selectSettings("email_lifetime_type") );
             //<---- for test
-            session()->flash('error', translate('The address you have chosen is already in use. Please choose a different one.'));
+            session()->flash('error', __('The address you have chosen is already in use. Please choose a different one.'));
             return redirect(route('change'));
         }
     }

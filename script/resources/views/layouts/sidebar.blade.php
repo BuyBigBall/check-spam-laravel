@@ -23,25 +23,25 @@
 
       <li {{request()->segment(2) == "users" ? 'class=active' : ""}}>
         <a class="nav-link" href="{{ route('users.index') }}">
-          <i class="fas fa-user"></i><span>{{Translate('Users')}}</span>
+          <i class="fas fa-user"></i><span>{{__('Users')}}</span>
         </a>
       </li>
 
       <li {{request()->segment(2) == "coupons" ? 'class=active' : ""}}>
         <a class="nav-link" href="{{ route('coupons.index') }}">
-          <i class="fas fa-percentage"></i><span>{{Translate('Coupons')}}</span>
+          <i class="fas fa-percentage"></i><span>{{__('Coupons')}}</span>
         </a>
       </li>
 
       <li {{request()->segment(2) == "transactions" ? 'class=active' : ""}}>
         <a class="nav-link" href="{{ route('transactions.index') }}">
-          <i class="fas fa-money-bill-alt"></i><span>{{Translate('Transactions')}}</span>
+          <i class="fas fa-money-bill-alt"></i><span>{{__('Transactions')}}</span>
         </a>
       </li>
 
       <li {{request()->segment(2) == "testhistories" ? 'class=active' : ""}}>
         <a class="nav-link" href="{{ route('testhistories.index') }}">
-          <i class="fas fa-mail-bulk"></i><span>{{Translate('Test History')}}</span>
+          <i class="fas fa-mail-bulk"></i><span>{{__('Test History')}}</span>
         </a>
       </li>
 

@@ -3,19 +3,19 @@
 @section('content')
 <section class="section">
   <div class="section-header">
-    <h1>{{translate('Test History')}}</h1>
+    <h1>{{__('Test History')}}</h1>
     <div class="section-header-breadcrumb">
-      <div class="breadcrumb-item active"><a href="{{route("dashboard")}}">{{translate('Dashboard')}}</a></div>
-      <div class="breadcrumb-item">{{translate('Test History')}}</div>
+      <div class="breadcrumb-item active"><a href="{{route("dashboard")}}">{{__('Dashboard')}}</a></div>
+      <div class="breadcrumb-item">{{__('Test History')}}</div>
     </div>
   </div>
   <div class="section-body">
-    <!-- <h2 class="section-title">{{translate('Test Historys')}}</h2> -->
+    <!-- <h2 class="section-title">{{__('Test Historys')}}</h2> -->
     <div class="row mt-4">
       <div class="col-12">
         <div class="card">
           <!-- <div class="card-header">
-            <h4>{{translate('All Test Historys')}}</h4>
+            <h4>{{__('All Test Historys')}}</h4>
           </div> -->
           <div class="card-body">
             <div class="clearfix mb-3"></div>
@@ -24,14 +24,14 @@
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>{{translate('User')}}</th>
-                    <th>{{translate('Full Name')}}</th>
-                    <th class="text-center">{{translate('Subject')}}</th>
-                    <th class="text-center">{{translate('To')}}</th>
-                    <th class="text-center">{{translate('From')}}</th>
-                    <th class="text-center">{{translate('Score')}}</th>
-                    <th class="text-center">{{translate('Received')}}</th>
-                    <th class="text-center">{{translate('Tested')}}</th>
+                    <th>{{__('User')}}</th>
+                    <th>{{__('Full Name')}}</th>
+                    <th class="text-center">{{__('Subject')}}</th>
+                    <th class="text-center">{{__('To')}}</th>
+                    <th class="text-center">{{__('From')}}</th>
+                    <th class="text-center">{{__('Score')}}</th>
+                    <th class="text-center">{{__('Received')}}</th>
+                    <th class="text-center">{{__('Tested')}}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -40,9 +40,11 @@
                   <tr>
                     <td>{{$num++}}</td>
                     <td>
+                        @if(!empty($history->user))
                         <a href="{{route('users.edit' , $history->user->id )}}">
                           {{$history->user->name}} <br />{{$history->user->email}}
                         </a>
+                        @endif
                     </td>
                     <td>
                       @if(!empty($history->user) && !empty($history->user->default))

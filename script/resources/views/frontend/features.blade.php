@@ -7,12 +7,12 @@
         <div class="section-title">
           <h2>
             @php
-            $f = explode(' ', translate('Awesome Features'))
+            $f = explode(' ', __('Awesome Features'))
             @endphp
             {{$f[0]}}
             <span>{{@$f[1] . ''. @$f[2]}}</span>
           </h2>
-          <p>{{translate('Features Description')}}</p>
+          <p>{{__('Features Description')}}</p>
         </div>
       </div>
     </div>
@@ -42,7 +42,7 @@
         <div class="section-title">
           <h2>
             @php
-            $f = explode(' ', translate('Popular Posts'))
+            $f = explode(' ', __('Popular Posts'))
             @endphp
             {{$f[0]}}
             <span>{{@$f[1] . ''. @$f[2]}}</span>

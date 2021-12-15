@@ -3,27 +3,27 @@
 @section('content')
 <section class="section">
   <div class="section-header">
-    <h1>{{translate('Users')}}</h1>
+    <h1>{{__('Users')}}</h1>
     <div class="section-header-button">
       <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#UserModal">
-        {{translate('Add New')}}
+        {{__('Add New')}}
       </button>
     </div>
     <div class="section-header-breadcrumb">
-      <div class="breadcrumb-item active"><a href="{{route("dashboard")}}">{{translate('Dashboard')}}</a></div>
-      <div class="breadcrumb-item">{{translate('Users')}}</div>
+      <div class="breadcrumb-item active"><a href="{{route("dashboard")}}">{{__('Dashboard')}}</a></div>
+      <div class="breadcrumb-item">{{__('Users')}}</div>
     </div>
   </div>
   <div class="section-body">
-    <h2 class="section-title">{{translate('Users')}}</h2>
+    <h2 class="section-title">{{__('Users')}}</h2>
     <p class="section-lead">
-      {{translate('You can manage all users, such as editing, deleting and more.')}}
+      {{__('You can manage all users, such as editing, deleting and more.')}}
     </p>
     <div class="row mt-4">
       <div class="col-12">
         <div class="card">
           <div class="card-header">
-            <h4>{{translate('All Users')}}</h4>
+            <h4>{{__('All Users')}}</h4>
           </div>
           <div class="card-body">
             <div class="clearfix mb-3"></div>
@@ -32,14 +32,14 @@
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>{{translate('Name')}}</th>
-                    <th>{{translate('Full Name')}}</th>
-                    <th class="text-center">{{translate('Total Tests')}}</th>
-                    <th class="text-center">{{translate('Total Charge')}}</th>
-                    <th class="text-center">{{translate('Total Supply')}}</th>
-                    <th class="text-center">{{translate('Remain Count')}}</th>
-                    <th class="text-center">{{translate('Created At')}}</th>
-                    <th class="text-center">{{translate('Action')}}</th>
+                    <th>{{__('Name')}}</th>
+                    <th>{{__('Full Name')}}</th>
+                    <th class="text-center">{{__('Total Tests')}}</th>
+                    <th class="text-center">{{__('Total Charge')}}</th>
+                    <th class="text-center">{{__('Total Supply')}}</th>
+                    <th class="text-center">{{__('Remain Count')}}</th>
+                    <th class="text-center">{{__('Created At')}}</th>
+                    <th class="text-center">{{__('Action')}}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -83,7 +83,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="UserModalLabel">{{translate('Create New User')}}</h5>
+        <h5 class="modal-title" id="UserModalLabel">{{__('Create New User')}}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -92,7 +92,7 @@
         <div class="modal-body">
           @csrf
           <div class="mb-3">
-            <label class="form-label">{{ translate('Name') }}</label>
+            <label class="form-label">{{ __('Name') }}</label>
             <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name"
               value="{{ old('name') }}" required placeholder="User Name">
             @error('name')
@@ -102,7 +102,7 @@
             @enderror
           </div>
           <div class="mb-3">
-            <label class="form-label">{{ translate('Slug') }}</label>
+            <label class="form-label">{{ __('Slug') }}</label>
             <input type="text" class="form-control @error('slug') is-invalid @enderror" id="slug" name="slug"
               value="{{ old('slug') }}" required placeholder="Slug">
             @error('slug')
@@ -113,8 +113,8 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">{{translate('Close')}}</button>
-          <button type="submit" class="btn btn-primary">{{translate('Add User')}}</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">{{__('Close')}}</button>
+          <button type="submit" class="btn btn-primary">{{__('Add User')}}</button>
         </div>
       </form>
     </div>

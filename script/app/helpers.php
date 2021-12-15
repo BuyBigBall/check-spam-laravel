@@ -7,7 +7,7 @@ use App\Models\settings;
 use Illuminate\Support\Str;
 use File as fle;
 
-
+function ___($w) {return $w;}
 function dnsbl_lookup($key)
 {
     foreach(App\Http\Controllers\Cron\CronJobController::$dnsbl_lookup as $idx=>$dns)

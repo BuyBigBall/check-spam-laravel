@@ -7,6 +7,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process;
 use App\Models\BlacklistResult;
 use App\Models\BrokenlinkResult;
+use App\Http\Controllers\Cron\CronJobController;
 
 class SpamAssassin
 {

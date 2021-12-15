@@ -148,7 +148,7 @@
             @if($link->postion == 0)
               <li class="nav-item">
                 <a class="nav-link" @if($link->target) target="_blank"  rel="noreferrer" @endif  
-                    href="{{$link->url}}">{!! $link->icon !!} {{ translate($link->title) }}</a>
+                    href="{{$link->url}}">{!! $link->icon !!} {{ __($link->title) }}</a>
               </li>
             @endif
           @endforeach
@@ -185,9 +185,9 @@
             <a href="{{route('page', $page->slug )}}">{{$page->title}}</a>
             @endforeach
             @if ($setdata['enable_blog'])
-            <a href="{{route('blog')}}">{{ translate('Blog')}}</a>
+            <a href="{{route('blog')}}">{{ __('Blog')}}</a>
             @endif
-            <a href="{{route('contact', '#contactus')}}">{{ translate('Contact Us')}}</a>
+            <a href="{{route('contact', '#contactus')}}">{{ __('Contact Us')}}</a>
 
             @foreach ($links as $link)
               @if($link->postion)
@@ -204,7 +204,7 @@
       <div class="row">
         <div class="col-lg-12">
           <p class="copyright-text">
-            {!! translate('Copyright')!!}
+            {!! __('Copyright')!!}
           </p>
         </div>
       </div>
@@ -218,7 +218,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">{{translate('Human Verification')}}</h5>
+          <h5 class="modal-title" id="exampleModalLabel">{{__('Human Verification')}}</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -237,7 +237,7 @@
             </div>
             <div class="form-group">
                 <button type="submit" class="btn btn-1 bg_main btn-block" tabindex="4">
-                  {{translate('Verify')}}
+                  {{__('Verify')}}
                 </button>
             </div>
         </form>
@@ -271,8 +271,8 @@
     wait_url =  "{{route('check_email')}}",
     result_url =  "{{route('testresult')}}",
     color = "{{$setdata['secondary_color']}}",
-    click_to_copy = "{{translate('Click To Copy!')}}",
-    copied = "{{translate('Copied!')}}" ;
+    click_to_copy = "{{__('Click To Copy!')}}",
+    copied = "{{__('Copied!')}}" ;
   </script>
 
   <script src="{{ asset('assets/js/vendor/jquery.dataTables.min.js') }}"></script>

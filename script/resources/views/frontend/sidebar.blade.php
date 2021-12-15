@@ -10,7 +10,7 @@
     <!-- Latest Post -->
     <div class="widget widget-latest-post">
         <div class="widget-title">
-            <h3>{{translate('Popular Posts')}}</h3>
+            <h3>{{__('Popular Posts')}}</h3>
         </div>
         <div class="widget-body">
             @foreach ($popular_posts as $post)
@@ -44,7 +44,7 @@
     <!-- widget category -->
     <div class="widget widget-category">
         <div class="widget-title">
-            <h3>{{translate('Categories')}}</h3>
+            <h3>{{__('Categories')}}</h3>
         </div>
         <div class="widget-body">
             <div class="nav tag-cloud">

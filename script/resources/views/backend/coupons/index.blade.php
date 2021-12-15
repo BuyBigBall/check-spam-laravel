@@ -3,19 +3,19 @@
 @section('content')
 <section class="section">
   <div class="section-header">
-    <h1>{{translate('Coupons')}}</h1>
+    <h1>{{__('Coupons')}}</h1>
     <div class="section-header-button">
       <button type="button" class="btn btn-primary" id="add_coupon">
-        {{translate('Add New')}}
+        {{__('Add New')}}
       </button>
     </div>
     <div class="section-header-breadcrumb">
-      <div class="breadcrumb-item active"><a href="{{route("dashboard")}}">{{translate('Dashboard')}}</a></div>
-      <div class="breadcrumb-item">{{translate('Coupons')}}</div>
+      <div class="breadcrumb-item active"><a href="{{route("dashboard")}}">{{__('Dashboard')}}</a></div>
+      <div class="breadcrumb-item">{{__('Coupons')}}</div>
     </div>
   </div>
   <div class="section-body">
-    <h2 class="section-title">{{translate('Coupons')}}</h2>
+    <h2 class="section-title">{{__('Coupons')}}</h2>
     <p class="section-lead">
       {{__('You can manage all coupons, such as editing, deleting and more.')}}
     </p>
@@ -23,7 +23,7 @@
       <div class="col-12">
         <div class="card">
           <div class="card-header">
-            <h4>{{translate('All Coupons')}}</h4>
+            <h4>{{__('All Coupons')}}</h4>
           </div>
           <div class="card-body">
             <div class="clearfix mb-3"></div>
@@ -32,12 +32,12 @@
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th class="text-center">{{translate('Coupon Code')}}</th>
-                    <th class="text-center">{{translate('Amount')}}</th>
-                    <th class="text-center">{{translate('Expiry Date')}}</th>
-                    <th class="text-center">{{translate('Status')}}</th>
-                    <th>{{translate('User Name')}}</th>
-                    <th class="text-center">{{translate('Created At')}}</th>
+                    <th class="text-center">{{__('Coupon Code')}}</th>
+                    <th class="text-center">{{__('Amount')}}</th>
+                    <th class="text-center">{{__('Expiry Date')}}</th>
+                    <th class="text-center">{{__('Status')}}</th>
+                    <th>{{__('User Name')}}</th>
+                    <th class="text-center">{{__('Created At')}}</th>
                     <th class="text-center">{{__('Action')}}</th>
                   </tr>
                 </thead>
@@ -85,7 +85,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="CouponModalLabel">{{translate('Create New Coupon')}}</h5>
+        <h5 class="modal-title" id="CouponModalLabel">{{__('Create New Coupon')}}</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -94,7 +94,7 @@
         <div class="modal-body">
           @csrf
           <div class="mb-3">
-            <label class="form-label">{{ translate('Coupon Code') }}</label>
+            <label class="form-label">{{ __('Coupon Code') }}</label>
             <input type="text" class="form-control @error('coupon_code') is-invalid @enderror" id="coupon_code" name="coupon_code"
               value="{{ old('coupon_code') }}" readonly="true" required placeholder="">
             @error('coupon_code')
@@ -104,7 +104,7 @@
             @enderror
           </div>
           <div class="mb-3">
-            <label class="form-label">{{ translate('Coupon Amount (%)') }}</label>
+            <label class="form-label">{{ __('Coupon Amount (%)') }}</label>
             <input type="text" class="form-control @error('coupon_amt') is-invalid @enderror" id="coupon_amt" name="coupon_amt"
               value="{{ old('coupon_amt') }}" required placeholder="">
             @error('coupon_amt')
@@ -114,7 +114,7 @@
             @enderror
           </div>
           <div class="mb-3">
-            <label class="form-label">{{ translate('Expiry Date') }}</label>
+            <label class="form-label">{{ __('Expiry Date') }}</label>
             <input type="date" class="form-control @error('expiry_date') is-invalid @enderror" id="expiry_date" name="expiry_date"
               value="{{ old('expiry_date') }}" required placeholder="">
             @error('expiry_date')
@@ -126,8 +126,8 @@
           
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">{{translate('Close')}}</button>
-          <button type="submit" class="btn btn-primary">{{translate('Add Coupon')}}</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">{{__('Close')}}</button>
+          <button type="submit" class="btn btn-primary">{{__('Add Coupon')}}</button>
         </div>
       </form>
     </div>

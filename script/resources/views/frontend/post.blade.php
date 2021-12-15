@@ -32,7 +32,7 @@
           </div>
           {!!$setdata['top_ad']!!}
           <div class="article-title">
-            <h6>{{translate('Published in')}} : {{$post->created_at->format('d M Y')}}</h6>
+            <h6>{{__('Published in')}} : {{$post->created_at->format('d M Y')}}</h6>
             <h2>{{$post->title}}</h2>
 
           </div>
@@ -47,7 +47,7 @@
 
         @if (!empty($setdata['disqus']))
         <div class="contact-form article-comment">
-          <h4>{{translate('Leave a Reply')}}</h4>
+          <h4>{{__('Leave a Reply')}}</h4>
           <div id="disqus_thread"></div>
           <script>
             var disqus_config = function () {

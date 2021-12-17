@@ -46,12 +46,14 @@
                   <tr>
                     <td>{{$coupon->id}}</td>
                     <td class="text-center">{{$coupon->coupon_code}}</td>
-                    <td class="text-center">{{$coupon->coupon_amt}}</td>
+                    <td class="text-center">{{$coupon->coupon_amt}} {{ !empty($coupon->coupon_type) ? '€' : '%' }}</td>
                     <td class="text-center">{{ToDate($coupon->expiry_date)}}</td>
                     <td class="text-center">{{$coupon->state==0?'Unused':'Used'}}</td>
                     <td>
-                      @if(!empty($coupon->user->name))
+                      @if(!empty($coupon->user))
+                        <a href="{{route('users.edit', $coupon->user->id)}}">
                         {{$coupon->user->name}}
+                        </a>
                       @endif
                     </td>
                     <td class="text-center">{{ToDate($coupon->created_at)}}</td>
@@ -104,7 +106,17 @@
             @enderror
           </div>
           <div class="mb-3">
-            <label class="form-label">{{ __('Coupon Amount (%)') }}</label>
+            <label class="form-label">{{ __('Coupon method') }}</label>
+            <select class="form-control"
+                onchange="exchangelabel(this.value);"
+                  name="coupon_type" required placeholder="{{__('select coupon method')}}">
+                <option value='0' selected>{{__("percentage")}}</option>
+                <option value='1'         >{{ __("fixed") }}   </option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label"><span id="method_label">{{ __('Coupon Amount') }}</span> 
+              (<span id="method_unit">%</span>)</label>
             <input type="text" class="form-control @error('coupon_amt') is-invalid @enderror" id="coupon_amt" name="coupon_amt"
               value="{{ old('coupon_amt') }}" required placeholder="">
             @error('coupon_amt')
@@ -171,6 +183,13 @@ function randomString(length) {
   }
   return text;
 }
+function exchangelabel(value)
+{
+    $('#method_label').text( value-0>0 ? "{{ __('Coupon Amount :')}}" : "{{ __('Coupon rate :') }}");
+    $('#method_unit').text(  value-0>0 ? "€" : "%");
+}
+
+
 $(document).ready(function(){
   $('#add_coupon').click(function(){
     var coupon = randomString(10);

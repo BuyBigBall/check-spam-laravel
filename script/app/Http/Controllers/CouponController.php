@@ -43,9 +43,10 @@ class CouponController extends Controller
         $coupon = new Coupon();
         $coupon->coupon_code = $request->coupon_code;
         $coupon->coupon_amt = $request->coupon_amt;
+        $coupon->coupon_type = $request->coupon_type;
         $coupon->expiry_date = $request->expiry_date;
-
         $coupon->save();
+        
 
         session()->flash('success', 'Coupon Created Successfuly');
         return redirect(route('coupons.index'));
@@ -59,6 +60,7 @@ class CouponController extends Controller
      */
     public function edit(Coupon $coupon)
     {
+        //dd($coupon);
         return view('backend.coupons.edit')->with('coupon', $coupon);
     }
 
@@ -83,6 +85,7 @@ class CouponController extends Controller
 
         $coupon->update([
             'coupon_code' => $request->coupon_code,
+            'coupon_type' => $request->coupon_type,
             'coupon_amt' => $request->coupon_amt,
             'expiry_date' => $request->expiry_date,
             'state' => $request->state

@@ -12,7 +12,7 @@ class Coupon extends Model
     use HasFactory;
     use Sluggable;
 
-    protected $fillable = ['id', 'user_id', 'coupon_code', 'coupon_amt','expiry_date','state'];
+    protected $fillable = ['id', 'user_id', 'coupon_code', 'coupon_type', 'coupon_amt','expiry_date','state'];
 
     public function sluggable(): array
     {

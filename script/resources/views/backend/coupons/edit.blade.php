@@ -47,9 +47,21 @@
                                 </div>
                             </div>
                             <div class="form-group row mb-4">
-                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">{{__('Amount')}}
-                                    :</label>
+                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3">{{__('Coupon method :')}}
+                                    </label>
                                 <div class="col-sm-12 col-md-7">
+                                    <select class="form-control"
+                                        onchange="exchangelabel(this.value);"
+                                        name="coupon_type" required placeholder="{{__('select coupon method')}}">
+                                        <option value='0' @if($coupon->coupon_type=='0') selected @endif >{{__("percentage")}}</option>
+                                        <option value='1' @if($coupon->coupon_type=='1') selected @endif >{{ __("fixed") }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row mb-4">
+                                <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3" id='method_label'>
+                                {{ !empty($coupon->coupon_type) ? __('Coupon Amount :') : __('Coupon rate :')}}</label>
+                                <div class="col-sm-10 col-md-6">
                                     <input type="text" class="form-control @error('coupon_amt') is-invalid @enderror"
                                         name="coupon_amt" value="{{ $coupon->coupon_amt }}" required placeholder="">
                                     @error('coupon_amt')
@@ -57,6 +69,11 @@
                                         <strong>{{ $message }}</strong>
                                     </div>
                                     @enderror
+                                </div>
+                                <div class="col-sm-2 col-md-1 d-flex align-items-center">
+                                    <span id='method_unit'>
+                                    {{ !empty($coupon->coupon_type) ? '€' : '%'}}
+                                    </span>
                                 </div>
                             </div>
                             <div class="form-group row mb-4">
@@ -91,7 +108,8 @@
                             <div class="form-group row mb-4">
                                 <label class="col-form-label text-md-right col-12 col-md-3 col-lg-3"></label>
                                 <div class="col-sm-12 col-md-7">
-                                    <button class="btn btn-primary">{{__('Update')}}</button>
+                                    <button class="btn btn-primary @if( !empty($coupon->state)) disabled @endif mx-2"  @if( !empty($coupon->state)) disabled @endif>{{__('Update')}}</button>
+                                    <button class="btn btn-secondary mx-2" onclick="return cancelUpdate(event)">{{__('Cancel')}}</button>
                                 </div>
                             </div>
                         </form>
@@ -107,6 +125,11 @@
 
 @push('scripts')
 <script>
+function exchangelabel(value)
+{
+    $('#method_label').text( value-0>0 ? "{{ __('Coupon Amount :')}}" : "{{ __('Coupon rate :') }}");
+    $('#method_unit').text(  value-0>0 ? "€" : "%");
+}
 function randomString(length) {
   var text = "";
   var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -114,6 +137,13 @@ function randomString(length) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
   return text;
+}
+
+function cancelUpdate(evt)
+{
+    evt.preventDefault();
+    history.back(-1);
+    return false;
 }
 $(document).ready(function(){
     $('#generate_coupon').click(function(e){

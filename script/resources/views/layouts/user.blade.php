@@ -275,13 +275,13 @@
     copied = "{{__('Copied!')}}" ;
   </script>
 
-  <script src="{{ asset('assets/js/vendor/jquery.dataTables.min.js') }}"></script>
+  <script src="/assets/js/vendor/jquery.dataTables.min.js"></script>
   <!-- main js -->
-  <script src="{{ asset('assets/js/main.js?v1.2.9') }}"></script>
+  <script src="/assets/js/main.js?v1.2.9"></script>
 
   @yield('testresultjs')
 
-  <script src="{{ asset('assets/js/cookieconsent.min.js') }}"></script>
+  <script src="/assets/js/cookieconsent.min.js"></script>
   
 </body>
 

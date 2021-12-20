@@ -79,7 +79,7 @@ class CronJobController extends Controller
 		//<--- added end
     ];
 
-    private function GetLinks($content)
+    public function GetLinks($content)
     {
         $matches = [];
 		$regexp = "<a\s[^>]*href=(\"??)([^\" >]*?)\\1[^>]*>(.*)<\/a>";
@@ -144,12 +144,38 @@ class CronJobController extends Controller
 			//dd($server_ip);	// obistar.com=>87.106.127.240
 			//print($hostname);
 			//dd($server_ip);	// obistar.com=>87.106.127.240
-            $this->lookfor_blacklist($server_ip, $mail_id, $num);
+            $this->lookfor_blacklist($server_ip, $one_mail, $num);
         }
 
     }
 	
-    public function lookfor_blacklist($server_ip, $mail_id, $num) {
+    public function lookfor_blacklist($server_ip, $one_mail, $num) {
+        
+        $id_hash = Hashids::decode($one_mail['id']);
+        $mail_id = $id_hash[0];
+
+        $target = [];
+        foreach($one_mail['to'] as $to_addr)
+        {
+            if($to_addr->hostname==env('MAIL_HOST'))
+            {
+                $target[] = $to_addr->getAddress();
+            }
+        }
+        foreach($one_mail['cc'] as $to_addr)
+        {
+            if($to_addr->hostname==env('MAIL_HOST'))
+            {
+                $target[] = $to_addr->getAddress();
+            }
+        }
+        foreach($one_mail['bcc'] as $to_addr)
+        {
+            if($to_addr->hostname==env('MAIL_HOST'))
+            {
+                $target[] = $to_addr->getAddress();
+            }
+        }
 		$perCount = env('BLACKLIST_LOOKFOR_GROUP_COUNT');
         $reverse_ip = implode(".", array_reverse(explode(".", $server_ip)));
 		
@@ -193,15 +219,20 @@ class CronJobController extends Controller
             }
         }
 		
-        $chk = MailBlacklistCheck::where('mail_id', $mail_id)->where('cron_number', $num)->first();
-        if($chk==null)
-        {
-            $flag = new MailBlacklistCheck();
-            //dd($flag);
-            $flag->mail_id = $mail_id;
-            $flag->cron_number = $num;
-            $flag->save();
-        }
+        MailBlacklistCheck::updateOrCreate(
+            [ 'mail_id' => $mail_id, 'cron_number'=>$num],
+            [ 'to_email' => implode(",", $target), 'checkflag' => 2,]
+        );
+        // $chk = MailBlacklistCheck::where('mail_id', $mail_id)->where('cron_number', $num)->first();
+        // if($chk==null)
+        // {
+        //     $flag = new MailBlacklistCheck();
+        //     //dd($flag);
+        //     $flag->mail_id = $mail_id;
+        //     $flag->to_email = implode(",", $target);
+        //     $flag->cron_number = $num;
+        //     $flag->save();
+        // }
 
 		return true;
 	}
@@ -269,14 +300,19 @@ class CronJobController extends Controller
             }
             $i++;
         }
-        $chk = MailBrokenlinkCheck::where('mail_id', $mail_id)->where('cron_number', $num)->first();
-        if($chk==null)
-        {
-            $flag = new MailBrokenlinkCheck();
-			$flag->mail_id = $mail_id;
-			$flag->cron_number = $num;
-			$flag->save();
-        }
+        // $chk = MailBrokenlinkCheck::where('mail_id', $mail_id)->where('cron_number', $num)->first();
+        // if($chk==null)
+        // {
+        //     $flag = new MailBrokenlinkCheck();
+		// 	$flag->mail_id = $mail_id;
+		// 	$flag->cron_number = $num;
+		// 	$flag->save();
+        // }
+        MailBrokenlinkCheck::updateOrCreate(
+            ['mail_id' => $mail_id, 'cron_number'=>$num],
+            [ ]
+        );
+
         
 		return true;
 	}

@@ -430,9 +430,20 @@ class PaymentController extends Controller
         $price = $request->pay_price;
         $qty = $request->pay_qty;
         $coupon = $request->pay_coupon;
-        if(!empty($coupon) && !empty($request->coupon_code) )
+        if(!empty($coupon) && !empty($request->coupon_code) &&
+            !empty($couponInfo = coupon::where('coupon_code',$request->coupon_code)->first()) )
         {
-            coupon::where('coupon_code',$request->coupon_code)->update(['state' => 1, 'user_id' => $userdata['id']]);
+            if(!($couponInfo->coupon_type)) $coupon = $couponInfo->coupon_amount;
+
+            ## if coupon amount is bigger than payamount, it use the coupon
+            if( (($price * $qty) - $couponInfo->coupon_amount ) > 0) 
+            {
+                coupon::find($couponInfo->id)->update(['state' => 1, 'user_id' => $userdata['id']]);
+            }
+            else
+            {
+                $coupon = 0;
+            }
         }
         $pay_amount = ($price * $qty - $coupon)* (100+ env('VAT_FEE') )/100.0 ;
 
@@ -463,11 +474,21 @@ class PaymentController extends Controller
             session()->put('Order_price_'.$userdata['id'],  $price);
             session()->put('Order_count_'.$userdata['id'],  $qty);
             session()->put('Order_userid_'.$userdata['id'],  $profile_id);
-            if(!empty($coupon) && !empty($request->coupon_code) )
+            
+            if( !empty($coupon) && !empty($request->coupon_code) &&
+                !empty($couponInfo = coupon::where('coupon_code',$request->coupon_code)->first()) )
             {
-                session()->put('Order_CouponCode_'.$userdata['id'],  $request->coupon_code);
-                session()->put('Order_CouponAmount_'.$userdata['id'],  $coupon);
-            }            
+                if( !($couponInfo->coupon_type)) $coupon = $couponInfo->coupon_amount;
+
+
+                ## if coupon amount is bigger than payamount, it use the coupon
+                if( (($price * $qty) - $couponInfo->coupon_amount ) > 0 )
+                {
+                    session()->put('Order_CouponCode_'.$userdata['id'],     $request->coupon_code);
+                    session()->put('Order_CouponAmount_'.$userdata['id'],   $coupon);
+                }
+            }   
+
             foreach($result['links'] as $l){
                 if($l['rel'] == 'approve'){
                     return redirect($l['href']);
@@ -502,8 +523,12 @@ class PaymentController extends Controller
             session()->put('Order_price_'.$userdata['id'],  $price);
             session()->put('Order_count_'.$userdata['id'],  $qty);
             session()->put('Order_userid_'.$userdata['id'],  $profile_id);
-            if(!empty($coupon) && !empty($request->coupon_code) )
+            if(!empty($coupon) && !empty($request->coupon_code) &&
+                !empty($couponInfo = coupon::where('coupon_code',$request->coupon_code)->first()) )
             {
+                if( !($couponInfo->coupon_type)) $coupon = $couponInfo->coupon_amount;
+                if( (($price * $qty) - $couponInfo->coupon_amount ) <=0) abort(419);
+
                 session()->put('Order_CouponCode_'.$userdata['id'],  $request->coupon_code);
                 session()->put('Order_CouponAmount_'.$userdata['id'],  $coupon);
             }            
@@ -652,7 +677,7 @@ class PaymentController extends Controller
         {
             return redirect(route('home'));
         }
-		$mailbox_mail = TrashMail::GetMail($email, $request->message_id);
+		$mailbox_mail = TrashMail::messages($email, $request->message_id);
 		$email_receiver = TrashMail::where('email', $email)->first();
 
 		$id_hash = Hashids::decode($request->message_id);
@@ -1064,13 +1089,19 @@ class PaymentController extends Controller
         $tranc->income = $income;
         
         $tranc->fee = env('VAT_FEE');
-        if(!empty($coupon) && !empty($request->coupon_code) )
+        if( !empty($coupon) && !empty($request->coupon_code) &&
+            !empty($couponInfo = coupon::where('coupon_code',$request->coupon_code)->first()) )
         {
-            $couponcode = session()->get('Order_CouponCode_'.$user_id);
-            $couponamount = session()->get('Order_CouponAmount_'.$user_id);
-            $tranc->coupon_code = $couponcode;
-            $tranc->coupon_amount = $couponamount;
-    
+            if( !($couponInfo->coupon_type)) $couponamount = $couponInfo->coupon_amount;
+
+            ## if coupon amount is bigger than payamount, it use the coupon
+            if( (($price * $qty) - $couponInfo->coupon_amount ) > 0) 
+            {
+                $couponcode = session()->get('Order_CouponCode_'.$user_id);
+                $couponamount = session()->get('Order_CouponAmount_'.$user_id);
+                $tranc->coupon_code = $couponcode;
+                $tranc->coupon_amount = $couponamount;
+            }
         }            
 
         $tranc->save();
@@ -1120,12 +1151,17 @@ class PaymentController extends Controller
         $tranc->income = $income;
 
         $tranc->fee = env('VAT_FEE');
-        if(!empty($coupon) && !empty($request->coupon_code) )
+        if( !empty($coupon) && !empty($request->coupon_code) &&
+            !empty($couponInfo = coupon::where('coupon_code',$request->coupon_code)->first()) )
         {
-            $couponcode = session()->get('Order_CouponCode_'.$user_id);
-            $couponamount = session()->get('Order_CouponAmount_'.$user_id);
-            $tranc->coupon_code = $couponcode;
-            $tranc->coupon_amount = $couponamount;
+            if( !($couponInfo->coupon_type)) $couponamount = $couponInfo->coupon_amount;
+            if( (($price * $qty) - $couponInfo->coupon_amount ) > 0)
+            {
+                $couponcode = session()->get('Order_CouponCode_'.$user_id);
+                $couponamount = session()->get('Order_CouponAmount_'.$user_id);
+                $tranc->coupon_code = $couponcode;
+                $tranc->coupon_amount = $couponamount;
+            }
         }            
 
         $tranc->save();
@@ -1179,13 +1215,20 @@ class PaymentController extends Controller
             $pay_name  = session()->get('pay_name_'.$userdata['user_login']['id']);
             if($coupon!=null)
             {
-                $coupon = round($coupon->coupon_amt * $pay_price / 100.0,1);
+                $coupon = round($coupon->coupon_amt * $pay_price / 100.0, 1);
+                if( !empty($coupon->coupon_type)) $coupon = $coupon->coupon_amt;
+                if($pay_price-$coupon->coupon_amt<=0) 
+                {
+                    $coupon = 0;
+                    $checkout_payment_coupon = '';
+                    $error_message['coupon'] = __('The Coupon you entered has been found, but it invalid.');
+                }
             }
             else
             {
                 $checkout_payment_coupon = '';
                 $coupon = 0;
-                $error_message['coupon'] = 'The Coupon you entered could not be found.';
+                $error_message['coupon'] = __('The Coupon you entered could not be found.');
             }
         }
         session()->put('pay_price_'.$userdata['user_login']['id'], $pay_price);

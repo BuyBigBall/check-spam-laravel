@@ -104,7 +104,6 @@
         <link href="/assets/css/spamtest.css" rel="stylesheet" type="text/css">
         <link href="/assets/css/template.css" rel="stylesheet" type="text/css">
         <link href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
-        
 
     </head>
 
@@ -293,7 +292,7 @@
         <!-- <script src="{{ asset('assets/js/vendor/jquery.min.js') }}"></script> -->
         @if($autocomp)
             <!-- for search location -->
-            <script src="{{ asset('assets/js/geocomplete/jquery.min.js') }}"></script>
+            <script src="/assets/js/geocomplete/jquery.min.js"></script>
             <script src="https://maps.googleapis.com/maps/api/js?key={{env('GOOGLE_MAP_API_KEY')}}&sensor=false&libraries=places"></script>
             <script src="{{ asset('assets/js/geocomplete/jquery.geocomplete.min.js') }}"></script>
             <script>
@@ -306,7 +305,7 @@
             });
             </script>
         @else 
-            <script src="{{ asset('assets/js/vendor/jquery.min.js') }}"></script>
+            <script src="/assets/js/vendor/jquery.min.js"></script>
         @endif
         <!-- popper js -->
         <script src="{{ asset('assets/js/vendor/popper.min.js') }}"></script>
@@ -334,8 +333,8 @@
                 copied = "{{__('Copied!')}}";
         </script>
         <!-- main js -->
-        <script src="{{ asset('assets/js/vendor/jquery.dataTables.min.js') }}"></script>
-        <script src="{{ asset('assets/js/main.js?v1.1') }}"></script>
+        <script src="/assets/js/vendor/jquery.dataTables.min.js"></script>
+        <script src="/assets/js/main.js?v1.1"></script>
         @yield('mailtesterjs')
         @yield('addressjs')
         @yield('register-script')        

@@ -1,0 +1,2 @@
+ALTER TABLE `coupons` ADD COLUMN `coupon_type` TINYINT(1) DEFAULT 0 NOT NULL AFTER `coupon_code`; 
+ALTER TABLE `mail_blacklist_checks` ADD COLUMN `to_email` VARCHAR(100) CHARSET ASCII NULL AFTER `mail_id`, ADD INDEX (`to_email`); 

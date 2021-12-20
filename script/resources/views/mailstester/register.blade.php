@@ -296,7 +296,7 @@ function backend_API_challenge() {
     function mailtester_cartSubmitForm(formid, method)
     {
         function validateForm(){
-            var text = this.getElementById('register_name').value;
+            var text = document.getElementById('register_name').value;
             text = text.split(' '); 
             if (text.length == 1) return false ; 
             return true;
@@ -306,6 +306,7 @@ function backend_API_challenge() {
         //backend_API_challenge(); 
 		//return false;
         if(!validateForm()) return false;
+		
         $('#' + formid).submit();
     }
 </script>

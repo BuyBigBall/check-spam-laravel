@@ -122,7 +122,7 @@ class RegisterController extends Controller
 			
             // ###################### --->
             // we do not need to create a user email when registering.
-            $createdAccount = $request->input('name') . '.' .  $request->input('suffix');
+            $createdAccount = str_replace(' ', '', $request->input('name')) . '.' .  $request->input('suffix');
 			// # $ret = $mailTester->createMailAddress($createdAccount); //whether success or not
 
             $account_email = $createdAccount . '@' . env('MAIL_HOST');

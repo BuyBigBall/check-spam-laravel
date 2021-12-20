@@ -61,15 +61,20 @@ class TrashMail extends Model
     public static function GetLastUnreadMail($email)
     {
         # look for unread message for me
-        $results = TrashMail::allMessages($email, false);
+        $results = TrashMail::allMessages($email, false);   // from cache
         foreach($results["messages"] as $key=>&$last_message)
         {
             if( !empty($last_message['error'])) continue;
-
-            if(!$last_message['is_seen'])
+            // if( in_array($email, $last_message["to"][]->getAddress()) ||
+            //     in_array($email, $last_message["cc"][]->getAddress()) ||
+            //     in_array($email, $last_message["bcc"][]->getAddress()) 
+            //     )
             {
-                $id = $last_message['id'];  // this will be $Hashid
-				return $id;
+                if(!$last_message['is_seen'])
+                {
+                    $id = $last_message['id'];  // this will be $Hashid
+                    return $last_message;
+                }
             }
             break;
         }
@@ -98,15 +103,15 @@ class TrashMail extends Model
 
     public static function allMessages($email, $asSeenFlag = null)
     {
-        $receive_email = $email;
-        $receive_email = env('MAIL_FROM_ADDRESS');
+        //Cache::Flush(); 
+
         $response = [
             'mailbox' => $email,
             'messages' => []
         ];
         
         try {
-            $connection = TrashMail::connection($receive_email);
+            $connection = TrashMail::connection(env('MAIL_FROM_ADDRESS'));
             if($connection==null)
             {
                 $response['messages'][] = ['error'=>'Server settings Exception'];
@@ -121,21 +126,21 @@ class TrashMail extends Model
             $messages = $mailbox->getMessages($search, \SORTDATE, true);
             
             // added by yasha for refresh asseenmark
-            if(!empty($asSeenFlag)) Cache::Flush(); 
+            // if(!empty($asSeenFlag)) Cache::Flush(); 
             //<---
             
             foreach ($messages as $message) {
 
                 $Hashid = Hashids::encode($message->getNumber());
-
+                
+                if( $asSeenFlag!=null)
                 if (!$message->isSeen()) {
                     // //deleted 2021.11.20 by yasha
                     //     Settings::updateSettings(
                     //         'total_messages_received',
                     //         Settings::selectSettings('total_messages_received') + 1
                     //     );
-                    if( $asSeenFlag!=null)
-                        $message->markAsSeen(); 
+                    $message->markAsSeen(); 
                 }
                 
                 $cashtime = Settings::selectSettings("email_lifetime") * Settings::selectSettings("email_lifetime_type") * 60;
@@ -147,13 +152,19 @@ class TrashMail extends Model
                         $sender = $message->getFrom();
                         $date = $message->getDate();
                         $date = new Carbon($date);
+                       
                         $data['subject'] = $message->getSubject();
                         $data['is_seen'] = $message->isSeen();
                         $data['from'] = $sender->getName();
                         $data['from_email'] = $sender->getAddress();
                         $data['receivedAt'] = $date->format('Y-m-d H:i:s');
                         $data['id'] = $Hashid;
+                        $data['no'] = $message->getNumber();    //added by yasha
+                        $data['to']  = $message->getTo();
+                        $data['cc']  = $message->getCc();
+                        $data['bcc'] = $message->getBcc();
                         $data['attachments'] = [];
+                        $data['header'] = $message->getRawHeaders();
 
                         $html = $message->getBodyHtml();
                         if ($html) {
@@ -207,10 +218,9 @@ class TrashMail extends Model
 
     public static function DeleteEmail($email)
     {
-        $receive_email = $email;
         $receive_email = env('MAIL_FROM_ADDRESS');
         try {
-            $connection = TrashMail::connection($receive_email);
+            $connection = TrashMail::connection(env('MAIL_FROM_ADDRESS'));
             $mailbox = $connection->getMailbox('INBOX');
             $search = new SearchExpression();
             $search->addCondition(new To($email));
@@ -271,9 +281,8 @@ class TrashMail extends Model
     public static function DeleteMessage($email, $id)
     {
         try {
-            $receive_email = $email;
             $receive_email = env('MAIL_FROM_ADDRESS');            
-            $connection = TrashMail::connection($receive_email);
+            $connection = TrashMail::connection(env('MAIL_FROM_ADDRESS'));
             $mailbox = $connection->getMailbox('INBOX');
             $mailbox->getMessage($id)->delete();
             $connection->expunge();
@@ -282,16 +291,15 @@ class TrashMail extends Model
         }
     }
 
-
+    # this function not affect the cache's mails. only return a incoming mail from mailbox getting.
     public static function messages($email, $Hashid)
     {
         try {
-            $receive_email = $email;
             $receive_email = env('MAIL_FROM_ADDRESS');
 
             $id_hash = Hashids::decode($Hashid);
 
-            $connection = TrashMail::connection($receive_email);
+            $connection = TrashMail::connection(env('MAIL_FROM_ADDRESS'));
             if($connection==null)
             {
                 $response = [
@@ -306,6 +314,8 @@ class TrashMail extends Model
             $message = $mailbox->getMessage($id_hash[0]);
 
             $response = [];
+            
+            $message->markAsSeen(); //added by yasha
 
             $sender = $message->getFrom();
             $date = $message->getDate();
@@ -315,7 +325,11 @@ class TrashMail extends Model
             $data['from'] = $sender->getName();
             $data['from_email'] = $sender->getAddress();
             $data['receivedAt'] = $date->format('Y-m-d H:i:s');
-            $data['id'] = $message->getNumber();
+            $data['id'] = $Hashid;
+            $data['no'] = $message->getNumber();    //added by yasha
+            $data['to']  = $message->getTo();
+            $data['cc']  = $message->getCc();
+            $data['bcc'] = $message->getBcc();
             $data['attachments'] = [];
             $data['header'] = $message->getRawHeaders();
 
@@ -353,29 +367,20 @@ class TrashMail extends Model
                     }
                 }
             }
+
+            # added by yasha for mark as seen
+            $cashtime = Settings::selectSettings("email_lifetime") * Settings::selectSettings("email_lifetime_type") * 60;
+            Cache::put($Hashid, $data, $cashtime);
+            ## //<-------------
             array_push($response, $data);
-            $message->markAsSeen();
-			Cache::Flush();
+            //$message->markAsSeen(); comment by yasha
+
             return $response;
         } catch (Exception $e) {
             \abort(404);
         }
     }
 	
-	public static function GetMail($email, $mail_id)
-    {
-        # look for unread message for me
-        $results = TrashMail::allMessages($email, false);
-		
-        foreach($results["messages"] as $key=>$message)
-        {
-            if( !empty($message['error'])) continue;
-			//dd($message);
-            if( $mail_id == $message['id']) return $message;
-            
-        }
-		return null;
-    }
 
     public static function GetLastMail()
     {
@@ -388,7 +393,7 @@ class TrashMail extends Model
         ];
         
         try {
-            $connection = TrashMail::connection($receive_email);
+            $connection = TrashMail::connection(env('MAIL_FROM_ADDRESS'));
 			
             if($connection==null)
             {
@@ -463,9 +468,15 @@ class TrashMail extends Model
                     $data['from'] = $sender->getName();
                     $data['from_email'] = $sender->getAddress();
                     $data['receivedAt'] = $date->format('Y-m-d H:i:s');
+
                     $data['id'] = $Hashid;
-                    $data['attachments'] = [];
+                    $data['no'] = $message->getNumber();    //added by yasha
+                    $data['to']  = $message->getTo();
+                    $data['cc']  = $message->getCc();
+                    $data['bcc'] = $message->getBcc();
 					$data['header'] = $message->getRawHeaders();
+
+                    $data['attachments'] = [];
 					
 					
                     if ( ($html = $message->getBodyHtml()) ) 

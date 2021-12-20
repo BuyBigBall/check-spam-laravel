@@ -201,48 +201,38 @@ $(document).ready(function () {
             $("#mailbox").html("");
           }
 
-          flag_unreadmail = false;
           $('#hFlag_MessageId').val('');
           var iLoop = 0;
           $.each(d.messages, function (key, value) {
-            iLoop++;
-            
-            // for test --->
-            // if(flag_unreadmail==false)
-            // {
-            //   flag_unreadmail = value.id;            $('#hFlag_MessageId').val(value.id);
-            // }
-            //<--- 
+            iLoop++
 
             var is_seen = "";
             if (!value.is_seen) {
-              is_seen = '<span class="badge badge-success" >new</span>';
-              if(iLoop==1)
-              {
-                flag_unreadmail = value.id;
-                $('#hFlag_MessageId').val(value.id);
-              }
+               is_seen = '<span class="badge badge-success" >new</span>';
+               if(iLoop==1)              $('#hFlag_MessageId').val(value.id);
             }
-            $("#mailbox").append(
-              '<div class="message-item">' +
-                is_seen +
-                '<div class="row">' +
-                '<div class="col-10 col-md-4 ov-h"><a href="view/' +
-                value.id +
-                '" class="sender_email">' +
-                value.from +
-                "<span>" +
-                value.from_email +
-                '</span><span class="d_show">'+ value.subject +'</span></a></div>' +
-                '<div class="col-md-6 ov-h d_hide"><a href="view/' +
-                value.id +
-                '" class="subject_email">' +
-                value.subject +
-                "</div>" +
-                '<div class="col-2  text-right"><a href="view/' +
-                value.id +
-                '" class="view_email"><i class="fas fa-chevron-right"></i></a></div>'
-            );
+
+            // It need to append because it not shown.
+            // $("#mailbox").append(
+            //   '<div class="message-item">' +
+            //     is_seen +
+            //     '<div class="row">' +
+            //     '<div class="col-10 col-md-4 ov-h"><a href="view/' +
+            //     value.id +
+            //     '" class="sender_email">' +
+            //     value.from +
+            //     "<span>" +
+            //     value.from_email +
+            //     '</span><span class="d_show">'+ value.subject +'</span></a></div>' +
+            //     '<div class="col-md-6 ov-h d_hide"><a href="view/' +
+            //     value.id +
+            //     '" class="subject_email">' +
+            //     value.subject +
+            //     "</div>" +
+            //     '<div class="col-2  text-right"><a href="view/' +
+            //     value.id +
+            //     '" class="view_email"><i class="fas fa-chevron-right"></i></a></div>'
+            // );
           });
         },
       });
@@ -257,7 +247,6 @@ $(document).ready(function () {
 
   } catch (error) {}
 
-  var flag_unreadmail = false;
   /*--------------- Navbar Collapse ------------------ */
   $(".nav-link").on("click", function () {
     $(".navbar-collapse").collapse("hide");

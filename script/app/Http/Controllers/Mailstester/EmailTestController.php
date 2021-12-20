@@ -31,7 +31,8 @@ use SimpleXMLElement;
 use Exception;
 use SPFLib\Term\Mechanism;
 use Vinkla\Hashids\Facades\Hashids;
- 
+use App\Http\Controllers\Cron\CronJobController;
+
 class EmailTestController extends Controller
 {
 
@@ -60,9 +61,9 @@ class EmailTestController extends Controller
 
         // getting useroption for micropayment
         if(    !empty($email_db_record) 
-            && !empty($email_db_record->useroption)   //relation
-            && !empty($email_db_record->useroption->use_micropay)     //relation
-            && !empty($email_db_record->useroption->pay_types))   //relation
+            && !empty($email_db_record->useroption)                 //relation
+            && !empty($email_db_record->useroption->use_micropay)   //relation
+            && !empty($email_db_record->useroption->pay_types))     //relation
         {
             $pay_type_ids = explode( ",", $email_db_record->useroption->pay_types );
         }
@@ -91,20 +92,24 @@ class EmailTestController extends Controller
 		
         if(empty($id) && $_SERVER['HTTP_HOST']!='localhost' )
         {
-            //dd($email);
-            $Hash_id = TrashMail::GetLastUnreadMail($email);
-            if($Hash_id!=null)
+            // if($Hash_id!=null)
+            // {
+            //     $Hash__decode_id_array = Hashids::decode($Hash_id);
+            //     $id = $Hash__decode_id_array[0];
+            // }
+
+            $LastEmail = TrashMail::GetLastUnreadMail($email);
+            if($LastEmail != null)
             {
-                $Hash__decode_id_array = Hashids::decode($Hash_id);
-                $id = $Hash__decode_id_array[0];
-            }
-			
-			/* 
-			// for test update
-            $id = TestResult::where('receiver', $email)->orderBy('received_at', 'DESC');
-            if($id->first()!=null)                 $id = $id->first()->mail_id;
-            //<--- for test
-			// */
+                $Hash_id = $LastEmail['id'];
+                $id = $LastEmail['no'];
+                if( ($find_id=MailBlacklistCheck::where(['mail_id'=>$id])->first())==null || 
+                    $find_id->checkflag<2)
+                    {
+                        $Hash_id = null;
+                        $id      = null;
+                    }
+           }
         }
         
 		//dd($pay_type_ids);dd($id);
@@ -124,12 +129,12 @@ class EmailTestController extends Controller
         else if($iframe)
         {
             return view('mailstester.iframe') 
-            ->with('css', $css)
+            ->with('css',   $css)
             ->with('email', $email);
         }
         else
             return view('mailstester.spamtest') 
-                    ->with('css', $css)
+                    ->with('css',   $css)
                     ->with('email', $email);
     }
 
@@ -306,17 +311,51 @@ class EmailTestController extends Controller
         
         if( !empty($email))
         {
-            $id = TrashMail::GetLastUnreadMail($email);
+            $num = 0;
+            $LastEmail = TrashMail::GetLastUnreadMail($email);
+            if($LastEmail!=null)
+            {
+                $Hash_id = $LastEmail['id'];
+                $id = $LastEmail['no'];
+    
+                ## whether cronjob has been performed or not ?
+                $blst = MailBlacklistCheck::where('mail_id', $id)->first();
+                $blnk = MailBrokenlinkCheck::where('mail_id', $id)->first();
+                
 
-            ## whether cronjob has been performed or not ?
-            $blst = MailBlacklistCheck::where('mail_id', $id)->first();
-            $blnk = MailBrokenlinkCheck::where('mail_id', $id)->first();
-            if($blst==null || $blnk==null)  unset($id);
-            ## <----------
+                ## beacuse not performed blacklist check, it must be performed blaklist check.
+                if($blst==null)
+                {
+                    {
+                        MailBlacklistCheck::updateOrCreate(
+                            [ 'mail_id'  => $id,    'cron_number'=>$num],
+                            [ 'to_email' => $email, 'checkflag' => 1,]
+                        );
+                
+                        MailBrokenlinkCheck::updateOrCreate(
+                            [ 'mail_id'  => $id,    'cron_number'=>$num],
+                            [ ]
+                        );
+                    }
+                    
+                    $cronCheckmodule = (new CronJobController());
+                    $mailheader = $LastEmail['header'];
+                    $auth_serverInfo = SpamAssassin::getserverauth( $mailheader );
+                    $server_ip = $auth_serverInfo['serverip'];			//mail.ru=>128.140.169.216                    
+                    $cronCheckmodule->lookfor_blacklist($server_ip, $LastEmail, 0);
+
+                    $addresss_from  = $LastEmail['from_email'];
+                    $hostname = explode('@', $addresss_from)[1];
+                    $links = $cronCheckmodule->GetLinks( $LastEmail['content'] );
+                    $cronCheckmodule->lookfor_brokenlinks($links, $id, 0);
+                }
+                if($blst==null || $blnk==null)  unset($id);
+                ## <----------
+            }
         }
 
         if(!empty($id))
-            return json_encode(['result'=>'ok', 'message_id'=>$id, 'email'=>$email] );
+            return json_encode(['result'=>'ok', 'message_id'=>$Hash_id, 'email'=>$email] );
         else
             return json_encode(['result'=>'fail', 'email'=>$email]);
         

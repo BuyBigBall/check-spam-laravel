@@ -61,23 +61,23 @@ $(function() {
 
 	// start for socket =============================================>
 	
-	// var conn = new WebSocket(WEBSOCKET_PROTOCAL+WEBSOCKET_SERVER+":"+WEBSOCKET_PORT);
-	// var connected = false;
-	// var received_state = 0;
-	// var received_message = null;
-    // var message_state = function(string, cname) {
-    //     console.log(WEBSOCKET_PROTOCAL+WEBSOCKET_SERVER+":"+WEBSOCKET_PORT+" Status:",string);
-    // }
-    // // let us know we are live
-    // conn.onopen = function(e) {
-	// 	connected = true;
-    //     message_state("Connection established!", 'success');
-	// 	received_state = 1; //pending
+	var conn = new WebSocket(WEBSOCKET_PROTOCAL+WEBSOCKET_SERVER+":"+WEBSOCKET_PORT);
+	var connected = false;
+	var received_state = 0;
+	var received_message = null;
+    var message_state = function(string, cname) {
+        console.log(WEBSOCKET_PROTOCAL+WEBSOCKET_SERVER+":"+WEBSOCKET_PORT+" Status:",string);
+    }
+    // let us know we are live
+    conn.onopen = function(e) {
+		connected = true;
+        message_state("Connection established!", 'success');
+		received_state = 1; //pending
 		
 
 	// 	var data = {email: $('.mailbox').html(), time: elapsedTime};
 	// 	conn.send(JSON.stringify(data));
-    // };
+    };
 
     // conn.onclose = function(e) {
     //     message_state("Connection closed!", 'error');
@@ -112,7 +112,7 @@ $(function() {
 			countdown.html( Math.max(reloadTime-elapsedTime,0));
 			progress.css('width',Math.min((elapsedTime/reloadTime*100),100)+'%');
 
-			if(elapsedTime > (reloadTime+(refreshRate*5))){
+			if(elapsedTime > (reloadTime + (refreshRate*5))){
 				//MMMmmm safe guard to force to refresh the page... but only once!
 				//conn.close();
 				window.location.reload();

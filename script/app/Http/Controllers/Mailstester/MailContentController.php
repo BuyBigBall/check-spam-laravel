@@ -109,6 +109,7 @@ class MailContentController extends Controller
         $owner_id = $mail_address->user->id;
         $email_id = $mail_address->id;
 		
+		if($mail_address->useroption==null) return false;
         if($mail_address->useroption->use_micropay)
         {
             $query = MicroPayment::where('user_id', $owner_id)
@@ -197,7 +198,8 @@ class MailContentController extends Controller
                 $response['from'] = $db_hist->name;
                 $response['from_email'] = $db_hist->email;
                 $response['receivedAt'] = $db_hist->received_at;
-                $response['id'] = $mail_id;
+                $response['id'] = $Hash_id;
+				$response['no'] = $mail_id;
                 $response['attachments'] = [];
                 $response['content'] = $db_hist->content;
                 $response = [$response];
@@ -233,7 +235,8 @@ class MailContentController extends Controller
                             $response['from'] = 'from whitlabel';
                             $response['from_email'] = 'test@test.com';
                             $response['receivedAt'] = date('Y-m-d H:i:s');
-                            $response['id'] = $Hash_id;
+							$response['id'] = $Hash_id;
+							$response['no'] = $mail_id;
                             $response['attachments'] = [];
                             $response['content'] = 'test email for whitelabel';
                             $response['header'] = '';
@@ -274,7 +277,7 @@ class MailContentController extends Controller
                 $user_name = '';
                 $user_email= '';
 			}
-                $mail_id   = $response['id'];
+                $mail_id   = $response['no'];
                 if($db_hist==null)
                 {
 					$message_result = [

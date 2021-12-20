@@ -120,7 +120,6 @@
     </div>
 </section>
 
-
 @endsection
 
 @push('scripts')

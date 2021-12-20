@@ -251,3 +251,5 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
 	
 });
 }
+Route::get('/checkblaklist/', "Mailstester\NodejsController@index")->name('checkblaklist');
+

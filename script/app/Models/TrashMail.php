@@ -14,6 +14,7 @@ use Ddeboer\Imap\Search\Email\Bcc;
 use Ddeboer\Imap\Message\Attachment;
 use Exception;
 use App\Models\Settings;
+use App\Models\MailBlacklistCheck;
 use Vinkla\Hashids\Facades\Hashids;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
@@ -486,8 +487,15 @@ class TrashMail extends Model
                         $text = $message->getBodyText();
                         $data['content'] = str_replace('<a', '<a target="blank"', str_replace(array("\r\n", "\n"), '<br/>', $text));
                     }
-                    array_push($results["messages"], $data);
-                    return $results;
+                    
+                    if($message->isSeen()) continue;
+                    
+                    $mail_id = $data['no'];
+                    if( !!empty(MailBlacklistCheck::where("mail_id",$mail_id)->first()))
+                    {
+                        array_push($results["messages"], $data);
+                    }
+                    //return $results;
                 }
             }
         } catch (Exception $e) {

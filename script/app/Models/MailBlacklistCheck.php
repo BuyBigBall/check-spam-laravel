@@ -24,5 +24,5 @@ class MailBlacklistCheck extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['mail_id', 'cron_number', 'to_email'];
+    protected $fillable = ['mail_id', 'cron_number', 'to_email', 'checkflag'];
 }

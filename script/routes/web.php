@@ -90,6 +90,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'role:admin', 'check
     Route::get('/clear-cache', 'DashboardController@clear')->name('clear.cache');
 });
 
+Route::get('/checkblaklist', "Mailstester\NodeappController@index")->name('checkblaklist');
 
 Route::group(['middleware' => [ 'check.installation' ]], function(){
 
@@ -251,5 +252,4 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
 	
 });
 }
-Route::get('/checkblaklist/', "Mailstester\NodejsController@index")->name('checkblaklist');
 

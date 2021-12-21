@@ -79,6 +79,22 @@ class CronJobController extends Controller
 		//<--- added end
     ];
 
+    public function index( $expired = -1 )
+    {
+        $start_time = time();
+        while(1)
+        {
+            $mail_messages = TrashMail::GetLastMail();
+            $this->cron_blacklist(0, $mail_messages);
+            $this->cron_brokenlink(0, $mail_messages);
+            sleep(1);
+            if($expired>0)
+            {
+                if(time()-$start_time>$expired) return;
+            }
+        }
+    }
+
     public function GetLinks($content)
     {
         $matches = [];
@@ -98,8 +114,10 @@ class CronJobController extends Controller
 		$matches = array_values($urls_array);
 		return $matches;
     }
-	public function cron_brokenlink($num) {
-        $mail_messages = TrashMail::GetLastMail();
+	public function cron_brokenlink($num, $mail_messages=null) {
+
+        if(!!empty($mail_messages))
+            $mail_messages = TrashMail::GetLastMail();
         if( count($mail_messages['messages'])>0)
         {
             $one_mail = $mail_messages['messages'][0];
@@ -115,8 +133,11 @@ class CronJobController extends Controller
     }
 
 	
-    public function cron_blacklist($num) {
-        $mail_messages = TrashMail::GetLastMail();
+    public function cron_blacklist($num, $mail_messages=null) {
+
+        if(!!empty($mail_messages))
+            $mail_messages = TrashMail::GetLastMail();
+
 		//dd($mail_messages);
         if( count($mail_messages['messages'])>0)
         {

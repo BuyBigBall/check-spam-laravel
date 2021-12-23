@@ -199,6 +199,8 @@ class SpamAssassin
         $body = $bodies->item(0);
 
         $stringbody = $dom->saveHTML($body);
+
+		unset($dom);
         return $stringbody;
     }
 	public static function getserverauth($header) 
@@ -423,7 +425,7 @@ class SpamAssassin
 		
 		$spf_record = [];
 		$SPF_result = dns_get_record($email_domain,DNS_TXT);
-		// print_r($SPF_result); die;
+		
 		if(count($SPF_result)>0)		
 			foreach($SPF_result as $entry) 
 			{
@@ -464,6 +466,11 @@ class SpamAssassin
 			if( strlen(str_replace(" " , "", $item))>10)	$print_result[] = '"'.$item.'"';
 		}
 		$spf_detail[] =  ['cmd'=>$print_command, 'details'=>$print_result];
+
+
+		unset($record);
+		unset($checker);
+		unset($environment);
 		return ['auth_result'=>$auth_result, 'spf_record'=>$spf_record, 'spf_issues'=>$issue_strings, 'dig-query'=>$spf_detail];
 	}
 	public static function ReverseScore($score)

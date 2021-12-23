@@ -51,6 +51,8 @@ class TrashMail extends Model
                 $connection = $server->authenticate(Settings::selectSettings('imap_user'), Settings::selectSettings('imap_pass'));
             else
                 $connection = $server->authenticate($email, env('TEMPORARY_MAIL_PASSWORD'));
+
+            unset($server);
         }
         catch (Exception $e)
         {
@@ -123,12 +125,9 @@ class TrashMail extends Model
             
             $search = new SearchExpression();
             $search->addCondition(new To($email));
-            // $search->addCondition(new Cc($email));
+
             $messages = $mailbox->getMessages($search, \SORTDATE, true);
-            
-            // added by yasha for refresh asseenmark
-            // if(!empty($asSeenFlag)) Cache::Flush(); 
-            //<---
+            unset($search);
             
             foreach ($messages as $message) {
 
@@ -167,6 +166,8 @@ class TrashMail extends Model
                         $data['attachments'] = [];
                         $data['header'] = $message->getRawHeaders();
 
+								unset($date);
+						
                         $html = $message->getBodyHtml();
                         if ($html) {
                             $data['content'] = str_replace('<a', '<a target="blank"', $html);
@@ -225,13 +226,11 @@ class TrashMail extends Model
             $mailbox = $connection->getMailbox('INBOX');
             $search = new SearchExpression();
             $search->addCondition(new To($email));
-            // $search->addCondition(' OR ');
-            // $search->addCondition(new Cc($email));
-            // $search->addCondition(' OR ');
-            // $search->addCondition(new Bcc($email));
-
+           
             $messages = $mailbox->getMessages($search, \SORTDATE, true);
-
+			unset($search);
+			
+			
             foreach ($messages as $message) {
 
                 $id = $message->getNumber();
@@ -333,6 +332,8 @@ class TrashMail extends Model
             $data['bcc'] = $message->getBcc();
             $data['attachments'] = [];
             $data['header'] = $message->getRawHeaders();
+            
+                         unset($date);
 
             $html = $message->getBodyHtml();
             if ($html) {
@@ -405,11 +406,10 @@ class TrashMail extends Model
                 $mailbox = $connection->getMailbox('INBOX');
                 
                 $search = new SearchExpression();
-				
-                //$search->addCondition(new To($receive_email));
-				
                 $messages = $mailbox->getMessages($search, \SORTDATE, true);
                 
+                                 unset($search);
+
                 foreach ($messages as $message) {
 					//dd($message->getTo()[0]->getAddress());	
 					//dd($message->getTo());	
@@ -478,7 +478,7 @@ class TrashMail extends Model
 					$data['header'] = $message->getRawHeaders();
 
                     $data['attachments'] = [];
-					
+							unset($date);
 					
                     if ( ($html = $message->getBodyHtml()) ) 
                     {
@@ -503,6 +503,7 @@ class TrashMail extends Model
                 'mailbox' => "Erorr : Please Reload Page Again ",
                 'messages' => []
             ];
+			return $results;
         }
 
 		return $results;

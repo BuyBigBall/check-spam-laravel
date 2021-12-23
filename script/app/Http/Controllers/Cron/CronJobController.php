@@ -85,19 +85,33 @@ class CronJobController extends Controller
         while(1)
         {
             $mail_messages = TrashMail::GetLastMail();
-            //print_r($mail_messages ); die;
+            //dd($mail_messages ); die;
             if( count($mail_messages['messages'])>0 && 
                 !!empty($mail_messages['messages'][0]['error']) )
             {
+				$start = time();
                 $this->cron_blacklist(0, $mail_messages);
                 $this->cron_brokenlink(0, $mail_messages);
+				
+				$num = 0;
+				$end = time();
+				// /*
+				{	# this is for a test.
+					$mail_id = $mail_messages['messages'][0]['no'];
+					$target = [$mail_messages['messages'][0]['from_email']];
+					MailBlacklistCheck::updateOrCreate(
+						[ 'mail_id' => $mail_id, 'cron_number'=>$num],
+						[ 'starttime' => $start, 'endtime' => $end]
+					);
+				}
+				// */
+				//dd($mail_id);
             }
-            //print(time()."\n");
-            sleep(1);
             if($expired>0)
             {
-                if(time()-$start_time>$expired) return;
+                if(time()-$start_time>=$expired) return;
             }
+            sleep(1);
         }
     }
 
@@ -130,15 +144,17 @@ class CronJobController extends Controller
             $mail_messages = TrashMail::GetLastMail();
         if( count($mail_messages['messages'])>0)
         {
-            $one_mail = $mail_messages['messages'][0];
+			foreach($mail_messages['messages'] as $one_mail)
+			{	//$one_mail = $mail_messages['messages'][0];
             
-			$id_hash = Hashids::decode($one_mail['id']);
-            $mail_id = $id_hash[0];
-			
-			$addresss_from  = $one_mail['from_email'];
-            $hostname = explode('@', $addresss_from)[1];
-            $links = $this->GetLinks( $one_mail['content'] );
-            $this->lookfor_brokenlinks($links, $mail_id, $num);
+				$id_hash = Hashids::decode($one_mail['id']);
+				$mail_id = $id_hash[0];
+
+				$addresss_from  = $one_mail['from_email'];
+				$hostname = explode('@', $addresss_from)[1];
+				$links = $this->GetLinks( $one_mail['content'] );
+				$this->lookfor_brokenlinks($links, $mail_id, $num);
+			}
         }
     }
 
@@ -151,31 +167,36 @@ class CronJobController extends Controller
 		//dd($mail_messages);
         if( count($mail_messages['messages'])>0)
         {
-            $one_mail = $mail_messages['messages'][0];
-			
-			$id_hash = Hashids::decode($one_mail['id']);
-            $mail_id = $id_hash[0];
-			
-            $addresss_from  = $one_mail['from_email'];
-            $hostname = explode('@', $addresss_from)[1];
-			//dd($one_mail);
-            if(!array_key_exists($hostname, CronJobController::$ipByHost))
-            {
-                $mailheader = $one_mail['header'];
-                $auth_serverInfo = SpamAssassin::getserverauth( $mailheader );
-                $server_ip = $auth_serverInfo['serverip'];			//mail.ru=>128.140.169.216
-                //$server_ip = gethostbyname($hostname);
-				
-                CronJobController::$ipByHost[$hostname] = $server_ip;
-            }
-            else
-            {
-                $server_ip = CronJobController::$ipByHost[$hostname];
-            }
-			//dd($server_ip);	// obistar.com=>87.106.127.240
-			//print($hostname);
-			//dd($server_ip);	// obistar.com=>87.106.127.240
-            $this->lookfor_blacklist($server_ip, $one_mail, $num);
+			foreach($mail_messages['messages'] as $one_mail) 
+			{	//$one_mail = $mail_messages['messages'][0];
+
+				$id_hash = Hashids::decode($one_mail['id']);
+				$mail_id = $id_hash[0];
+
+				$addresss_from  = $one_mail['from_email'];
+				$hostname = explode('@', $addresss_from)[1];
+
+				if(!array_key_exists($hostname, CronJobController::$ipByHost))
+				{
+					//dd($one_mail);
+					$mailheader = $one_mail['header'];
+					//dd($mailheader);
+					$auth_serverInfo = SpamAssassin::getserverauth( $mailheader );
+					//dd($auth_serverInfo);
+					$server_ip = $auth_serverInfo['serverip'];			//mail.ru=>128.140.169.216
+					//$server_ip = gethostbyname($hostname);
+
+					CronJobController::$ipByHost[$hostname] = $server_ip;
+				}
+				else
+				{
+					$server_ip = CronJobController::$ipByHost[$hostname];
+				}
+				//dd($server_ip);	// obistar.com=>87.106.127.240
+				//print($hostname);
+				//dd($server_ip);	// obistar.com=>87.106.127.240
+				$this->lookfor_blacklist($server_ip, $one_mail, $num);
+			}
         }
 
     }
@@ -210,6 +231,7 @@ class CronJobController extends Controller
 		$perCount = env('BLACKLIST_LOOKFOR_GROUP_COUNT');
         $reverse_ip = implode(".", array_reverse(explode(".", $server_ip)));
 		
+		if($server_ip!="")		# case is "from_email" => "MAILER-DAEMON@compassionate-tharp.87-106-124-240.plesk.page"
         for($i=$perCount*$num; $i<$perCount*($num+1); $i++ )
         {
             if( empty(CronJobController::$dnsbl_lookup[$i]) ) continue;
@@ -243,6 +265,7 @@ class CronJobController extends Controller
                 $blacklist->serverip    = $server_ip;
                 $blacklist->result      = $result;
                 $blacklist->save();
+                unset($blacklist);
             }
             else
             {
@@ -323,6 +346,7 @@ class CronJobController extends Controller
                     $brokenlinkdb->result      = $result;
                     $brokenlinkdb->mark        = $result ? CronJobController::$burl_score_unit : 0;
                     $brokenlinkdb->save();
+                    unset($brokenlinkdb);
                 }
                 else
                 {

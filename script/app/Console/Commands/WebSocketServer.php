@@ -57,7 +57,7 @@ class WebSocketServer extends Command
     public function handle()
     {
         // return Command::SUCCESS;
-        //if( stripos('ws://', env('WEBSOCKET_PROTOCAL'))!==false)
+        if( stripos('ws://', env('WEBSOCKET_PROTOCAL'))!==false)
         {
             $server = IoServer::factory(
                 new HttpServer(
@@ -69,27 +69,30 @@ class WebSocketServer extends Command
             );
             $server->run();
         }
-        // else
-        // {   # wss://
-        //     $loop = React\EventLoop\Factory::create(); 
-        //     $webSock = new React\Socket\SecureServer( 
-        //         new React\Socket\Server('0.0.0.0:'.env('WEBSOCKET_PORT'), $loop), 
-        //             $loop, 
-        //             [
-        //                 'local_cert'        => env('CERT_PATH_CERT'),// path to your cert 
-        //                 'local_pk'          => env('CERT_PATH_KEY'), // path to your server private key 
-        //                 'allow_self_signed' => TRUE,                    // Allow self signed certs (should be false in production) 
-        //                 'verify_peer'       => FALSE                    // Ratchet magic 
-        //             ] 
-        //         ); 
-        //     $webServer = new Ratchet\Server\IoServer( 
-        //         new Ratchet\Http\HttpServer( 
-        //             new Ratchet\WebSocket\WsServer( 
-        //                 new WebSocketController() ) )
-        //         , $webSock ); 
-        //     $loop->run();
+        else
+        {   # wss://
+            $loop = \React\EventLoop\Factory::create(); 
+            $webSock = new \React\Socket\SecureServer( 
+                new \React\Socket\Server('0.0.0.0:'.env('WEBSOCKET_PORT'), $loop), 
+                    $loop, 
+                    [
+                        'local_cert'        => env('CERT_PATH_CERT'),// path to your cert 
+                        'local_pk'          => env('CERT_PATH_KEY'), // path to your server private key 
+                        'allow_self_signed' => TRUE,                    // Allow self signed certs (should be false in production) 
+                        'verify_peer'       => FALSE                    // Ratchet magic 
+                    ] 
+                ); 
+            $webSock->on('error', function (Exception $e) {
+                echo 'Error' . $e->getMessage() . PHP_EOL;
+            });
+            $webServer = new \Ratchet\Server\IoServer( 
+                new \Ratchet\Http\HttpServer( 
+                    new \Ratchet\WebSocket\WsServer( 
+                        new WebSocketController() ) )
+                , $webSock ); 
+            $loop->run();
 
-        //  }
+         }
            ## for client 
             /*
             \Ratchet\Client\connect(getenv('SOCKET_URL').':'.getenv('SOCKET_PORT'))

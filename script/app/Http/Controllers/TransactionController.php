@@ -27,11 +27,15 @@ class TransactionController extends Controller
         // $pdf = \PDF::loadView('emails.invoicepdf')->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
         // $pdf->setPaper('a4', 'landscape')->setWarnings(false)->save('storage/pdf/'.$idss.'-invoice.pdf');
         // $pdurl = 'storage/pdf/'.$idss.'-invoice.pdf';
+
+        $transaction = Transaction::find($transaction_id);
+        if(!!empty($transaction)) abort(419);
+
         return view('emails.invoicepdf')->with([
-            'invoice_number'=>'VNT816',
-            'invoice_date'  => date('F j, Y', strtotime('2021-12-11')),
-            'firstname'     => 'Samir',
-            'lastname'      => 'chakouri',
+            'invoice_number'=> sprintf("EMT%06", $transaction_id),
+            'invoice_date'  => date('F j, Y'),
+            'firstname'     => $transaction->username ?? $transaction->buyer->name ?? $transaction->trash_mail->user->name,
+            'lastname'      => '',
             'city'          => 'Gorod Krasnodar',
             'address'       => 'Krasnodar, Russia',
             'state'         => 'Krasnodar Russia',

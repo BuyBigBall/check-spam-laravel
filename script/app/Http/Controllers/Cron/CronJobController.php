@@ -85,8 +85,14 @@ class CronJobController extends Controller
         while(1)
         {
             $mail_messages = TrashMail::GetLastMail();
-            $this->cron_blacklist(0, $mail_messages);
-            $this->cron_brokenlink(0, $mail_messages);
+            //print_r($mail_messages ); die;
+            if( count($mail_messages['messages'])>0 && 
+                !!empty($mail_messages['messages'][0]['error']) )
+            {
+                $this->cron_blacklist(0, $mail_messages);
+                $this->cron_brokenlink(0, $mail_messages);
+            }
+            //print(time()."\n");
             sleep(1);
             if($expired>0)
             {
@@ -95,6 +101,10 @@ class CronJobController extends Controller
         }
     }
 
+    public function onemin(  )
+    {
+        $this->index(59);
+    }
     public function GetLinks($content)
     {
         $matches = [];
@@ -178,21 +188,21 @@ class CronJobController extends Controller
         $target = [];
         foreach($one_mail['to'] as $to_addr)
         {
-            if($to_addr->hostname==env('MAIL_HOST'))
+            if($to_addr->getHostname()==env('MAIL_HOST'))
             {
                 $target[] = $to_addr->getAddress();
             }
         }
         foreach($one_mail['cc'] as $to_addr)
         {
-            if($to_addr->hostname==env('MAIL_HOST'))
+            if($to_addr->getHostname()==env('MAIL_HOST'))
             {
                 $target[] = $to_addr->getAddress();
             }
         }
         foreach($one_mail['bcc'] as $to_addr)
         {
-            if($to_addr->hostname==env('MAIL_HOST'))
+            if($to_addr->getHostname()==env('MAIL_HOST'))
             {
                 $target[] = $to_addr->getAddress();
             }

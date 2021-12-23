@@ -4313,7 +4313,7 @@ a.badge:focus {
 	}
 }
 .progress {
-	overflow: hidden;
+	/* overflow: hidden; /* because boat hidden */
 	height: 18px;
 	margin-bottom: 18px;
 	background-color: #f7f7f7;
@@ -7744,4 +7744,7 @@ body#com_mtmanager_checkout_listing, body#com_mtmanager_checkout_address, body#c
 .star, .mailtester_cart_field_required
 {
 	color:red;
+}
+.bar.container {
+    width: 90%;
 }

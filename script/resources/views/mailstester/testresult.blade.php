@@ -511,7 +511,7 @@
             }
         });
     
-    }, 10000);
+    }, fetch_time * 1000);
     function NewLink()
     {
         var added = '&mailbox='+email;

@@ -7,7 +7,7 @@ use Illuminate\Console\Command;
 use Ratchet\Server\IoServer;
 use Ratchet\Http\HttpServer;
 use Ratchet\WebSocket\WsServer;
-use App\Http\Controllers\WebSocketController;
+use App\Http\Controllers\Cron\CronJobController;
 
 class PrecheckServer extends Command
 {
@@ -50,14 +50,6 @@ class PrecheckServer extends Command
     public function handle()
     {
         // return Command::SUCCESS;
-        $server = IoServer::factory(
-            new HttpServer(
-                new WsServer(
-                    new WebSocketController()
-                )
-            ),
-            env('WEBSOCKET_PORT')
-        );
-        $server->run();
+        (new CronJobController())->index();
     }
 }

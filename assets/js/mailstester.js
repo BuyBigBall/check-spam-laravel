@@ -60,7 +60,8 @@ $(function() {
 
 
 	// start for socket =============================================>
-	
+	// var test_url = 'ws://127.0.0.1:2083'
+	// var conn = new WebSocket(test_url);
 	var conn = new WebSocket(WEBSOCKET_PROTOCAL+WEBSOCKET_SERVER+":"+WEBSOCKET_PORT);
 	var connected = false;
 	var received_state = 0;
@@ -118,7 +119,7 @@ $(function() {
 				window.location.reload();
 				return;
 			}
-			else if(elapsedTime == reloadTime - 1 ){
+			else if(elapsedTime <= reloadTime - 1 ){
 				$.ajax({
 					url: wait_url,
 					dataType: "text",

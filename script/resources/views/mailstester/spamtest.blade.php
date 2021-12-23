@@ -12,7 +12,7 @@
                 <span class="mailbox" style="border:#ddd solid 1px;">{{ $email }}</span>
             </div>
 
-            <div class="container py-5">
+            <div class="bar container py-5">
                 <div class="subtitle text-center countdown my-3">0</div>
                 <div class="progress">
                     <div

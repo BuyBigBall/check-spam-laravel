@@ -248,6 +248,13 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
     Route::get('/cron_blacklist/{num}' , "Cron\CronJobController@cron_blacklist")->name('cron_blacklist');
     Route::get('/cron_brokenlink/{num}', "Cron\CronJobController@cron_brokenlink")->name('cron_brokenlink');
 
+    // cronjob * > * * * * * root /opt/psa/admin/sbin/fetch_url 'https://mail-analyzer.com/onemin'
+    Route::get('/onemin', "Cron\CronJobController@onemin")->name('onemin');
+
+    // command * > php artisan precheck:init
+    Route::get('/precheck/{expired}', "Cron\CronJobController@index")->name('precheck');
+
+
     Route::get('/{email}', "Mailstester\EmailTestController@index")->name('/');	//example <https://mail-analyzer.com/yakov.757>
 	
 });

@@ -30,6 +30,14 @@ class MicroPayment extends Model
                     , 'guest_email', 'firstname', 'lastname', 'country'
                     , 'bank', 'mode', 'type', 'deal_id', 'pay_id', 'Authrity'
                     , 'use_count'
+                    , 'mail_addr'
+                    , 'company'
+                    , 'vatnum'
+                    , 'address'
+                    , 'postcode'
+                    , 'city'
+                    , 'telephone'
+                    , 'state'                    
             ];
 
     public function user() {

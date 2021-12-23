@@ -249,10 +249,10 @@ class MailContentController extends Controller
                 }
                 
                 if(empty($json_string))
-                $json_array = $this->GetJsonArray( $email ,  $response, $mail_id);
+                $json_array = MailContentController::GetJsonArray( $email ,  $response, $mail_id);
             }
 		    if(empty($json_string) && empty($json_array) && !empty($response))
-                $json_array = $this->GetJsonArray( $email ,  $response, $mail_id);
+                $json_array = MailContentController::GetJsonArray( $email ,  $response, $mail_id);
             // ############################################################
             
 		//dd($json_array);
@@ -277,26 +277,40 @@ class MailContentController extends Controller
                 $user_name = '';
                 $user_email= '';
 			}
-                $mail_id   = $response['no'];
-                if($db_hist==null)
-                {
-					$message_result = [
-                        'mail_id' =>    $mail_id,
-                        'user_id' =>    $user_id,
-                        'name' =>       $user_name ,
-                        'email' =>      $user_email,
-                        'receiver'=>    $to_email,
-                        'sender' =>     $response['from_email'],
-                        'tested_at' =>  date('Y-n-d H:i:s', time()),
-                        'received_at' =>$response['receivedAt'],
-                        'subject' =>    $response['subject'],
-                        'header' =>     $response['header'],
-                        'content' =>    $response['content'],
-                        'score' =>      $json_object->mark,
-                        'json' =>       $json_string ,
-                    ];
-                    $db_hist =  TestResult::create($message_result);
-                }
+
+            $mail_id   = $response['no'];
+            if($db_hist==null)
+            {
+                $message_result = [
+                    'mail_id' =>    $mail_id,
+                    'user_id' =>    $user_id,
+                    'name' =>       $user_name ,
+                    'email' =>      $user_email,
+                    'receiver'=>    $to_email,
+                    'sender' =>     $response['from_email'],
+                    'tested_at' =>  date('Y-n-d H:i:s', time()),
+                    'received_at' =>$response['receivedAt'],
+                    'subject' =>    $response['subject'],
+                    'header' =>     $response['header'],
+                    'content' =>    $response['content'],
+                    'score' =>      $json_object->mark,
+                    'json' =>       $json_string ,
+                ];
+                $db_hist =  TestResult::create($message_result);
+            }
+            else if( !!empty($db_hist->tested_at) )
+            {
+                TestResult::find($db_hist->id)->update([
+                    'tested_at' =>  date('Y-n-d H:i:s', time()),
+                    'user_id' =>    $user_id,
+                    'name' =>       $user_name ,
+                    'email' =>      $user_email,
+                ]);
+                //'user_id' =>    1,      //now admin 
+                //'name' =>       "admin" ,
+                //'email' =>      $email,
+
+            }
         }
             
         ################# whitelabel style ################
@@ -362,7 +376,7 @@ class MailContentController extends Controller
         print($email_body);die;
     }
 
-    private function GetJsonArray($email, $inbox_object, $mail_id)
+    public static function GetJsonArray($email, $inbox_object, $mail_id)
     {
         if( !empty($inbox_object) && !empty($inbox_object[0])) $inbox_object = $inbox_object[0];
         $mailheader = $inbox_object['header'];
@@ -420,7 +434,7 @@ class MailContentController extends Controller
 
 
         $inbox_object = TrashMail::messages($email, $message_id);
-        $array_object = $this->GetJsonArray($email, $inbox_object, $mail_id);
+        $array_object = MailContentController::GetJsonArray($email, $inbox_object, $mail_id);
         $json_string  = json_encode($array_object);
         header("Content-Type: application/json");
 		header("Accept: application/json");

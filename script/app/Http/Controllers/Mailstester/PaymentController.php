@@ -474,6 +474,7 @@ class PaymentController extends Controller
             session()->put('Order_price_'.$userdata['id'],  $price);
             session()->put('Order_count_'.$userdata['id'],  $qty);
             session()->put('Order_userid_'.$userdata['id'],  $profile_id);
+            session()->put('Payment_guest_'.$userdata['id'],  $request);
             
             if( !empty($coupon) && !empty($request->coupon_code) &&
                 !empty($couponInfo = coupon::where('coupon_code',$request->coupon_code)->first()) )
@@ -523,6 +524,8 @@ class PaymentController extends Controller
             session()->put('Order_price_'.$userdata['id'],  $price);
             session()->put('Order_count_'.$userdata['id'],  $qty);
             session()->put('Order_userid_'.$userdata['id'],  $profile_id);
+            session()->put('Payment_guest_'.$userdata['id'],  $request);
+
             if(!empty($coupon) && !empty($request->coupon_code) &&
                 !empty($couponInfo = coupon::where('coupon_code',$request->coupon_code)->first()) )
             {
@@ -619,8 +622,9 @@ class PaymentController extends Controller
             return redirect(route('prices'));
         }
         $payment_method = session()->get('Order_method_'.$userdata['id']);
-        $payment_owner = session()->get('Order_account_'.$userdata['id']);
-        
+        $payment_owner  = session()->get('Order_account_'.$userdata['id']);
+        $payment_guest  = session()->get('Payment_guest_'.$userdata['id']);
+
         if($payment_method == 'paybox_paypal'){ 
             // paypal status ---------------------------------
             $profile_id = session()->get('Order_userid_'.$userdata['id']);
@@ -630,7 +634,7 @@ class PaymentController extends Controller
             $provider->getAccessToken();
             $response = $provider->capturePaymentOrder($orderID);
             if($response['status'] == 'COMPLETED'){
-                $inserted_id = $this->save_Paypal_payment_history($qty , $response, $payment_owner);
+                $inserted_id = $this->save_Paypal_payment_history($qty , $response, $payment_owner, $payment_guest);
                 $balance_id = $this->create_balance($inserted_id);
                 return redirect(route('checkout', 'step4'));
             }else{
@@ -646,7 +650,7 @@ class PaymentController extends Controller
                 Stripe::setApiKey(env('STRIPE_SECRET'));
                 $session = StripeSession::retrieve($request->session_id);
                 if($session && $session->payment_status == 'paid'){
-                    $inserted_id = $this->save_Stripe_payment_history($qty , $session, $payment_owner);
+                    $inserted_id = $this->save_Stripe_payment_history($qty , $session, $payment_owner, $payment_guest);
                     $balance_id = $this->create_balance($inserted_id);
                     return redirect(route('checkout', 'step4'));
                 }
@@ -1009,6 +1013,20 @@ class PaymentController extends Controller
             $tranc->type = $type;
             $tranc->income = $income;
             $tranc->fee = env('VAT_FEE');
+
+            #########################
+            $tranc->mail_addr   = $pay_request->get('guest_email');
+            $tranc->firstname   = $pay_request->get('firstname');
+            $tranc->lastname    = $pay_request->get('lastname');
+            $tranc->country     = $pay_request->get('country');
+            $tranc->company     = $pay_request->get('company');
+            $tranc->vatnum      = $pay_request->get('vatnum');
+            $tranc->address     = $pay_request->get('street');
+            $tranc->postcode    = $pay_request->get('postcode');
+            $tranc->city        = $pay_request->get('city');
+            $tranc->telephone   = $pay_request->get('telephone') ?? '';
+            $tranc->state       = $pay_request->get('state') ?? '';
+
             $tranc->save();
  
             $microPay = new MicroPayment();
@@ -1036,12 +1054,23 @@ class PaymentController extends Controller
             $microPay->deal_id = $deal_id;
             $microPay->pay_id = $pay_id;
             $microPay->authority = $authority;
+            
+            #########################
+            $microPay->mail_addr    = $pay_request->get('guest_email');
+            $microPay->company      = $pay_request->get('company');
+            $microPay->vatnum       = $pay_request->get('vatnum');
+            $microPay->address      = $pay_request->get('street');
+            $microPay->postcode     = $pay_request->get('postcode');
+            $microPay->city         = $pay_request->get('city');
+            $microPay->telephone    = '';
+            $microPay->state        = '';
+
             $microPay->save();
             return $microPay->id;
         }
         return null;
     }
-    private function save_Paypal_payment_history($pay_amount, $payment_response, $payment_owner)
+    private function save_Paypal_payment_history($pay_amount, $payment_response, $payment_owner, $payment_guest)
     {
         $user_id = Auth::user()->id;
 
@@ -1088,6 +1117,19 @@ class PaymentController extends Controller
         $tranc->type = $type;
         $tranc->income = $income;
         
+        #########################
+        $tranc->firstname = $payment_guest->firstname;
+        $tranc->lastname = $payment_guest->lastname;
+        $tranc->country = $payment_guest->country ?? '';
+        $tranc->mail_addr = $payment_guest->mail_addr;
+        $tranc->company = $payment_guest->company ?? '';
+        $tranc->vatnum = $payment_guest->vatnum ?? '';
+        $tranc->address = $payment_guest->address;
+        $tranc->postcode = $payment_guest->postcode;
+        $tranc->city = $payment_guest->city;
+        $tranc->telephone = $payment_guest->telephone;
+        $tranc->state = $payment_guest->state;
+        
         $tranc->fee = env('VAT_FEE');
         if( !empty($coupon) && !empty($request->coupon_code) &&
             !empty($couponInfo = coupon::where('coupon_code',$request->coupon_code)->first()) )
@@ -1109,7 +1151,7 @@ class PaymentController extends Controller
         return $tranc->id;
     }
     
-    private function save_Stripe_payment_history($pay_amount, $payment_response, $payment_owner)
+    private function save_Stripe_payment_history($pay_amount, $payment_response, $payment_owner, $payment_guest)
     {
         $payment_response = $payment_response->toArray();
 
@@ -1149,6 +1191,19 @@ class PaymentController extends Controller
         $tranc->bank = $bank;
         $tranc->type = $type;
         $tranc->income = $income;
+
+        #########################
+        $tranc->firstname = $payment_guest->firstname;
+        $tranc->lastname = $payment_guest->lastname;
+        $tranc->country = $payment_guest->country ?? '';
+        $tranc->mail_addr = $payment_guest->mail_addr;
+        $tranc->company = $payment_guest->company ?? '';
+        $tranc->vatnum = $payment_guest->vatnum ?? '';
+        $tranc->address = $payment_guest->address;
+        $tranc->postcode = $payment_guest->postcode;
+        $tranc->city = $payment_guest->city;
+        $tranc->telephone = $payment_guest->telephone;
+        $tranc->state = $payment_guest->state;
 
         $tranc->fee = env('VAT_FEE');
         if( !empty($coupon) && !empty($request->coupon_code) &&

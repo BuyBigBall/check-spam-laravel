@@ -172,8 +172,7 @@
                                     href="https://www.paypal.com/us/webapps/mpp/paypal-popup"
                                     class="about_paypal"
                                     onclick="window.open(winurl,'WIPaypal',winstyle); return false;">
-                                            PayPal</a>; you can pay with your credit card if you don’t have a PayPal
-                                    account.</p>
+                                            PayPal</a>; you can pay with your credit card if you don’t have a PayPal account.</p>
                             </div>
                             
                         </li>
@@ -190,7 +189,7 @@
                                 placeholder="Company name"
                                 id="address_company"
                                 type="text"
-                                name="data[address][address_company]"
+                                name="company"
                                 value=""/></label>
                         <label for="address_vat" style="clear:both;width:100%;">
                             <input
@@ -198,7 +197,7 @@
                                 placeholder="VAT number (for EU companies only)"
                                 id="address_vat"
                                 type="text"
-                                name="data[address][address_vat]"
+                                name="vatnum"
                                 value=""/>
                             <span style="display:none" id="vaterror"></span>
                         </label>
@@ -208,7 +207,7 @@
                                 placeholder="Address"
                                 id="address_street"
                                 type="text"
-                                name="data[address][address_street]"
+                                name="street"
                                 value=""/></label>
                         <label for="address_post_code" style="float:left;width:40%;">
                             <input
@@ -216,7 +215,7 @@
                                 placeholder="Postcode"
                                 id="address_post_code"
                                 type="text"
-                                name="data[address][address_post_code]"
+                                name="postcode"
                                 value=""/></label>
                         <label for="address_city" style="float:left;width:60%;">
                             <input
@@ -224,7 +223,7 @@
                                 placeholder="City"
                                 id="address_city"
                                 type="text"
-                                name="data[address][address_city]"
+                                name="city"
                                 value=""/></label>
                         <div class="extratext">You will receive a PDF invoice via email once the purchase completed</div>
                     </div>

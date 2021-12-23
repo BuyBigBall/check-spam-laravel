@@ -59,10 +59,19 @@ $(function() {
 
 
 
+	/*
 	// start for socket =============================================>
-	// var test_url = 'ws://127.0.0.1:2083'
-	// var conn = new WebSocket(test_url);
-	var conn = new WebSocket(WEBSOCKET_PROTOCAL+WEBSOCKET_SERVER+":"+WEBSOCKET_PORT);
+	var wsConnect = 0;
+	if(wsConnect)
+	{
+		//var test_url = 'wss://demo.piesocket.com/v3/channel_1?api_key=oCdCMcMPQpbvNjUIzqtvF1d2X2okWpDQj4AwARJuAgtjhzKxVEjQU6IdCjwm&notify_self';
+		var test_url = 'ws://127.0.0.1:2083'
+		var conn = new WebSocket(test_url);
+	}
+	else
+	{
+		var conn = new WebSocket(WEBSOCKET_PROTOCAL+WEBSOCKET_SERVER+":"+WEBSOCKET_PORT);
+	}
 	var connected = false;
 	var received_state = 0;
 	var received_message = null;
@@ -73,12 +82,10 @@ $(function() {
     conn.onopen = function(e) {
 		connected = true;
         message_state("Connection established!", 'success');
-		received_state = 1; //pending
-		
-
-	// 	var data = {email: $('.mailbox').html(), time: elapsedTime};
-	// 	conn.send(JSON.stringify(data));
+		received_state = 1; //pending  // 	var data = {email: $('.mailbox').html(), time: elapsedTime};	// 	conn.send(JSON.stringify(data));
     };
+	// */
+
 
     // conn.onclose = function(e) {
     //     message_state("Connection closed!", 'error');
@@ -113,40 +120,40 @@ $(function() {
 			countdown.html( Math.max(reloadTime-elapsedTime,0));
 			progress.css('width',Math.min((elapsedTime/reloadTime*100),100)+'%');
 
-			if(elapsedTime > (reloadTime + (refreshRate*5))){
+			if(elapsedTime > reloadTime ){	//+ (refreshRate*5))
 				//MMMmmm safe guard to force to refresh the page... but only once!
 				//conn.close();
 				window.location.reload();
 				return;
 			}
-			else if(elapsedTime <= reloadTime - 1 ){
-				$.ajax({
-					url: wait_url,
-					dataType: "text",
-					cache: false,
-					contentType: false,
-					processData: false,
-					type: "get",
-					success: function (data) {
+			// else if(elapsedTime <= reloadTime - 1 ){
+			// 	$.ajax({
+			// 		url: wait_url,
+			// 		dataType: "text",
+			// 		cache: false,
+			// 		contentType: false,
+			// 		processData: false,
+			// 		type: "get",
+			// 		success: function (data) {
 						
-					  var d = JSON.parse(data);
-					  if(d.result=='ok')
-					  {
-						var mail = d.email.split('@');
-						try{
-							mail = mail[0];
-						}
-						catch(e)
-						{
-							console.log('result email : ' + d.email);
-						}
-						if(waitingTimeout!=null)clearInterval(waitingTimeout);
-						window.location.href = result_url + '?mailbox='+mail+'&message_id='+d.message_id;
+			// 		  var d = JSON.parse(data);
+			// 		  if(d.result=='ok')
+			// 		  {
+			// 			var mail = d.email.split('@');
+			// 			try{
+			// 				mail = mail[0];
+			// 			}
+			// 			catch(e)
+			// 			{
+			// 				console.log('result email : ' + d.email);
+			// 			}
+			// 			if(waitingTimeout!=null)clearInterval(waitingTimeout);
+			// 			window.location.href = result_url + '?mailbox='+mail+'&message_id='+d.message_id;
 			
-					  }
-					},
-				  });
-			}
+			// 		  }
+			// 		},
+			// 	  });
+			// }
 			else
 			{
 				/*

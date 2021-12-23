@@ -299,6 +299,7 @@ class EmailTestController extends Controller
         return implode($pass); //turn the array into a string
     }
 
+    # ajax check_email request
     public static function temporaryEmailCheck($email=null)
     {
         if($email == null)
@@ -325,7 +326,7 @@ class EmailTestController extends Controller
 
                 ## beacuse not performed blacklist check, it must be performed blaklist check.
                 if($blst==null)
-                {
+                {   #if no precheck, now check the dns blacklist
                     {
                         MailBlacklistCheck::updateOrCreate(
                             [ 'mail_id'  => $id,    'cron_number'=>$num],
@@ -349,7 +350,9 @@ class EmailTestController extends Controller
                     $links = $cronCheckmodule->GetLinks( $LastEmail['content'] );
                     $cronCheckmodule->lookfor_brokenlinks($links, $id, 0);
                 }
-                if($blst==null || $blnk==null)  unset($id);
+                
+                # it's dont need this
+                // if($blst==null || $blnk==null)  unset($id);
                 ## <----------
             }
         }

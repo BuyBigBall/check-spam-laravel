@@ -12,7 +12,19 @@ class Transaction extends Model
     use HasFactory;
     use Sluggable;
 
-    protected $fillable = ['id', 'charge_date', 'user_id', 'email_id', 'price_type','price', 'qty', 'mode', 'authority', 'bank', 'type', 'income', 'gift', 'balance_id', 'remain_time'];
+    protected $fillable = ['id', 'charge_date', 'user_id', 'email_id', 'price_type','price', 'qty', 'mode', 'authority', 'bank', 'type', 'income', 'gift', 'balance_id', 'remain_time'
+                        ,'mail_addr'
+                        ,'firstname'
+                        ,'lastname'
+                        ,'company'
+                        ,'vatnum'
+                        ,'address'
+                        ,'postcode'
+                        ,'city'
+                        ,'telephone'
+                        ,'country'
+                        ,'state'
+                    ];
 
     public function sluggable(): array
     {

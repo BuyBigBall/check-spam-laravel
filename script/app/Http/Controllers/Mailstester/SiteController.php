@@ -316,7 +316,10 @@ class SiteController extends Controller
                 $options = new UserOption();
                 $options->user_id       = $userdata['id'];
                 $options->pay_types     = $request->micropayment;
-                $options->email_id      = $userdata->trashmail[0]->id;
+                if(!empty($userdata->trashmail) && count($userdata->trashmail)>0)
+                    $options->email_id      = $userdata->trashmail[0]->id;
+                else
+                    $options->email_id      = 0;
                 $options->email_key     = $request->pkey;
                 $options->from_ips      = $request->serverip;
                 $options->test_ips      = $request->clientip;

@@ -27,37 +27,63 @@ class TransactionController extends Controller
         // $pdf = \PDF::loadView('emails.invoicepdf')->setOptions(['dpi' => 150, 'defaultFont' => 'sans-serif']);
         // $pdf->setPaper('a4', 'landscape')->setWarnings(false)->save('storage/pdf/'.$idss.'-invoice.pdf');
         // $pdurl = 'storage/pdf/'.$idss.'-invoice.pdf';
-
         $transaction = Transaction::find($transaction_id);
         if(!!empty($transaction)) abort(419);
 
+        @session_start();
+        $_SESSION['invoice'] = [
+            'inv_num'   => sprintf("EMT%06d", $transaction_id),
+            'inv_date'  => date('F j, Y'),
+            'due_date'  => date('F j, Y', strtotime($transaction->created_at)),
+            'inv_from'  => [ env('INVOICE_COMPANY'), env('INVOICE_ADDRESS'), env('INVOICE_PHONE'), env('INVOICE_EMAIL') ],
+            'inv_to'    => [ $transaction->company, $transaction->address, $transaction->telephone, $transaction->mail_addr ],
+            'items'     => [
+                [
+                    'mail test' .' '.$transaction->type, 
+                    $transaction->price_type . ' purchase', 
+                    $transaction->qty, 
+                    $transaction->amount - $transaction->price * $transaction->qty,  // vat amount
+                    $transaction->price,                //price 
+                    $transaction->coupon_amount ?? '',  //discount
+                    //$transaction->price * $transaction->qty - ($transaction->coupon_amount ?? 0),
+                ],
+            ],
+            'sub_total' => $transaction->price * $transaction->qty - ($transaction->coupon_amount ?? 0),
+            'vat' => $transaction->fee,
+            'discount' => $transaction->coupon_amount ?? 0,
+            'shipment' => 0,
+            'total' => $transaction->amount,
+        ];
+
+        //include "../../invoice.php";        die;
+        return redirect("/invoice.php");
         return view('emails.invoicepdf')->with([
-            'invoice_number'=> sprintf("EMT%06", $transaction_id),
+            'invoice_number'=> sprintf("EMT%06d", $transaction_id),
             'invoice_date'  => date('F j, Y'),
-            'firstname'     => $transaction->username ?? $transaction->buyer->name ?? $transaction->trash_mail->user->name,
-            'lastname'      => '',
-            'city'          => 'Gorod Krasnodar',
-            'address'       => 'Krasnodar, Russia',
-            'state'         => 'Krasnodar Russia',
-            'phone'         => '5152463651',
-            'country'       => 'Russia',
-            'company'       => 'dev',
-            'postcode'      => '123456',
-            'email'         => 'yasha3651@mail.ru',
-            'pay_id'        => 'cus_Kf5ew6n5wpp1AP',
-            'Authority'     => 'pi_3JzlSg2eZvKYlo2C0kqoo2W9',
-            'bank'          => 'paypal',
-            'type'          => 'pending',
-            'target_email'  => 'yakov.757@mail-analyzer.com',
-            'price_type'    => 500,
-            'qty'           => 1,
-            'price'         => 50,
-            'fee_amount'    => 10.50,
-            'vat_fee'       => 21,
-            'total'         => 60.50,
-            
-            
+            'firstname'     => $transaction->firstname ?? $transaction->buyer->name ?? $transaction->trash_mail->user->name,
+            'lastname'      => $transaction->lastname,
+            'city'          => $transaction->city,
+            'address'       => $transaction->address,
+            'state'         => $transaction->state,
+            'phone'         => $transaction->telephone,
+            'country'       => $transaction->country,
+            'company'       => $transaction->company,
+            'postcode'      => $transaction->postcode,
+            'email'         => $transaction->mail_addr,
+            'pay_id'        => $transaction->pay_id,
+            'Authority'     => $transaction->authority,
+            'bank'          => $transaction->bank,
+            'type'          => $transaction->type,
+            'target_email'  => $transaction->trash_mail->email,
+            'price_type'    => $transaction->price_type,
+            'qty'           => $transaction->qty,
+            'price'         => $transaction->price,
+            'fee_amount'    => $transaction->amount - $transaction->price*$transaction->qty,
+            'vat_fee'       => $transaction->fee,
+            'total'         => $transaction->amount,
         ]);
+
+        //new Invoice($orderdata,$invoicedata,$pdurl)
         //dd($pdurl);
     }
 }

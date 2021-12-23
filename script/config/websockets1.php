@@ -1,6 +1,16 @@
 <?php
 // ... But this is only a subset of all the available configuration options. 
 return [
+    'apps' => [
+        [
+            'id' => env('PUSHER_APP_ID'),
+            'name' => env('APP_NAME'),
+            'key' => env('PUSHER_APP_KEY'),
+            'secret' => env('PUSHER_APP_SECRET'),
+            'enable_client_messages' => false,
+            'enable_statistics' => true,
+        ],
+    ],
     'ssl' => [
         /*
         * Path to local certificate file on filesystem. It must be a PEM encoded file which

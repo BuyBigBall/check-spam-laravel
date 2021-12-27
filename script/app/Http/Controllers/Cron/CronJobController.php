@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Cron;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Mailstester\MailContentController;
 use App\Models\BlacklistResult;
 use App\Models\BrokenlinkResult;
 use App\Models\TrashMail;
@@ -16,7 +17,7 @@ use Exception;
 // use Illuminate\Http\Request;
 // use Illuminate\Support\Facades\Auth;
 // use App\Models\MicroPayment;
-// use App\Models\TestResult;
+use App\Models\TestResult;
 // use App\Models\WhiteLabel;
 // use App\Models\Balance;
 // use App\Models\Visitor;
@@ -30,7 +31,7 @@ use Exception;
 // use DomDocument;
 // use SimpleXMLElement;
 // use SPFLib\Term\Mechanism;
-// use Vinkla\Hashids\Facades\Hashids;
+
 use App\Http\Controllers\Mailstester\SpamAssassin;
 
 class CronJobController extends Controller
@@ -95,14 +96,54 @@ class CronJobController extends Controller
 				
 				$num = 0;
 				$end = time();
+
+                # this is for a test.
+                $mail_id = $mail_messages['messages'][0]['no'];
+                MailBlacklistCheck::updateOrCreate(
+                    [ 'mail_id' => $mail_id, 'cron_number'=>$num],
+                    [ 'starttime' => $start, 'endtime' => $end]
+                );
+
 				// /*
-				{	# this is for a test.
-					$mail_id = $mail_messages['messages'][0]['no'];
-					$target = [$mail_messages['messages'][0]['from_email']];
-					MailBlacklistCheck::updateOrCreate(
-						[ 'mail_id' => $mail_id, 'cron_number'=>$num],
-						[ 'starttime' => $start, 'endtime' => $end]
-					);
+				{	
+                    foreach($mail_messages['messages'] as $response)
+                    {
+                        $email   = env('MAIL_FROM_ADDRESS');  //initialize
+                        $mail_id = $response['no'];
+                        foreach($response['to'] as $to)
+                        {
+                            if(stripos( $to->getAddress(), env('MAIL_HOST'))!==false)
+                            {
+                                $email = $to->getAddress(); break;
+                            }
+                        }
+                        
+                        $json_array  = MailContentController::GetJsonArray( $email , [ $response ], $mail_id);
+                        $json_string = json_encode($json_array);
+                        $json_object = json_decode($json_string);
+
+                        $message_result = [
+                            'mail_id' =>    $mail_id,
+                            'user_id' =>    1,      //now admin 
+                            'name' =>       "admin" ,
+                            'email' =>      $email,
+                            'receiver'=>    $email,
+                            'sender' =>     $response['from_email'],
+                            'received_at' =>$response['receivedAt'],
+                            'subject' =>    $response['subject'],
+                            'header' =>     $response['header'],
+                            'content' =>    $response['content'],
+                            'score' =>      $json_object->mark,
+                            'json' =>       $json_string ,
+                        ];
+                        $db_hist =  TestResult::create($message_result);
+                    }
+                    
+                    // must updated
+                    //'tested_at' =>  date('Y-n-d H:i:s', time()),
+                    //'user_id' =>    1,      //now admin 
+                    //'name' =>       "admin" ,
+                    //'email' =>      $email,
 				}
 				// */
 				//dd($mail_id);
@@ -295,7 +336,7 @@ class CronJobController extends Controller
     public function lookfor_brokenlinks($links, $mail_id, $num) {
 		$perCount = env('BLACKLIST_LOOKFOR_GROUP_COUNT');
         $i=0;
-		$links = ['http://www.google.com/'];
+		//$links = ['https://www.google.com/'];
 		if(!empty($links))
         foreach($links as $link)
         {

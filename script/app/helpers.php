@@ -218,11 +218,22 @@ function getSupportedLocales()
         foreach ($recipent as $to) {
             if(!empty($templatename)) {
                 $user = \App\Models\User::where('email', $to)->first();
-                $template_view = view('emails.' .    $templatename)
+                if($request['template']=='welcome')
+                {
+                    $template_view = view('emails.' .    $templatename)
                             ->with('email',     $user->email )
                             ->with('name',      $user->name )
                             ->with('subject',   $request['subject'] )
                             ->with('activate',  $activate_link );
+                }
+                else        #forgot
+                {
+                    $template_view = view('emails.' .    $templatename)
+                            ->with('verify_code', $request['verify_code'] ?? '' )
+                            ->with('subject',     $request['subject'] ?? '' )
+                            ->with('a_links',     $request['a_links'] ?? '' )
+                            ->with('username',    $request['username'] ?? '' );
+                }
                 
                 Mail::send('emails.content', ['content' => $template_view ], 
                     function ($mail) use ($user, $request) 

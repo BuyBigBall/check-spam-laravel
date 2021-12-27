@@ -103,7 +103,7 @@ class MailContentController extends Controller
 		$mailbox = explode('@', $mailbox)[0] .'@'. env('MAIL_HOST');
         $mail_address = TrashMail::where('email', $mailbox)->first();
         
-        if($mail_address==null)     return true;
+        if($mail_address==null)     return false;
         if($mail_address->user==null) return false;
 
         $owner_id = $mail_address->user->id;
@@ -164,7 +164,7 @@ class MailContentController extends Controller
             $mail_id     = $id_hash[0];
         }
         // http://localhost/testresult?mail_id=35&mailbox=yakov.757
-
+        //dd($request);
         if( ($could_not_use=$this->check_test_micropayment_user($request) ))
         {
             Session::put('could_not_use_by_paid_user', 'You have expired the micro-payment limit.');

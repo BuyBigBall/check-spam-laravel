@@ -3,13 +3,26 @@
 @section('content')
 <div id="content_container" style="width:100%">
     <div class="row-fluid contentsize">
-        <div id="system-message-container"></div>
-        <div class="reset py-6">
+    <div id="system-message-container">
+        @if( !empty($message) )
+            <div id="system-message">
+                <div class="alert alert-warning">
+                    <a class="close" data-dismiss="alert">×</a>
+                    <h4 class="alert-heading">Warning</h4>
+                    <div>
+                        <div class="alert-message">{{$$message}}</div>
+                    </div>
+                </div>
+            </div>        
+        @endif
+	</div>
+        <div class="reset py-1">
             <form
                 id="user-registration"
-                action="/manager/login.html?task=reset.request"
+                action="/forgottask?task=reset.pwd"
                 method="post"
                 class="form-validate form-horizontal well">
+                @csrf
                 <fieldset>
                     <p>Please enter the email address for your account. A verification code will be
                         sent to you. Once you have received the verification code, you will be able to
@@ -28,12 +41,13 @@
                         </div>
                         <div class="controls">
                             <input
-                                type="text"
-                                name="jform[email]"
+                                type="email"
+                                name="email"
                                 id="jform_email"
                                 value=""
                                 class="validate-username required"
                                 size="30"
+                                style="height:1.7rem;"
                                 required="required"
                                 aria-required="true"/>
                         </div>
@@ -46,7 +60,7 @@
                         </button>
                     </div>
                 </div>
-                <input type="hidden" name="23672775139cbb4eecd897ab9ae9797b" value="1"/></form>
+            </form>
         </div>
 
     </div>

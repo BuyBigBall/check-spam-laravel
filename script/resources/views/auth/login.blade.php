@@ -2,7 +2,7 @@
 
 @section('content')
 <div id="content_container" style="width:100%">
-    <div class="row-fluid contentsize py-5">
+    <div class="row-fluid contentsize py-1">
         <div id="system-message-container">
             <div id="system-message">
                 <!-- 

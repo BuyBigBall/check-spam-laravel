@@ -56,7 +56,7 @@ class TransactionController extends Controller
         ];
 
         //include "../../invoice.php";        die;
-        return redirect("/invoice.php");
+        return redirect("/invoice.php?trans_no=" . $transaction_id);
         return view('emails.invoicepdf')->with([
             'invoice_number'=> sprintf("EMT%06d", $transaction_id),
             'invoice_date'  => date('F j, Y'),

@@ -199,10 +199,15 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
     });
 	Route::get('/activate', 'Mailstester\RegisterController@active')->name("activate");
 
-	Route::get('/signup',         'Mailstester\RegisterController@showRegistrationForm')->name("signup");
+	Route::get('/signup',           'Mailstester\RegisterController@showRegistrationForm')->name("signup");
 	Route::post('/save-register',   'Mailstester\RegisterController@save_register')->name("save-register");
 
 	Route::get('/forgot/{type}',    'Auth\ForgotPasswordController@forgot')->name("forgot");
+    Route::post('/forgottask',       'Auth\ForgotPasswordController@forgottask')->name("forgottask");
+    Route::get('/resetpwd',       'Auth\ForgotPasswordController@resetpwdpage')->name("resetpwdpage");
+    Route::post('/resetpwd-confirm',       'Auth\ForgotPasswordController@resetpwdconfirm')->name("resetpwd-confirm");
+    
+
     # --> never necessory call these, but for test using
     // Route::get('/login', 'Mailstester\LoginController@index')->name("login");
     // Route::post('/login', 'Mailstester\LoginController@loginchk')->name("loginchk");

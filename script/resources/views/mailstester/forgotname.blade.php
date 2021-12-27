@@ -4,12 +4,13 @@
 <div id="content_container" style="width:100%">
     <div class="row-fluid contentsize">
         <div id="system-message-container"></div>
-        <div class="remind py-6">
+        <div class="remind py-1">
             <form
                 id="user-registration"
-                action="/manager/login.html?task=remind.remind"
+                action="/forgottask?task=reset.name"
                 method="post"
                 class="form-validate form-horizontal well" >
+                @csrf
                 <fieldset>
                     <p>Please enter the email address associated with your User account. Your
                         username will be emailed to the email address on file.</p>
@@ -28,11 +29,12 @@
                         <div class="controls">
                             <input
                                 type="email"
-                                name="jform[email]"
+                                name="email"
                                 class="validate-email required"
                                 id="jform_email"
                                 value=""
                                 size="30"
+                                style="height:1.7rem;"
                                 autocomplete="email"
                                 required="required"
                                 aria-required="true"/>
@@ -46,7 +48,7 @@
                         </button>
                     </div>
                 </div>
-                <input type="hidden" name="23672775139cbb4eecd897ab9ae9797b" value="1"/>
+               
             </form>
         </div>
 

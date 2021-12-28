@@ -204,7 +204,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(),
 
 	Route::get('/forgot/{type}',    'Auth\ForgotPasswordController@forgot')->name("forgot");
     Route::post('/forgottask',       'Auth\ForgotPasswordController@forgottask')->name("forgottask");
-    Route::get('/resetpwd',       'Auth\ForgotPasswordController@resetpwdpage')->name("resetpwdpage");
+    Route::get('/resetpwdpage',       'Auth\ForgotPasswordController@resetpwdpage')->name("resetpwdpage");
     Route::post('/resetpwd-confirm',       'Auth\ForgotPasswordController@resetpwdconfirm')->name("resetpwd-confirm");
     
 

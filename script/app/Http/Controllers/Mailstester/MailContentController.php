@@ -445,5 +445,5 @@ class MailContentController extends Controller
 /**
  * Reports error during API RPC request
  */
-class ApiRequestException extends Exception {}
+// class ApiRequestException extends Exception {}
 

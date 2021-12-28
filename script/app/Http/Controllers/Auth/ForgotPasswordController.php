@@ -32,13 +32,12 @@ class ForgotPasswordController extends Controller
 
         if( !!empty($user))
         {
-            return redirect( route("forgot", "pwd"))->with("message", "Username and verify code do not match or you do not have an account yet.");
+            return redirect( route("forgot", "pwd"))->with("warning", "Username and verify code do not match or you do not have an account yet.");
         }
         $pos = random_int(1,7);
         $char = ["_", "&", "^", "$", "#", "@"][random_int(0, 5)];
         $new_pwd = substr(md5($user->id . date('YndHis') . $user_email), 0, 8);
         $new_pwd = substr($new_pwd, $pos) . $char . substr($new_pwd, 0, $pos);
-        
         
         User::find($user->id)->update(["password" => Hash::make( $new_pwd)] );
         $response = ["password" => $new_pwd];
@@ -56,10 +55,14 @@ class ForgotPasswordController extends Controller
     {
         $token = $request->token;
         $user = User::where('remember_token', $token)->first();
-        if( !!empty($user) ) return redirect("login");
+
+        if( !empty($token))
+        {
+            if( !!empty($user) ) return redirect("login");
+        }        
 
         return view('mailstester.resetpwd')
-                // ->with('username', $user->name)
+                ->with('username', !empty($user) ? $user->name : '' )
                 ->with('token', $token);
     }
     public function forgot($type=null)
@@ -90,9 +93,21 @@ class ForgotPasswordController extends Controller
         if($request->task=="reset.pwd" && !empty($user))
         {
             $verify_code = md5($user->id . date('YndHis') );
-            $a_links = env('APP_URL') .  "/resetpwd?token=" . $verify_code;
+            $a_links =  route("resetpwdpage", "token=" . $verify_code);
+            //dd($a_links);
             User::find($user->id)->update(["remember_token" => $verify_code ]);
-
+            $response['verify_code'] = $verify_code;
+            $response['a_links']     = $a_links;
+            $response['username']   = $user->name;
+            
+            sendMail([
+                'recipent'=>[$user_email],	
+                'template'=>'forgot',
+                'subject' =>'Did you forgot ' . $title . "?",
+                'content' => $response,
+            ]);
+            $type = 'pwd';
+            return redirect(route("resetpwdpage"));
         }
         else if($request->task=="reset.name" && !empty($user))
         {
@@ -102,16 +117,9 @@ class ForgotPasswordController extends Controller
         }
         else
         {
-            return redirect("login");
+            return redirect("login")->with('warning', translate("You do not have an account yet."));
         }
 
-        sendMail([
-            'recipent'=>[$user_email],	
-            'template'=>'forgot',
-            'subject' =>'Did you forgot ' . $title . "?",
-            'content' => $response,
-        ]);
-
-        $this->forgot($type);
+        return $this->forgot($type);
     }
 }

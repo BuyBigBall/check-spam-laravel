@@ -229,10 +229,11 @@ function getSupportedLocales()
                 else        #forgot
                 {
                     $template_view = view('emails.' .    $templatename)
-                            ->with('verify_code', $request['verify_code'] ?? '' )
-                            ->with('subject',     $request['subject'] ?? '' )
-                            ->with('a_links',     $request['a_links'] ?? '' )
-                            ->with('username',    $request['username'] ?? '' );
+                            ->with('verify_code', $content['verify_code'] ?? '' )
+                            ->with('subject',     $content['subject'] ?? '' )
+                            ->with('a_links',     $content['a_links'] ?? '' )
+                            ->with('password',    $content['password'] ?? '' )
+                            ->with('username',    $content['username'] ?? '' );
                 }
                 
                 Mail::send('emails.content', ['content' => $template_view ], 

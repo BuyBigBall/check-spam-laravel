@@ -42,36 +42,38 @@
 				
                 <div
                     class="w540_mr_css_attr"
-                    style="font-family:sans-serif;font-size:14px;line-height:18px;background-color:#eeeeee;color:#61523a;text-align:center;"
+                    style="font-family:sans-serif;font-size:14px;line-height:18px;background-color:#eeeeee;color:#61523a;text-align:left;"
                     width="540">
                     <span style="font-size:16px;">
                         <strong>Hello</strong>
                     </span>
                     <br/>
                     <br/>
-                    @if( !empty($username) )
-                    A username reminder has been requested for your Mail-Tester Manager account.
+                           
+                    @if( !empty($verify_code) )
 
-                    Your username is {{ $username }}.
-
-                    To login to your account, select the link below.
-
-                    <a href="{{ env('APP_URL') }}/login">{{ env('APP_URL') }}/login</a>
-
-                    Thank you.                    
-                    
-                    @elseif( !empty($verify_code) )
-
-                    A request has been made to reset your Mail-Analyzer Manager account password. To reset your password, you will need to submit this verification code to verify that the request was legitimate.
-
+                    A request has been made to reset your Mail-Analyzer Manager account password. <br />To reset your password, you will need to submit this verification code to verify that the request was legitimate.
+					<br /><br />
                     The verification code is {{ $verify_code }}
-
+					<br /><br />
                     Select the URL below and proceed with resetting your password.
 
-                    <a href="{{$a_links}}">$a_links</a>
-
+                    <a href="{{$a_links}}">{{$a_links}}</a>
+					<br><br>
                     Thank you.
                     &nbsp;
+					
+					@elseif( !empty($username) )
+					
+                    A username reminder has been requested for your Mail-Tester Manager account.
+					<br><br>
+                    Your username is {{ $username }}.
+					<br><br>
+                    To login to your account, select the link below.
+					<br><br>
+                    <a href="{{ env('APP_URL') }}/login">{{ env('APP_URL') }}/login</a>
+					<br><br>
+                    Thank you.            
                     @elseif( !empty($password) )
 
                     Your password reset request has been accepted. 

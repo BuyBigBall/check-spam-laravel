@@ -7,11 +7,12 @@
         <div class="remind py-1">
             <form
                 id="user-registration"
-                action="/forgottask?task=reset.name"
+                action="{{ route('forgottask') }}"
                 method="post"
                 class="form-validate form-horizontal well" >
                 @csrf
                 <fieldset>
+					<input type="hidden" name="task" value="reset.name" />
                     <p>Please enter the email address associated with your User account. Your
                         username will be emailed to the email address on file.</p>
                     <div class="control-group">

@@ -32,6 +32,7 @@ use Exception;
 use SPFLib\Term\Mechanism;
 use Vinkla\Hashids\Facades\Hashids;
 use App\Http\Controllers\Cron\CronJobController;
+use App\Http\Controllers\Mailstester\MailContentController;
 
 class EmailTestController extends Controller
 {
@@ -92,12 +93,6 @@ class EmailTestController extends Controller
 		
         if(empty($id) && $_SERVER['HTTP_HOST']!='localhost' )
         {
-            // if($Hash_id!=null)
-            // {
-            //     $Hash__decode_id_array = Hashids::decode($Hash_id);
-            //     $id = $Hash__decode_id_array[0];
-            // }
-
             $LastEmail = TrashMail::GetLastUnreadMail($email);
             if($LastEmail != null)
             {
@@ -106,8 +101,30 @@ class EmailTestController extends Controller
                 if( ($find_id=MailBlacklistCheck::where(['mail_id'=>$id])->first())==null || 
                     $find_id->checkflag<2)
                     {
-                        $Hash_id = null;
-                        $id      = null;
+                        // $Hash_id = null;
+                        // $id      = null;
+                        $this->temporaryEmailCheck($email);
+						$mail_id = $id;
+						$response = $LastEmail;
+						$json_array  = MailContentController::GetJsonArray( $email , [ $response ], $mail_id);
+                        $json_string = json_encode($json_array);
+                        $json_object = json_decode($json_string);
+
+                        $message_result = [
+                            'mail_id' =>    $mail_id,
+                            'user_id' =>    1,      //now admin 
+                            'name' =>       "admin" ,
+                            'email' =>      $email,
+                            'receiver'=>    $email,
+                            'sender' =>     $response['from_email'],
+                            'received_at' =>$response['receivedAt'],
+                            'subject' =>    $response['subject'],
+                            'header' =>     $response['header'],
+                            'content' =>    $response['content'],
+                            'score' =>      $json_object->mark,
+                            'json' =>       $json_string ,
+                        ];
+                        $db_hist =  TestResult::create($message_result);                        
                     }
            }
         }
@@ -123,6 +140,7 @@ class EmailTestController extends Controller
             (       !Session::has('could_not_use_by_paid_user') 
             || empty(Session::get('could_not_use_by_paid_user')) ))
         {
+			session()->forget('could_not_use_by_paid_user');
             return redirect( route('testresult').'?message_id='.$Hash_id )
                     ->with('mailbox',  $email);
         }
@@ -349,6 +367,7 @@ class EmailTestController extends Controller
                     $hostname = explode('@', $addresss_from)[1];
                     $links = $cronCheckmodule->GetLinks( $LastEmail['content'] );
                     $cronCheckmodule->lookfor_brokenlinks($links, $id, 0);
+                    unset($cronCheckmodule);
                 }
                 
                 # it's dont need this

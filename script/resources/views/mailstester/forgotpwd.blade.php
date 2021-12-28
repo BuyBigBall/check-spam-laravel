@@ -19,11 +19,12 @@
         <div class="reset py-1">
             <form
                 id="user-registration"
-                action="/forgottask?task=reset.pwd"
+                action="{{ route('forgottask') }}"
                 method="post"
                 class="form-validate form-horizontal well">
                 @csrf
                 <fieldset>
+					<input type="hidden" name="task" value="reset.pwd" />
                     <p>Please enter the email address for your account. A verification code will be
                         sent to you. Once you have received the verification code, you will be able to
                         choose a new password for your account.</p>

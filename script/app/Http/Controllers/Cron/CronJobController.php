@@ -108,6 +108,10 @@ class CronJobController extends Controller
 				{	
                     foreach($mail_messages['messages'] as $response)
                     {
+			$to  = $response['to'];
+			//dd($to[0]->getAddress());
+			if( $to[0]->getAddress()=='mail-analyzer@mail-analyzer.com') continue;	
+			if( !!empty($to[0]->getAddress()) ) continue;	
                         $email   = env('MAIL_FROM_ADDRESS');  //initialize
                         $mail_id = $response['no'];
                         foreach($response['to'] as $to)
@@ -190,7 +194,9 @@ class CronJobController extends Controller
             
 				$id_hash = Hashids::decode($one_mail['id']);
 				$mail_id = $id_hash[0];
-
+				
+				$to  = $one_mail['to'];
+				if($to[0]->getAddress()=='mail-analyzer@mail-analyzer.com') continue;
 				$addresss_from  = $one_mail['from_email'];
 				$hostname = explode('@', $addresss_from)[1];
 				$links = $this->GetLinks( $one_mail['content'] );
@@ -213,7 +219,8 @@ class CronJobController extends Controller
 
 				$id_hash = Hashids::decode($one_mail['id']);
 				$mail_id = $id_hash[0];
-
+				$to  = $one_mail['to'];
+				if($to[0]->getAddress()=='mail-analyzer@mail-analyzer.com') continue;
 				$addresss_from  = $one_mail['from_email'];
 				$hostname = explode('@', $addresss_from)[1];
 

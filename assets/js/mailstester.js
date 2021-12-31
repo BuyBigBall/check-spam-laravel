@@ -126,34 +126,35 @@ $(function() {
 				window.location.reload();
 				return;
 			}
-			// else if(elapsedTime <= reloadTime - 1 ){
-			// 	$.ajax({
-			// 		url: wait_url,
-			// 		dataType: "text",
-			// 		cache: false,
-			// 		contentType: false,
-			// 		processData: false,
-			// 		type: "get",
-			// 		success: function (data) {
+			else if(elapsedTime == Math.round(reloadTime / 2) || elapsedTime == 0 ){
+				email = $(".mailbox").html();
+				$.ajax({
+					url: wait_url + '?email=' + email,
+					dataType: "text",
+					data: {'email' : $(".mailbox").html() },
+					cache: false,
+					contentType: false,
+					processData: false,
+					type: "get",
+					success: function (data) {
 						
-			// 		  var d = JSON.parse(data);
-			// 		  if(d.result=='ok')
-			// 		  {
-			// 			var mail = d.email.split('@');
-			// 			try{
-			// 				mail = mail[0];
-			// 			}
-			// 			catch(e)
-			// 			{
-			// 				console.log('result email : ' + d.email);
-			// 			}
-			// 			if(waitingTimeout!=null)clearInterval(waitingTimeout);
-			// 			window.location.href = result_url + '?mailbox='+mail+'&message_id='+d.message_id;
-			
-			// 		  }
-			// 		},
-			// 	  });
-			// }
+					  var d = JSON.parse(data);
+					  if(d.result=='ok')
+					  {
+						var mail = d.email.split('@');
+						try{
+							mail = mail[0];
+						}
+						catch(e)
+						{
+							console.log('result email : ' + d.email);
+						}
+						// if(waitingTimeout!=null)clearInterval(waitingTimeout);
+						// window.location.href = result_url + '?mailbox='+mail+'&message_id='+d.message_id;
+					  }
+					},
+				  });
+			}
 			else
 			{
 				/*

@@ -40,10 +40,6 @@ class EmailTestController extends Controller
     #show /spamtest page
     public function index(Request $request, $param=null)
     {
-        //	Samir Chakouri, chakouri-HGLK@srv1.mail-tester.com
-        //To	vvnavqq798@mail-analyzer.com, test-ebs4g0bo6@srv1.mail-tester.com
-        // Date	Today 13:12
-        // Cookie::queue('email', 'vvnavqq798@mail-analyzer.com', 3);	
         $iframe = false;
         $pay_type_ids = [];
         if($param!=null)
@@ -58,7 +54,6 @@ class EmailTestController extends Controller
         }
         
         $email_db_record = TrashMail::where('email', $email)->first();
-
 
         // getting useroption for micropayment
         if(    !empty($email_db_record) 
@@ -93,40 +88,47 @@ class EmailTestController extends Controller
 		
         if(empty($id) && $_SERVER['HTTP_HOST']!='localhost' )
         {
-            $LastEmail = TrashMail::GetLastUnreadMail($email);
-            if($LastEmail != null)
+            $db_hist =  TestResult::where('receiver', $email)->whereNull('tested_at')->get()->first();
+            if($db_hist!=null) 
             {
-                $Hash_id = $LastEmail['id'];
-                $id = $LastEmail['no'];
-                if( ($find_id=MailBlacklistCheck::where(['mail_id'=>$id])->first())==null || 
-                    $find_id->checkflag<2)
-                    {
-                        // $Hash_id = null;
-                        // $id      = null;
-                        $this->temporaryEmailCheck($email);
-						$mail_id = $id;
-						$response = $LastEmail;
-						$json_array  = MailContentController::GetJsonArray( $email , [ $response ], $mail_id);
-                        $json_string = json_encode($json_array);
-                        $json_object = json_decode($json_string);
+                $id = $db_hist->mail_id;
+                $Hash_id = Hashids::encode($id);
+            }
+        //     $LastEmail = TrashMail::GetLastUnreadMail($email);
+        //     if($LastEmail != null)
+        //     {
+        //         $Hash_id = $LastEmail['id'];
+        //         $id = $LastEmail['no'];
+        //         # it's may be performed by ajax
+        //         if( ($find_id=MailBlacklistCheck::where(['mail_id'=>$id])->first())==null || 
+        //             $find_id->checkflag<2)
+        //             {
+        //                 // $Hash_id = null;
+        //                 // $id      = null;
+        //                 $this->temporaryEmailCheck($email); 
+		// 				$mail_id = $id;
+		// 				$response = $LastEmail;
+		// 				$json_array  = MailContentController::GetJsonArray( $email , [ $response ], $mail_id);
+        //                 $json_string = json_encode($json_array);
+        //                 $json_object = json_decode($json_string);
 
-                        $message_result = [
-                            'mail_id' =>    $mail_id,
-                            'user_id' =>    1,      //now admin 
-                            'name' =>       "admin" ,
-                            'email' =>      $email,
-                            'receiver'=>    $email,
-                            'sender' =>     $response['from_email'],
-                            'received_at' =>$response['receivedAt'],
-                            'subject' =>    $response['subject'],
-                            'header' =>     $response['header'],
-                            'content' =>    $response['content'],
-                            'score' =>      $json_object->mark,
-                            'json' =>       $json_string ,
-                        ];
-                        $db_hist =  TestResult::create($message_result);                        
-                    }
-           }
+        //                 $message_result = [
+        //                     'mail_id' =>    $mail_id,
+        //                     'user_id' =>    1,      //now admin 
+        //                     'name' =>       "admin" ,
+        //                     'email' =>      $email,
+        //                     'receiver'=>    $email,
+        //                     'sender' =>     $response['from_email'],
+        //                     'received_at' =>$response['receivedAt'],
+        //                     'subject' =>    $response['subject'],
+        //                     'header' =>     $response['header'],
+        //                     'content' =>    $response['content'],
+        //                     'score' =>      $json_object->mark,
+        //                     'json' =>       $json_string ,
+        //                 ];
+        //                 $db_hist =  TestResult::create($message_result);                        
+        //             }
+        //    }
         }
         
 		//dd($pay_type_ids);dd($id);
@@ -318,11 +320,15 @@ class EmailTestController extends Controller
     }
 
     # ajax check_email request
-    public static function temporaryEmailCheck($email=null)
+    public static function temporaryEmailCheck(Request $request, $email=null)
     {
         if($email == null)
         {
-            if (Cookie::has('email')) 
+            if( !empty($request->email))
+            {
+                $email = $request->email;
+            }
+            else if (Cookie::has('email')) 
             {
                 $email =  Cookie::get('email');
             }
@@ -357,6 +363,7 @@ class EmailTestController extends Controller
                         );
                     }
                     
+                    ## --------------> dns blacklist checker ----------->
                     $cronCheckmodule = (new CronJobController());
                     $mailheader = $LastEmail['header'];
                     $auth_serverInfo = SpamAssassin::getserverauth( $mailheader );
@@ -368,6 +375,33 @@ class EmailTestController extends Controller
                     $links = $cronCheckmodule->GetLinks( $LastEmail['content'] );
                     $cronCheckmodule->lookfor_brokenlinks($links, $id, 0);
                     unset($cronCheckmodule);
+
+                    ## --------------> mail spamtest  ------------------>
+                    $mail_id = $id;
+                    $response = $LastEmail;
+                    $json_array  = MailContentController::GetJsonArray( $email , [ $response ], $mail_id);
+                    $json_string = json_encode($json_array);
+                    $json_object = json_decode($json_string);
+
+                    $message_result = [
+                        'mail_id' =>    $mail_id,
+                        'user_id' =>    1,      //now admin 
+                        'name' =>       "admin" ,
+                        'email' =>      $email,
+                        'receiver'=>    $email,
+                        'sender' =>     $response['from_email'],
+                        'received_at' =>$response['receivedAt'],
+                        'subject' =>    $response['subject'],
+                        'header' =>     $response['header'],
+                        'content' =>    $response['content'],
+                        'score' =>      $json_object->mark,
+                        'json' =>       $json_string ,
+                    ];
+                    $db_hist =  TestResult::create($message_result);
+            
+                    # mark as seen flag and get last mail again
+                    $LastEmail = TrashMail::messages($email, $Hash_id);
+
                 }
                 
                 # it's dont need this

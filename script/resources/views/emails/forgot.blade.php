@@ -58,7 +58,7 @@
 					<br /><br />
                     Select the URL below and proceed with resetting your password.
 
-                    <a href="{{$a_links}}">{{$a_links}}</a>
+                    <a href="<?php print($a_links);  ?>"><?php print($a_links);  ?></a>
 					<br><br>
                     Thank you.
                     &nbsp;

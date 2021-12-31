@@ -39,6 +39,7 @@ class ForgotPasswordController extends Controller
         $new_pwd = substr(md5($user->id . date('YndHis') . $user_email), 0, 8);
         $new_pwd = substr($new_pwd, $pos) . $char . substr($new_pwd, 0, $pos);
         
+        
         User::find($user->id)->update(["password" => Hash::make( $new_pwd)] );
         $response = ["password" => $new_pwd];
 
@@ -94,10 +95,11 @@ class ForgotPasswordController extends Controller
         {
             $verify_code = md5($user->id . date('YndHis') );
             $a_links =  route("resetpwdpage", "token=" . $verify_code);
-            //dd($a_links);
+			
             User::find($user->id)->update(["remember_token" => $verify_code ]);
             $response['verify_code'] = $verify_code;
             $response['a_links']     = $a_links;
+			//dd($a_links);
             $response['username']   = $user->name;
             
             sendMail([

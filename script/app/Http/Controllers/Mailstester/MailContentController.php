@@ -428,13 +428,19 @@ class MailContentController extends Controller
     {
         $email_address = explode("@", $email)[0] . "@" . env("MAIL_HOST");
         $message_id = TrashMail::GetLastReceiveMail($email_address);
+
+        if( !!empty($message_id))
+        {
+            print json_encode(['status'=>'0', 'title'=>'there is no any message received to ' . $email_address ]);
+            return;
+        }
         $id_hash = Hashids::decode($message_id);
         if(empty($id_hash) || !is_array($id_hash) || count($id_hash)==0) abort(419);
         $mail_id     = $id_hash[0];
 
 
-        $inbox_object = TrashMail::messages($email, $message_id);
-        $array_object = MailContentController::GetJsonArray($email, $inbox_object, $mail_id);
+        $inbox_object = TrashMail::messages($email_address, $message_id);
+        $array_object = MailContentController::GetJsonArray($email_address, $inbox_object, $mail_id);
         $json_string  = json_encode($array_object);
         header("Content-Type: application/json");
 		header("Accept: application/json");

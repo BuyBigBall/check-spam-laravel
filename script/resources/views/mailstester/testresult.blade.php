@@ -487,16 +487,16 @@
     setInterval(function() {
         
         $.ajax({
-            url: wait_url,
+            url: wait_url + '?email={{ explode('@', $email)[0] }}' + '@' + "{{env('MAIL_HOST')}}" + '&message_id=' + new_mail_id,
             dataType: "text",
             cache: false,
             contentType: false,
             processData: false,
             type: "get",
             data:{
-                
-                message_id : new_mail_id,
-                _token: $('meta[name="csrf-token"]').attr('content')
+                //'message_id' : new_mail_id,
+				//'email' : "{{ explode('@', $email)[0] }}" + '@' + "{{env('MAIL_HOST')}}",
+                '_token': $('meta[name="csrf-token"]').attr('content')
             },
             success:function(data) {
                 data = JSON.parse(data);

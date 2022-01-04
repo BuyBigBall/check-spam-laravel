@@ -322,6 +322,7 @@ class EmailTestController extends Controller
     # ajax check_email request
     public static function temporaryEmailCheck(Request $request, $email=null)
     {
+        
         if($email == null)
         {
             if( !empty($request->email))
@@ -400,7 +401,7 @@ class EmailTestController extends Controller
                     $db_hist =  TestResult::create($message_result);
             
                     # mark as seen flag and get last mail again
-                    $LastEmail = TrashMail::messages($email, $Hash_id);
+                    // $LastEmail = TrashMail::messages($email, $Hash_id);
 
                 }
                 
